@@ -43,28 +43,27 @@ public class JWTUtil {
      * @param ttlMillis 令牌有效期（毫秒）
      * @return JWT字符串
      */
+    //设置令牌有效期
     public String createJWT(String id, String subject, Map<String, Object> claims, long ttlMillis) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        // 创建JWT的生成器
         JwtBuilder builder = Jwts.builder()
                 .id(id)
                 .subject(subject)
-                .issuedAt(now)  // 创建时间
-                .signWith(key, Jwts.SIG.HS256);  // 使用HS256签名算法
-        // 添加自定义Claims数据
+                .issuedAt(now)
+                .signWith(key, Jwts.SIG.HS256);
         if (claims != null && !claims.isEmpty()) {
             builder.claims(claims);
         }
-        // 设置令牌有效期
-        if (ttlMillis > 0) {
-            long expMillis = nowMillis + ttlMillis;
-            Date exp = new Date(expMillis);
-            builder.expiration(exp);
-        }
-        // 生成JWT
+        long expMillis = nowMillis + ttlMillis;
+        Date exp = new Date(expMillis);
+        builder.expiration(exp);
         return builder.compact();
     }
+            /*修复：移除 ttlMillis > 0 的判断，确保始终设置过期时间
+              原逻辑会导致 ttlMillis <= 0 时生成永久有效的令牌（安全隐患）
+              现逻辑：正数=未来过期，0=立即过期，负数=已过期
+            */
 
     /**
      * 解析JWT令牌
