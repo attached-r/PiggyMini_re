@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Builder  // 生成builder对象
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("user")
+@TableName("users")
 public class User implements Serializable {
 
     @Serial
@@ -33,7 +33,7 @@ public class User implements Serializable {
 
     private String username;
 
-    private String password;
+    private String password; // 加密之后的密码
 
     private String phone;
 
