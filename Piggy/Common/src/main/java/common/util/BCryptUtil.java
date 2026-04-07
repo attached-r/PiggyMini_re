@@ -100,9 +100,25 @@ public class BCryptUtil {
      *
      * @param encodedPassword 加密后的密码哈希值
      * @return true-是默认强度，false-不是
+     * lxy:问题所在:
+     * 但默认强度是 10，所以强度为 10 的密码会返回 false！
+     * 正确逻辑应该是： 检查密码强度是否等于默认强度 10
      */
     public static boolean isDefaultStrength(String encodedPassword) {
-        return !needsUpgrade(encodedPassword, DEFAULT_STRENGTH + 1)
-                && !needsUpgrade(encodedPassword, DEFAULT_STRENGTH - 1);
+        if (encodedPassword == null || encodedPassword.isEmpty()) {
+            return false;
+        }
+
+        try {
+            String[] parts = encodedPassword.split("\\$");
+            if (parts.length >= 3) {
+                int currentStrength = Integer.parseInt(parts[2]);
+                return currentStrength == DEFAULT_STRENGTH;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return false;
     }
 }
