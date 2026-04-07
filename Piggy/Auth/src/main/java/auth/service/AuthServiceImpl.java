@@ -23,21 +23,28 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserMapper userMapper;
-    private final JWTUtil jwtUtil;
+    private final UserMapper userMapper; // 用户数据访问接口
+    private final JWTUtil jwtUtil;  // JWT 工具类
 
-    private static final long ACCESS_TOKEN_EXPIRE = 2 * 60 * 60 * 1000;
-
+    private static final long ACCESS_TOKEN_EXPIRE = 2 * 60 * 60 * 1000; // 令牌过期时间 2 小时
+    /**
+     * 用户注册
+     *
+     * @param request 注册请求参数
+     * @return 统一响应结果
+     */
     @Override
     public AuthResponse register(RegisterRequest request) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUsername, request.getUsername());
-        User existUser = userMapper.selectOne(queryWrapper);
+        // 1. 判断用户名是否存在
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>(); // 创建查询条件
+        queryWrapper.eq(User::getUsername, request.getUsername());  // 设置查询条件
+        User existUser = userMapper.selectOne(queryWrapper);        // 执行查询
 
         if (existUser != null) {
             throw GlobalException.businessError("用户名已存在");
-        }
 
+        }
+        // 2. 不存在创建用户
         User user = User.builder()
                 .username(request.getUsername())
                 .password(BCryptUtil.encode(request.getPassword()))
@@ -47,13 +54,21 @@ public class AuthServiceImpl implements AuthService {
                 .updateTime(LocalDateTime.now())
                 .build();
 
+        // 3. 保存用户
         userMapper.insert(user);
 
         return generateAuthResponse(user);
     }
 
+    /**
+     * 用户登录
+     *
+     * @param request 登录请求参数
+     * @return 统一响应结果
+     */
     @Override
     public AuthResponse login(LoginRequest request) {
+        // 1. 判断用户是否存在
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, request.getUsername());
         User user = userMapper.selectOne(queryWrapper);
@@ -61,18 +76,23 @@ public class AuthServiceImpl implements AuthService {
         if (user == null) {
             throw GlobalException.businessError("用户不存在");
         }
-
+        // 2. 验证密码 比较 明文加密之后 和 密文 是否匹配
         if (!BCryptUtil.matches(request.getPassword(), user.getPassword())) {
             throw GlobalException.businessError("密码错误");
         }
-
+        // 3. 验证账号状态
         if (user.getStatus() == 0) {
             throw GlobalException.businessError("账号已被禁用");
         }
-
+        // 4. 生成Token
         return generateAuthResponse(user);
     }
-
+    /**
+     * 刷新Token
+     *
+     * @param request 刷新Token请求参数
+     * @return 统一响应结果
+     */
     @Override
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
@@ -100,6 +120,12 @@ public class AuthServiceImpl implements AuthService {
         return generateAuthResponse(user);
     }
 
+    /**
+     * 生成认证响应结果
+     *
+     * @param user 用户信息
+     * @return 认证响应结果
+     */
     private AuthResponse generateAuthResponse(User user) {
         String jwtId = UUID.randomUUID().toString().replace("-", "");
 
