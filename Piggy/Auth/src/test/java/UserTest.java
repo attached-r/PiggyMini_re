@@ -24,7 +24,7 @@ public class UserTest {
     @Autowired
     private WebApplicationContext webApplicationContext; // SpringBoot测试类中，需要注入WebApplicationContext对象
 
-    private MockMvc mockMvc; // MockMvc对象用于模拟HTTP请求
+    private MockMvc mockMvc; // MockMvc对象用于模拟HTTP请
 
     @BeforeEach
     void setUp() {

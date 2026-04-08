@@ -10,13 +10,15 @@
         <processorPath useClasspath="false">
           <entry name="E:/Inteilj_Java/Maven/apache-maven-3.9.12/mvn_repo/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
-        <module name="Common" />
+        <module name="Account" />
         <module name="Auth" />
+        <module name="Common" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Account" options="-parameters" />
       <module name="Auth" options="-parameters" />
       <module name="Common" options="-parameters" />
       <module name="Piggy" options="-parameters" />

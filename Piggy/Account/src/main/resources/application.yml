@@ -1,9 +1,9 @@
 server:
-  port: 10002
+  port: 10003
 
 spring:
   application:
-    name: Piggy-Auth
+    name: Piggy-Account
   # MySQL 数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/piggy?useSSL=false&serverTimezone=UTC
@@ -19,18 +19,3 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-
-# SpringDoc OpenAPI 配置
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-    enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-    tags-sorter: alpha
-    operations-sorter: alpha
-  group-configs:
-    - group: 'auth-api'
-      paths-to-match: '/api/auth/**'
-      packages-to-scan: auth.controller
