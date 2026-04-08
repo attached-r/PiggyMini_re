@@ -43,12 +43,13 @@ public class AccountController {
      */
     @GetMapping
     public Result getAccounts(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Long userId = 1L;
         Page<Account> accountPage = accountService.getAccountsByUserId(userId, page, size);
         return Result.success("查询成功", accountPage);
     }
+
     /**
      * 查询账户详情
      *
@@ -56,7 +57,7 @@ public class AccountController {
      * @return 账户详情
      */
     @GetMapping("/{id}")
-    public Result getAccountById(@PathVariable Long id) {
+    public Result getAccountById(@PathVariable(value = "id") Long id) {
         Long userId = 1L;
         Account account = accountService.getAccountById(userId, id);
         return Result.success("查询成功", account);
@@ -70,7 +71,7 @@ public class AccountController {
      * @return 更新的账户信息
      */
     @PutMapping("/{id}")
-    public Result updateAccount(@PathVariable Long id, @Valid @RequestBody UpdateAccountRequest request) {
+    public Result updateAccount(@PathVariable(value = "id") Long id, @Valid @RequestBody UpdateAccountRequest request) {
         Long userId = 1L;
         Account account = accountService.updateAccount(userId, id, request);
         return Result.success("更新账户成功", account);
@@ -82,9 +83,17 @@ public class AccountController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
-    public Result deleteAccount(@PathVariable Long id) {
+    public Result deleteAccount(@PathVariable(value = "id") Long id) {
         Long userId = 1L;
         accountService.deleteAccount(userId, id);
         return Result.success("删除账户成功");
     }
 }
+/**
+ *Lxy:添加了参数的指定，包含：
+ * 新增账户功能
+ * 分页查询账户功能
+ * 查询账户详情功能
+ * 更新账户功能
+ * 根据用户id删除账户功能
+ */
