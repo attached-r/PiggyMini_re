@@ -4,7 +4,6 @@ import auth.dto.AuthResponse;
 import auth.dto.LoginRequest;
 import auth.dto.RefreshTokenRequest;
 import auth.dto.RegisterRequest;
-import common.model.Result;
 
 /**
  * 认证服务接口
