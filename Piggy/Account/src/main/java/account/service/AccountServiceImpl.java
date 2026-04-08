@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -125,5 +126,25 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long userId, Long id) {
         Account account = getAccountById(userId, id);
         accountMapper.deleteById(account.getId());
+    }
+
+    @Override
+    public void updateBalance(Long accountId, BigDecimal amount) {
+        Account account = accountMapper.selectById(accountId);
+        if (account == null) {
+            throw GlobalException.businessError("账户不存在");
+        }
+
+        // 1. 执行原子更新（数据库层面累加）
+        int rows = accountMapper.updateBalanceById(accountId, amount);
+        if (rows == 0) {
+            throw GlobalException.businessError("余额更新失败");
+        }
+
+        // 2. 校验余额不能为负（根据业务需求可选）
+        Account updatedAccount = accountMapper.selectById(accountId);
+        if (updatedAccount.getBalance().compareTo(java.math.BigDecimal.ZERO) < 0) {
+            throw GlobalException.businessError("账户余额不足");
+        }
     }
 }

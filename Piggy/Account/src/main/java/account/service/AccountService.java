@@ -5,6 +5,8 @@ import account.dto.UpdateAccountRequest;
 import account.entity.Account;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.math.BigDecimal;
+
 public interface AccountService {
     /**
      * 新增账户
@@ -47,4 +49,12 @@ public interface AccountService {
      * @param id 账户ID
      */
     void deleteAccount(Long userId, Long id);
-}
+
+    /**
+     * 更新账户余额（供 Transaction 服务调用）
+     *
+     * @param accountId 账户ID
+     * @param amount    变动金额（正数为收入，负数为支出）
+     */
+    void updateBalance(Long accountId, BigDecimal amount);
+    }
