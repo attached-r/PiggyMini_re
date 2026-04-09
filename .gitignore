@@ -35,3 +35,4 @@ logs/
 **/application*.yml
 **/application*.yaml
 **/application*.properties
+Piggy/.idea/inspectionProfiles/Project_Default.xml
