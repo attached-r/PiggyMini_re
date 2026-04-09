@@ -5,24 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89ebd2bc-227c-40ef-ab24-3437a40c2b3a" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/Account/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/test/java/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/test/java/UserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Auth/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/controller/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/dto/AuthResponse$AuthResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/dto/AuthResponse$AuthResponseBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/dto/AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/dto/AuthResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/dto/LoginRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/dto/LoginRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/dto/RefreshTokenRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/dto/RefreshTokenRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/classes/auth/dto/RegisterRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/target/classes/auth/dto/RegisterRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/target/test-classes/UserTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,34 +74,36 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "JUnit.UserTest.executor": "Debug",
-    "Maven.Auth [clean].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "发现新的/更新的数据库配置",
-    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AuthApplication.executor": "Debug",
-    "Spring Boot.CommonApplication.executor": "Debug",
-    "git-widget-placeholder": "rj/fix",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "reactor",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;JUnit.UserTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.CommonApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dyx/common&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reactor&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="debugInitializationType" value="AUTO" />
     <option name="notificationShown" value="true" />
@@ -179,8 +168,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
       </set>
     </attachedChunks>
   </component>
@@ -201,8 +190,10 @@
       <workItem from="1775482526846" duration="466000" />
       <workItem from="1775483644976" duration="2056000" />
       <workItem from="1775560662298" duration="310000" />
-      <workItem from="1775561605990" duration="6461000" />
-      <workItem from="1775616584595" duration="7463000" />
+      <workItem from="1775561605990" duration="4479000" />
+      <workItem from="1775618269937" duration="1462000" />
+      <workItem from="1775634555365" duration="628000" />
+      <workItem from="1775638324672" duration="54000" />
     </task>
     <servers />
   </component>

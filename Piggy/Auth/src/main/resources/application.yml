@@ -6,9 +6,9 @@ spring:
     name: Piggy-Auth
   # MySQL 数据源配置
   datasource:
-    url: jdbc:mysql://localhost:3306/piggy?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/piggy_data?useSSL=false&serverTimezone=UTC
     username: root
-    password: ${mysql.password:20050603RJ}
+    password: ${mysql.password:Dengyuxin666}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 # MyBatis-Plus 配置
