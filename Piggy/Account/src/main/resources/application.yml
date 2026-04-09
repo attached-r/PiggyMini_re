@@ -11,6 +11,18 @@ spring:
     password: ${mysql.password:20050603RJ}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # Nacos 配置
+  cloud:
+    nacos:
+      # 服务注册与发现
+      discovery:
+        server-addr: 127.0.0.1:8848  # Nacos 服务器地址 localhost:8848
+        username: nacos              # 由于开启了认证 需要填写
+        password: ${PASSWORD:123456789rj}
+        namespace: public            # 命名空间，默认 public
+        group: DEFAULT_GROUP         # 分组，默认 DEFAULT_GROUP
+        enabled: true                # 是否启用
+
 # MyBatis-Plus 配置
 mybatis-plus:
   configuration:

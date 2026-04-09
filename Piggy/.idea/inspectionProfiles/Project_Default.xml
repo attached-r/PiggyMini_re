@@ -5,6 +5,7 @@
       <option name="ADDITIONAL_TAGS" value="author:,TODO:" />
     </inspection_tool>
     <inspection_tool class="MarkedForRemoval" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SqlResolveInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="isIgnoringEnabled" value="true" />
       <option name="ignoredModules">
@@ -14,6 +15,8 @@
           <option value="Auth" />
           <option value="Piggy" />
           <option value="Account" />
+          <option value="Account" />
+          <option value="Transaction" />
           <option value="Account" />
         </list>
       </option>
@@ -25,10 +28,14 @@
           <option value="tools.jackson.core:jackson-core:3.1.0" />
           <option value="io.jsonwebtoken:jjwt-impl:0.12.5" />
           <option value="com.google.protobuf:protobuf-java:3.25.1" />
+          <option value="commons-fileupload:commons-fileupload:1.5" />
+          <option value="commons-fileupload:commons-fileupload:1.5" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
