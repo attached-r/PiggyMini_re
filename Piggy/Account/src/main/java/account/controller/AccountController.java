@@ -10,6 +10,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+
 /**
  * 账户控制器
  *
@@ -92,13 +95,18 @@ public class AccountController {
 
     /**
      * 更新账户余额（内部 RPC 接口）
+     * <p>
+     * 此接口供 Transaction 服务通过 Feign 调用
+     * 接口契约已定义在 AccountFeignClient
      *
-     * @param request 变动金额请求
-     * @return 更新后的账户信息
+     * @param accountId 账户ID
+     * @param amount    变动金额
+     * @return 更新结果
      */
     @PostMapping("/balance")
-    public Result updateBalance(@Valid @RequestBody UpdateBalanceRequest request) {
-        accountService.updateBalance(request.getAccountId(), request.getAmount());
+    public Result updateBalance(@RequestParam("accountId") Long accountId,
+                                @RequestParam("amount") BigDecimal amount) {
+        accountService.updateBalance(accountId, amount);
         return Result.success("余额更新成功", null);
     }
 }
