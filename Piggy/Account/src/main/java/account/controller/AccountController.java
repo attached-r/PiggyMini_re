@@ -2,6 +2,7 @@ package account.controller;
 
 import account.dto.CreateAccountRequest;
 import account.dto.UpdateAccountRequest;
+import account.dto.UpdateBalanceRequest;
 import account.entity.Account;
 import account.service.AccountService;
 import common.model.Result;
@@ -87,6 +88,18 @@ public class AccountController {
         Long userId = 1L;
         accountService.deleteAccount(userId, id);
         return Result.success("删除账户成功");
+    }
+
+    /**
+     * 更新账户余额（内部 RPC 接口）
+     *
+     * @param request 变动金额请求
+     * @return 更新后的账户信息
+     */
+    @PostMapping("/balance")
+    public Result updateBalance(@Valid @RequestBody UpdateBalanceRequest request) {
+        accountService.updateBalance(request.getAccountId(), request.getAmount());
+        return Result.success("余额更新成功", null);
     }
 }
 /**
