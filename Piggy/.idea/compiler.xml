@@ -11,6 +11,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
         <module name="Account" />
+        <module name="Budget" />
         <module name="Transaction" />
         <module name="Auth" />
         <module name="Common" />
@@ -21,6 +22,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Account" options="-parameters" />
       <module name="Auth" options="-parameters" />
+      <module name="Budget" options="-parameters" />
       <module name="Common" options="-parameters" />
       <module name="Piggy" options="-parameters" />
       <module name="Transaction" options="-parameters" />

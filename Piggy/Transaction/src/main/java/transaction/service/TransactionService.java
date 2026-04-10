@@ -7,6 +7,10 @@ import transaction.dto.TransactionQueryRequest;
 import transaction.dto.UpdateTransactionRequest;
 import transaction.entity.Transaction;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Map;
+
 public interface TransactionService {
 
     /**
@@ -61,4 +65,15 @@ public interface TransactionService {
      * @return 分类结果
      */
     String aiClassify(AiClassifyRequest request);
+
+    /**
+     * 按分类统计指定时间范围内的支出总额
+     *
+     * @param userId    用户ID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 分类支出统计 Map<分类, 支出总额>
+     */
+    Map<String, BigDecimal> getCategoryExpenseStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 }
+
