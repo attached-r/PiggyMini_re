@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import common.model.Result;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import transaction.dto.AiClassifyRequest;
 import transaction.dto.CreateTransactionRequest;
@@ -11,6 +12,10 @@ import transaction.dto.TransactionQueryRequest;
 import transaction.dto.UpdateTransactionRequest;
 import transaction.entity.Transaction;
 import transaction.service.TransactionService;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 交易记录控制器
@@ -102,5 +107,24 @@ public class TransactionController {
     public Result aiClassify(@Valid @RequestBody AiClassifyRequest request) {
         String result = transactionService.aiClassify(request);
         return Result.success("AI分类成功", result);
+    }
+
+    /**
+     * 按分类统计支出（内部 RPC 接口）
+     * <p>
+     * 此接口供 Budget 服务通过 Feign 调用
+     *
+     * @param userId    用户ID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 分类支出统计
+     */
+    @GetMapping("/statistics/category-expense")
+    public Result getCategoryExpenseStatistics(
+            @RequestParam("userId") Long userId,  // 时间参数格式化
+            @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
+        Map<String, BigDecimal> statistics = transactionService.getCategoryExpenseStatistics(userId, startTime, endTime);
+        return Result.success("统计成功", statistics);
     }
 }

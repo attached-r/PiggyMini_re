@@ -18,6 +18,8 @@ import transaction.mapper.TransactionMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 交易记录服务实现类
@@ -217,5 +219,13 @@ public class TransactionServiceImpl implements TransactionService {
                 throw GlobalException.businessError("回滚账户余额失败: " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public Map<String, BigDecimal> getCategoryExpenseStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("统计分类支出, userId: {}, startTime: {}, endTime: {}", userId, startTime, endTime);
+
+        Map<String, BigDecimal> result = transactionMapper.selectCategoryExpenseSum(userId, startTime, endTime);
+        return result != null ? result : new HashMap<>();
     }
 }

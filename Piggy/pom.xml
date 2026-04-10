@@ -26,6 +26,7 @@
         <module>Auth</module>
         <module>Account</module>
         <module>Transaction</module>
+        <module>Budget</module>
     </modules>
     <scm>
         <connection/>
