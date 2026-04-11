@@ -1,5 +1,6 @@
 package report.service;
 
+import common.enums.ExpenseCategory;
 import report.dto.BudgetResponse;
 import common.exception.GlobalException;
 import common.model.Result;
@@ -62,7 +63,7 @@ public class ReportServiceImpl implements ReportService {
             Map<String, Object> expenseStats = (Map<String, Object>) expenseResult.getData();
             for (Object value : expenseStats.values()) {
                 if (value != null) {
-                    expense = expense.add(new BigDecimal(value.toString()));
+                    expense = expense.add(convertToBigDecimal(value));
                 }
             }
         }
@@ -74,7 +75,7 @@ public class ReportServiceImpl implements ReportService {
             Map<String, Object> incomeStats = (Map<String, Object>) incomeResult.getData();
             for (Object value : incomeStats.values()) {
                 if (value != null) {
-                    income = income.add(new BigDecimal(value.toString()));
+                    income = income.add(convertToBigDecimal(value));
                 }
             }
         }
@@ -138,7 +139,7 @@ public class ReportServiceImpl implements ReportService {
         BigDecimal totalExpense = BigDecimal.ZERO;
         for (Object value : statistics.values()) {
             if (value != null) {
-                totalExpense = totalExpense.add(new BigDecimal(value.toString()));
+                totalExpense = totalExpense.add(convertToBigDecimal(value));
             }
         }
 
@@ -147,7 +148,7 @@ public class ReportServiceImpl implements ReportService {
         for (Map.Entry<String, Object> entry : statistics.entrySet()) {
             Object value = entry.getValue();
             if (value != null) {
-                BigDecimal amount = new BigDecimal(value.toString());
+                BigDecimal amount = convertToBigDecimal(value);
                 String category = entry.getKey();
 
                 double percent = totalExpense.compareTo(BigDecimal.ZERO) > 0
@@ -185,7 +186,7 @@ public class ReportServiceImpl implements ReportService {
         // 远程调用预算服务获取数据
         Result budgetResult;
         try {
-            budgetResult = budgetClient.getCurrentBudgets(userId);
+            budgetResult = budgetClient.getCurrentBudgets();
         } catch (Exception e) {
             log.error("调用预算服务获取数据失败, userId: {}", userId, e);
             throw new GlobalException("获取预算数据失败");
@@ -196,8 +197,10 @@ public class ReportServiceImpl implements ReportService {
         }
 
         @SuppressWarnings("unchecked")
-        List<BudgetResponse> budgets = (List<BudgetResponse>) budgetResult.getData();
-
+        List<Map<String, Object>> rawData = (List<Map<String, Object>>) budgetResult.getData();
+        List<BudgetResponse> budgets = rawData.stream()
+                .map(this::convertToBudgetResponse)
+                .collect(Collectors.toList());
         BigDecimal hundred = new BigDecimal("100");
 
         // 转换预算数据为执行率报表
@@ -287,7 +290,7 @@ public class ReportServiceImpl implements ReportService {
                     Map<String, Object> expenseStats = (Map<String, Object>) expenseResult.getData();
                     for (Object value : expenseStats.values()) {
                         if (value != null) {
-                            dayExpense = dayExpense.add(new BigDecimal(value.toString()));
+                            dayExpense = dayExpense.add(convertToBigDecimal(value));
                         }
                     }
                 }
@@ -298,7 +301,7 @@ public class ReportServiceImpl implements ReportService {
                     Map<String, Object> incomeStats = (Map<String, Object>) incomeResult.getData();
                     for (Object value : incomeStats.values()) {
                         if (value != null) {
-                            dayIncome = dayIncome.add(new BigDecimal(value.toString()));
+                            dayIncome = dayIncome.add(convertToBigDecimal(value));
                         }
                     }
                 }
@@ -340,5 +343,27 @@ public class ReportServiceImpl implements ReportService {
         }
 
         return new LocalDateTime[]{startTime, endTime};
+    }
+    private BigDecimal convertToBigDecimal(Object value) {
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        } else if (value instanceof Number) {
+            return new BigDecimal(value.toString());
+        } else {
+            try {
+                return new BigDecimal(value.toString());
+            } catch (NumberFormatException e) {
+                log.warn("无法转换值为BigDecimal: {}", value);
+                return BigDecimal.ZERO;
+            }
+        }
+    }
+    private BudgetResponse convertToBudgetResponse(Map<String, Object> map) {
+        return BudgetResponse.builder()
+                .category(map.get("category") != null ? ExpenseCategory.valueOf(map.get("category").toString()) : null)
+                .budget(convertToBigDecimal(map.get("budget")))
+                .spent(convertToBigDecimal(map.get("spent")))
+                .remain(convertToBigDecimal(map.get("remain")))
+                .build();
     }
 }

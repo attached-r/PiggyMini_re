@@ -8,6 +8,7 @@ import transaction.entity.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,19 +25,19 @@ public interface TransactionMapper extends BaseMapper<Transaction> {
      * @param userId    用户ID
      * @param startTime 开始时间
      * @param endTime   结束时间
-     * @return Map<ExpenseCategory.name(), BigDecimal> 分类支出统计
+     * @return List<Map<category, total>> 分类支出统计
      */
     @Select("SELECT category, SUM(amount) as total " +
             "FROM transactions " +
             "WHERE user_id = #{userId} " +
             "AND transaction_type = 'EXPENSE' " +
             "AND transaction_time >= #{startTime} " +
-            "AND transaction_time <= #{endTime} " +
+            "AND transaction_time < #{endTime} " +
             "AND category IS NOT NULL " +
             "GROUP BY category")
-    Map<String, BigDecimal> selectCategoryExpenseSum(@Param("userId") Long userId,
-                                                        @Param("startTime") LocalDateTime startTime,
-                                                        @Param("endTime") LocalDateTime endTime);
+    List<Map<String, Object>> selectCategoryExpenseSum(@Param("userId") Long userId,
+                                                       @Param("startTime") LocalDateTime startTime,
+                                                       @Param("endTime") LocalDateTime endTime);
 
     /**
      * 按分类统计指定时间范围内的收入总额
@@ -44,17 +45,17 @@ public interface TransactionMapper extends BaseMapper<Transaction> {
      * @param userId    用户ID
      * @param startTime 开始时间
      * @param endTime   结束时间
-     * @return Map<ExpenseCategory.name(), BigDecimal> 分类收入统计
+     * @return List<Map<category, total>> 分类收入统计
      */
     @Select("SELECT category, SUM(amount) as total " +
             "FROM transactions " +
             "WHERE user_id = #{userId} " +
             "AND transaction_type = 'INCOME' " +
             "AND transaction_time >= #{startTime} " +
-            "AND transaction_time <= #{endTime} " +
+            "AND transaction_time < #{endTime} " +
             "AND category IS NOT NULL " +
             "GROUP BY category")
-    Map<String, BigDecimal> selectCategoryIncomeSum(@Param("userId") Long userId,
-                                                    @Param("startTime") LocalDateTime startTime,
-                                                    @Param("endTime") LocalDateTime endTime);
+    List<Map<String, Object>> selectCategoryIncomeSum(@Param("userId") Long userId,
+                                                      @Param("startTime") LocalDateTime startTime,
+                                                      @Param("endTime") LocalDateTime endTime);
 }

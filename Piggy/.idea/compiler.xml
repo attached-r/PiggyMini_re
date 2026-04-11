@@ -13,7 +13,6 @@
         <module name="Account" />
         <module name="Budget" />
         <module name="Transaction" />
-        <module name="Report" />
         <module name="Auth" />
         <module name="Common" />
       </profile>
@@ -26,7 +25,6 @@
       <module name="Budget" options="-parameters" />
       <module name="Common" options="-parameters" />
       <module name="Piggy" options="-parameters" />
-      <module name="Report" options="-parameters" />
       <module name="Transaction" options="-parameters" />
     </option>
   </component>

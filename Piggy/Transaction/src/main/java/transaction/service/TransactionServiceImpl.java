@@ -19,6 +19,7 @@ import transaction.mapper.TransactionMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -225,16 +226,31 @@ public class TransactionServiceImpl implements TransactionService {
     public Map<String, BigDecimal> getCategoryExpenseStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         log.info("统计分类支出, userId: {}, startTime: {}, endTime: {}", userId, startTime, endTime);
 
-        Map<String, BigDecimal> result = transactionMapper.selectCategoryExpenseSum(userId, startTime, endTime);
-        return result != null ? result : new HashMap<>();
+        List<Map<String, Object>> result = transactionMapper.selectCategoryExpenseSum(userId, startTime, endTime);
+        return convertToCategoryAmountMap(result);
     }
 
     @Override
     public Map<String, BigDecimal> getCategoryIncomeStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         log.info("统计分类收入, userId: {}, startTime: {}, endTime: {}", userId, startTime, endTime);
 
-        Map<String, BigDecimal> result = transactionMapper.selectCategoryIncomeSum(userId, startTime, endTime);
-        return result != null ? result : new HashMap<>();
+        List<Map<String, Object>> result = transactionMapper.selectCategoryIncomeSum(userId, startTime, endTime);
+        return convertToCategoryAmountMap(result);
     }
 
+    private Map<String, BigDecimal> convertToCategoryAmountMap(List<Map<String, Object>> resultList) {
+        Map<String, BigDecimal> map = new HashMap<>();
+        if (resultList == null) {
+            return map;
+        }
+        for (Map<String, Object> row : resultList) {
+            String category = (String) row.get("category");
+            Object totalObj = row.get("total");
+            BigDecimal total = totalObj instanceof BigDecimal
+                    ? (BigDecimal) totalObj
+                    : new BigDecimal(totalObj.toString());
+            map.put(category, total);
+        }
+        return map;
+    }
 }
