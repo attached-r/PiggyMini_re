@@ -27,6 +27,7 @@
         <module>Account</module>
         <module>Transaction</module>
         <module>Budget</module>
+        <module>Report</module>
     </modules>
     <scm>
         <connection/>

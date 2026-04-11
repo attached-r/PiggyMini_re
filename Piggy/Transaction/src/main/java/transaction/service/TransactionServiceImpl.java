@@ -228,4 +228,13 @@ public class TransactionServiceImpl implements TransactionService {
         Map<String, BigDecimal> result = transactionMapper.selectCategoryExpenseSum(userId, startTime, endTime);
         return result != null ? result : new HashMap<>();
     }
+
+    @Override
+    public Map<String, BigDecimal> getCategoryIncomeStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        log.info("统计分类收入, userId: {}, startTime: {}, endTime: {}", userId, startTime, endTime);
+
+        Map<String, BigDecimal> result = transactionMapper.selectCategoryIncomeSum(userId, startTime, endTime);
+        return result != null ? result : new HashMap<>();
+    }
+
 }
