@@ -60,7 +60,10 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+<<<<<<< Updated upstream
         <!-- Spring Cloud LoadBalancer -->
+=======
+>>>>>>> Stashed changes
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>

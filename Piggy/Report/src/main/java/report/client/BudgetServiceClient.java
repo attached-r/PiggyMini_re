@@ -12,5 +12,5 @@ import java.util.List;
 public interface BudgetServiceClient {
 
     @GetMapping("/current")
-    Result getCurrentBudgets(@RequestParam("userId") Long userId);
+    Result getCurrentBudgets();
 }

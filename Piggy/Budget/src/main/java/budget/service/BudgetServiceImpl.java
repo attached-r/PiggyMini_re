@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 预算服务实现类
@@ -152,7 +153,12 @@ public class BudgetServiceImpl implements BudgetService {
     private Map<String, BigDecimal> getCategoryExpenseStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         Result result = transactionServiceClient.getCategoryExpenseStatistics(userId, startTime, endTime);
         if (result != null && result.getCode() == 200 && result.getData() != null) {
-            return (Map<String, BigDecimal>) result.getData();
+            Map<String, Object> rawData = (Map<String, Object>) result.getData();
+            return rawData.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e -> convertToBigDecimal(e.getValue())
+                    ));
         }
         return new HashMap<>();
     }
@@ -202,5 +208,14 @@ public class BudgetServiceImpl implements BudgetService {
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
         return spent.compareTo(thresholdAmount) >= 0;
+    }
+    private BigDecimal convertToBigDecimal(Object value) {
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        } else if (value instanceof Number) {
+            return new BigDecimal(value.toString());
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 }
