@@ -112,7 +112,7 @@ public class TransactionController {
     /**
      * 按分类统计支出（内部 RPC 接口）
      * <p>
-     * 此接口供 Budget 服务通过 Feign 调用
+     * 此接口供 Budget , Report服务通过 Feign 调用
      *
      * @param userId    用户ID
      * @param startTime 开始时间
@@ -125,6 +125,27 @@ public class TransactionController {
             @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         Map<String, BigDecimal> statistics = transactionService.getCategoryExpenseStatistics(userId, startTime, endTime);
-        return Result.success("统计成功", statistics);
+        return Result.success("统计支出成功", statistics);
     }
+
+
+    /**
+     * 按分类统计收入（内部RPC接口）
+     * <p>
+     *
+     * 此接口供 Budget , Report服务通过 Feign 调用
+     * @param userId    用户ID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 分类支出统计
+     */
+    @GetMapping("/statistics/category-income")
+    public Result getCategoryIncomeStatistics(
+            @RequestParam Long userId,
+            @RequestParam LocalDateTime startTime,
+            @RequestParam LocalDateTime endTime) {
+        Map<String, BigDecimal> statistics = transactionService.getCategoryIncomeStatistics(userId, startTime, endTime);
+        return Result.success("统收入计成功", statistics);
+    }
+
 }
