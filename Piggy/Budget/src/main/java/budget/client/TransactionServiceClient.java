@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
  *
  * @author: rj
  */
-@FeignClient(name = "Piggy-Transaction", path = "/api/transactions")
+@FeignClient(name = "Piggy-Transaction", path = "/api/transactions",
+            fallbackFactory = TransactionServiceFallbackFactory.class)
 public interface TransactionServiceClient {
 
     /**

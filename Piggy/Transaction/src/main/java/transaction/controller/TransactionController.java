@@ -21,7 +21,6 @@ import java.util.Map;
  * 交易记录控制器
  *
  * @author: rj
- * @TODO: 用户ID获取应该会从token里面获取 这里写死为1
  */
 @RestController
 @RequestMapping("/api/transactions")
@@ -37,8 +36,8 @@ public class TransactionController {
      * @return 创建的交易记录
      */
     @PostMapping
-    public Result createTransaction(@Valid @RequestBody CreateTransactionRequest request) {
-        Long userId = 1L;
+    public Result createTransaction(@Valid @RequestBody CreateTransactionRequest request,
+                                    @RequestHeader("X-User-Id") Long userId) {
         Transaction transaction = transactionService.createTransaction(userId, request);
         return Result.success("新增交易记录成功", transaction);
     }
@@ -50,8 +49,8 @@ public class TransactionController {
      * @return 交易记录列表
      */
     @GetMapping
-    public Result getTransactions(TransactionQueryRequest queryRequest) {
-        Long userId = 1L;
+    public Result getTransactions(TransactionQueryRequest queryRequest,
+                                    @RequestHeader("X-User-Id") Long userId) {
         Page<Transaction> transactionPage = transactionService.getTransactions(userId, queryRequest);
         return Result.success("查询成功", transactionPage);
     }
@@ -63,8 +62,8 @@ public class TransactionController {
      * @return 交易记录详情
      */
     @GetMapping("/{id}")
-    public Result getTransactionById(@PathVariable("id") Long id) {
-        Long userId = 1L;
+    public Result getTransactionById(@PathVariable("id") Long id,
+                                        @RequestHeader("X-User-Id") Long userId) {
         Transaction transaction = transactionService.getTransactionById(userId, id);
         return Result.success("查询成功", transaction);
     }
@@ -78,8 +77,8 @@ public class TransactionController {
      */
     @PutMapping("/{id}")
     public Result updateTransaction(@PathVariable("id") Long id,
-                                    @Valid @RequestBody UpdateTransactionRequest request) {
-        Long userId = 1L;
+                                    @Valid @RequestBody UpdateTransactionRequest request,
+                                    @RequestHeader("X-User-Id") Long userId) {
         Transaction transaction = transactionService.updateTransaction(userId, id, request);
         return Result.success("修改交易记录成功", transaction);
     }
@@ -91,8 +90,8 @@ public class TransactionController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
-    public Result deleteTransaction(@PathVariable("id") Long id) {
-        Long userId = 1L;
+    public Result deleteTransaction(@PathVariable("id") Long id,
+                                    @RequestHeader("X-User-Id") Long userId) {
         transactionService.deleteTransaction(userId, id);
         return Result.success("删除交易记录成功");
     }
@@ -121,18 +120,16 @@ public class TransactionController {
      */
     @GetMapping("/statistics/category-expense")
     public Result getCategoryExpenseStatistics(
-            @RequestParam("userId") Long userId,  // 时间参数格式化
+            @RequestParam("userId") Long userId,
             @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         Map<String, BigDecimal> statistics = transactionService.getCategoryExpenseStatistics(userId, startTime, endTime);
         return Result.success("统计支出成功", statistics);
     }
 
-
     /**
      * 按分类统计收入（内部RPC接口）
      * <p>
-     *
      * 此接口供 Budget , Report服务通过 Feign 调用
      * @param userId    用户ID
      * @param startTime 开始时间

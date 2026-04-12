@@ -8,7 +8,8 @@ import report.dto.BudgetResponse;
 
 import java.util.List;
 
-@FeignClient(name = "Piggy-Budget", path = "/api/budgets")
+@FeignClient(name = "Piggy-Budget", path = "/api/budgets",
+    fallbackFactory = BudgetServiceFallbackFactory.class)
 public interface BudgetServiceClient {
 
     @GetMapping("/current")

@@ -28,6 +28,7 @@
         <module>Transaction</module>
         <module>Budget</module>
         <module>Report</module>
+        <module>Gateway</module>
     </modules>
     <scm>
         <connection/>

@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 /**
  * 交易服务客户端
  */
-@FeignClient(name = "Piggy-Transaction", path = "/api/transactions")
+@FeignClient(name = "Piggy-Transaction", path = "/api/transactions",
+        fallbackFactory = TransactionServiceFallbackFactory.class)
 public interface TransactionServiceClient {
     /**
      * 按分类统计支出（内部 RPC 接口）

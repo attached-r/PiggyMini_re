@@ -11,9 +11,11 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
         <module name="Account" />
-        <module name="Budget" />
         <module name="Transaction" />
+        <module name="Report" />
+        <module name="Gateway" />
         <module name="Auth" />
+        <module name="Budget" />
         <module name="Common" />
       </profile>
     </annotationProcessing>
@@ -24,7 +26,9 @@
       <module name="Auth" options="-parameters" />
       <module name="Budget" options="-parameters" />
       <module name="Common" options="-parameters" />
+      <module name="Gateway" options="-parameters" />
       <module name="Piggy" options="-parameters" />
+      <module name="Report" options="-parameters" />
       <module name="Transaction" options="-parameters" />
     </option>
   </component>

@@ -5,15 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2951ad1b-1df5-4c7a-89ed-32f6d28360ed" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/Budget/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Gateway/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Account/src/main/java/account/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/java/account/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Account/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Budget/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Budget/src/main/java/budget/client/TransactionServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/java/budget/client/TransactionServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Budget/src/main/java/budget/controller/BudgetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/java/budget/controller/BudgetController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/exception/GlobalException.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/exception/GlobalException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/target/classes/common/exception/GlobalException.class" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/common/exception/GlobalException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Report/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/TransactionServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/TransactionServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/controller/ReportController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Transaction/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/client/AccountServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/client/AccountServiceClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/mapper/TransactionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/mapper/TransactionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
@@ -45,6 +56,9 @@
     &quot;accountId&quot;: &quot;3abf06c9-c613-4037-9d66-df497efc8c0c&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -60,17 +74,22 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Maven.Gateway [clean].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AccountApplication.executor": "Debug",
-    "Spring Boot.AuthApplication.executor": "Debug",
-    "Spring Boot.CommonApplication.executor": "Debug",
-    "Spring Boot.TransactionApplication.executor": "Debug",
-    "git-widget-placeholder": "rj/transaction",
+    "Spring Boot.AccountApplication.executor": "Run",
+    "Spring Boot.AuthApplication.executor": "Run",
+    "Spring Boot.BudgetApplication.executor": "Run",
+    "Spring Boot.CommonApplication.executor": "Run",
+    "Spring Boot.GatewayApplication.executor": "Run",
+    "Spring Boot.ReportApplication.executor": "Run",
+    "Spring Boot.TransactionApplication.executor": "Run",
+    "git-widget-placeholder": "rj/report",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -97,14 +116,28 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
+    <option name="hiddenConfigurations">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
+            <set>
+              <option value="未命名" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="configurationStatuses">
       <map>
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="AccountApplication" value="STOPPED" />
-              <entry key="AuthApplication" value="STOPPED" />
+              <entry key="AccountApplication" value="FAILED" />
+              <entry key="AuthApplication" value="FAILED" />
+              <entry key="BudgetApplication" value="STOPPED" />
               <entry key="CommonApplication" value="STOPPED" />
+              <entry key="GatewayApplication" value="FAILED" />
+              <entry key="ReportApplication" value="STOPPED" />
               <entry key="TransactionApplication" value="STOPPED" />
             </map>
           </value>
@@ -112,7 +145,13 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.AccountApplication">
+  <component name="RunManager" selected="Spring Boot.GatewayApplication">
+    <configuration name="未命名" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="SPRING_BOOT_MAIN_CLASS" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Account" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="account.AccountApplication" />
@@ -127,9 +166,30 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BudgetApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Budget" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="budget.BudgetApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="CommonApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Common" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="common.CommonApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="gateway.GatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReportApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Report" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="report.ReportApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -141,6 +201,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Spring Boot.GatewayApplication" />
+      <item itemvalue="Spring Boot.CommonApplication" />
+      <item itemvalue="Spring Boot.AuthApplication" />
+      <item itemvalue="Spring Boot.AccountApplication" />
+      <item itemvalue="Spring Boot.TransactionApplication" />
+      <item itemvalue="Spring Boot.BudgetApplication" />
+      <item itemvalue="Spring Boot.ReportApplication" />
+      <item itemvalue="Spring Boot.未命名" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -158,11 +228,26 @@
       <option name="presentableId" value="Default" />
       <updated>1775729161877</updated>
       <workItem from="1775729163398" duration="3090000" />
-      <workItem from="1775796769666" duration="4261000" />
+      <workItem from="1775796769666" duration="4450000" />
+      <workItem from="1775804077991" duration="5000" />
+      <workItem from="1775817348538" duration="1098000" />
+      <workItem from="1775883348976" duration="901000" />
+      <workItem from="1775892536798" duration="7467000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
