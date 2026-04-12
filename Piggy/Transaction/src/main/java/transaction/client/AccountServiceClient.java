@@ -13,7 +13,8 @@ import java.math.BigDecimal;
  *
  * @author: rj
  */
-@FeignClient(name = "Piggy-Account", path = "/api/accounts")
+@FeignClient(name = "Piggy-Account", path = "/api/accounts",
+            fallbackFactory = AccountServiceFallback.AccountServiceFallbackFactory.class)
 public interface AccountServiceClient {
 
     /**

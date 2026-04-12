@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import common.enums.TransactionType;
 import common.exception.GlobalException;
+import common.model.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,9 +59,16 @@ public class TransactionServiceImpl implements TransactionService {
         if (rows == 0) {
             throw GlobalException.businessError("创建交易记录失败");
         }
-
-        updateAccountBalance(request.getAccountId(), request.getType(), request.getAmount());
-
+        // 更新账户余额
+        try {
+            updateAccountBalance(request.getAccountId(), request.getType(), request.getAmount());
+        } catch (GlobalException e) {
+            log.error("更新账户余额失败，回滚交易记录, transactionId: {}", transaction.getId(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error("更新账户余额异常，回滚交易记录, transactionId: {}", transaction.getId(), e);
+            throw GlobalException.businessError("更新账户余额失败: " + e.getMessage());
+        }
         return transaction;
     }
 
@@ -184,13 +192,18 @@ public class TransactionServiceImpl implements TransactionService {
             case TRANSFER -> BigDecimal.ZERO;
         };
 
+
         if (balanceChange.compareTo(BigDecimal.ZERO) != 0) {
-            try {
-                accountServiceClient.updateBalance(accountId, balanceChange);
-            } catch (Exception e) {
-                log.error("更新账户余额失败, accountId: {}, amount: {}", accountId, balanceChange, e);
-                throw GlobalException.businessError("更新账户余额失败: " + e.getMessage());
+            log.info("调用 Account 服务更新余额, accountId: {}, amount: {}", accountId, balanceChange);
+            Result result = accountServiceClient.updateBalance(accountId, balanceChange);
+
+            if (result == null || !result.isSuccess()) {
+                String errorMsg = result != null ? result.getMessage() : "账户服务返回结果为空";
+                log.error("更新账户余额失败, accountId: {}, amount: {}, error: {}", accountId, balanceChange, errorMsg);
+                throw GlobalException.businessError("更新账户余额失败: " + errorMsg);
             }
+
+            log.info("更新账户余额成功, accountId: {}, amount: {}", accountId, balanceChange);
         }
     }
 
@@ -212,13 +225,18 @@ public class TransactionServiceImpl implements TransactionService {
             case TRANSFER -> BigDecimal.ZERO;
         };
 
+
         if (balanceRevert.compareTo(BigDecimal.ZERO) != 0) {
-            try {
-                accountServiceClient.updateBalance(accountId, balanceRevert);
-            } catch (Exception e) {
-                log.error("回滚账户余额失败, accountId: {}, amount: {}", accountId, balanceRevert, e);
-                throw GlobalException.businessError("回滚账户余额失败: " + e.getMessage());
+            log.info("调用 Account 服务回滚余额, accountId: {}, amount: {}", accountId, balanceRevert);
+            Result result = accountServiceClient.updateBalance(accountId, balanceRevert);
+
+            if (result == null || !result.isSuccess()) {
+                String errorMsg = result != null ? result.getMessage() : "账户服务返回结果为空";
+                log.error("回滚账户余额失败, accountId: {}, amount: {}, error: {}", accountId, balanceRevert, errorMsg);
+                throw GlobalException.businessError("回滚账户余额失败: " + errorMsg);
             }
+
+            log.info("回滚账户余额成功, accountId: {}, amount: {}", accountId, balanceRevert);
         }
     }
 

@@ -15,7 +15,6 @@ import java.util.List;
  * 预算控制器
  *
  * @author: rj
- * @TODO: 用户ID获取应该会从token里面获取 这里写死为1
  */
 @RestController
 @RequestMapping("/api/budgets")
@@ -31,8 +30,8 @@ public class BudgetController {
      * @return 创建/更新后的预算对象
      */
     @PostMapping
-    public Result createOrUpdateBudget(@Valid @RequestBody CreateBudgetRequest request) {
-        Long userId = 1L;
+    public Result createOrUpdateBudget(@Valid @RequestBody CreateBudgetRequest request,
+                                        @RequestHeader("X-User-Id") Long userId) {
         Budget budget = budgetService.createOrUpdateBudget(userId, request);
         return Result.success("预算设置成功", budget);
     }
@@ -43,8 +42,7 @@ public class BudgetController {
      * @return 当月所有预算列表
      */
     @GetMapping("/current")
-    public Result getCurrentBudgets() {
-        Long userId = 1L;
+    public Result getCurrentBudgets(@RequestHeader("X-User-Id") Long userId) {
         List<BudgetResponse> budgets = budgetService.getCurrentBudgets(userId);
         return Result.success("查询成功", budgets);
     }
@@ -55,8 +53,7 @@ public class BudgetController {
      * @return 超支预算列表
      */
     @GetMapping("/warn")
-    public Result getWarningBudgets() {
-        Long userId = 1L;
+    public Result getWarningBudgets(@RequestHeader("X-User-Id") Long userId) {
         List<BudgetResponse> warningBudgets = budgetService.getWarningBudgets(userId);
         return Result.success("查询成功", warningBudgets);
     }

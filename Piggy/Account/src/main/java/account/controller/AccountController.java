@@ -2,7 +2,7 @@ package account.controller;
 
 import account.dto.CreateAccountRequest;
 import account.dto.UpdateAccountRequest;
-import account.dto.UpdateBalanceRequest;
+
 import account.entity.Account;
 import account.service.AccountService;
 import common.model.Result;
@@ -17,14 +17,14 @@ import java.math.BigDecimal;
  * 账户控制器
  *
  * @author: rj
- * @TODO: 获取用户id 后续会通过gateway1网关统一处理 这里暂时这样修改
  */
 @RestController
 @RequestMapping("/api/accounts")
-@RequiredArgsConstructor  // 创建构造函数
+@RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
+
     /**
      * 新增账户
      *
@@ -32,8 +32,8 @@ public class AccountController {
      * @return 创建的账户信息
      */
     @PostMapping
-    public Result createAccount(@Valid @RequestBody CreateAccountRequest request) {
-        Long userId = 1L;
+    public Result createAccount(@Valid @RequestBody CreateAccountRequest request,
+                                @RequestHeader("X-User-Id") Long userId) {
         Account account = accountService.createAccount(userId, request);
         return Result.success("新增账户成功", account);
     }
@@ -48,8 +48,8 @@ public class AccountController {
     @GetMapping
     public Result getAccounts(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        Long userId = 1L;
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestHeader("X-User-Id") Long userId) {
         Page<Account> accountPage = accountService.getAccountsByUserId(userId, page, size);
         return Result.success("查询成功", accountPage);
     }
@@ -61,8 +61,8 @@ public class AccountController {
      * @return 账户详情
      */
     @GetMapping("/{id}")
-    public Result getAccountById(@PathVariable(value = "id") Long id) {
-        Long userId = 1L;
+    public Result getAccountById(@PathVariable(value = "id") Long id,
+                                 @RequestHeader("X-User-Id") Long userId) {
         Account account = accountService.getAccountById(userId, id);
         return Result.success("查询成功", account);
     }
@@ -75,11 +75,13 @@ public class AccountController {
      * @return 更新的账户信息
      */
     @PutMapping("/{id}")
-    public Result updateAccount(@PathVariable(value = "id") Long id, @Valid @RequestBody UpdateAccountRequest request) {
-        Long userId = 1L;
+    public Result updateAccount(@PathVariable(value = "id") Long id,
+                                @Valid @RequestBody UpdateAccountRequest request,
+                                @RequestHeader("X-User-Id") Long userId) {
         Account account = accountService.updateAccount(userId, id, request);
         return Result.success("更新账户成功", account);
     }
+
     /**
      * 删除账户
      *
@@ -87,8 +89,8 @@ public class AccountController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
-    public Result deleteAccount(@PathVariable(value = "id") Long id) {
-        Long userId = 1L;
+    public Result deleteAccount(@PathVariable(value = "id") Long id,
+                                @RequestHeader("X-User-Id") Long userId) {
         accountService.deleteAccount(userId, id);
         return Result.success("删除账户成功");
     }
@@ -110,11 +112,3 @@ public class AccountController {
         return Result.success("余额更新成功", null);
     }
 }
-/**
- *Lxy:添加了参数的指定，包含：
- * 新增账户功能
- * 分页查询账户功能
- * 查询账户详情功能
- * 更新账户功能
- * 根据用户id删除账户功能
- */

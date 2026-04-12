@@ -6,6 +6,13 @@
         <language minSize="102" name="Java" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="IncorrectHttpHeaderInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="customHeaders">
+        <set>
+          <option value="X-User-Id" />
+        </set>
+      </option>
+    </inspection_tool>
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ADDITIONAL_TAGS" value="author:,TODO:,Author:" />
     </inspection_tool>
@@ -24,6 +31,7 @@
           <option value="Account" />
           <option value="Transaction" />
           <option value="Account" />
+          <option value="Gateway" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -36,10 +44,12 @@
           <option value="com.google.protobuf:protobuf-java:3.25.1" />
           <option value="commons-fileupload:commons-fileupload:1.5" />
           <option value="commons-fileupload:commons-fileupload:1.5" />
+          <option value="io.jsonwebtoken:jjwt-impl:0.12.5" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />

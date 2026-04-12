@@ -95,4 +95,14 @@ public class GlobalException extends RuntimeException {
     public static GlobalException notFound(String message) {
         return new GlobalException(404, message);
     }
+
+    /**
+     * 快速创建服务不可用异常（用于熔断降级场景）
+     *
+     * @param message 异常消息
+     * @return GlobalException实例
+     */
+    public static GlobalException serviceUnavailable(String message) {
+        return new GlobalException(503, message);
+    }
 }

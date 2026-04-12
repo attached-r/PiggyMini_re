@@ -1,0 +1,80 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: Piggy-Gateway
+  main:  # 启动方式
+    web-application-type: reactive
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: ${PASSWORD:123456789rj}
+        namespace: public
+        group: DEFAULT_GROUP
+
+    # Gateway 路由配置
+    gateway:
+      # 路由规则
+      # 全局 CORS 配置
+      server:
+        webflux:
+          routes:
+            # Auth 服务路由（不需要 Token 校验）
+                    - id: auth-route
+                      uri: lb://Piggy-Auth
+                      predicates:
+                        - Path=/api/auth/**
+                      filters:
+                        - StripPrefix=0
+
+                    # Account 服务路由
+                    - id: account-route
+                      uri: lb://Piggy-Account
+                      predicates:
+                        - Path=/api/accounts/**
+                      filters:
+                        - StripPrefix=0
+
+                    # Transaction 服务路由
+                    - id: transaction-route
+                      uri: lb://Piggy-Transaction
+                      predicates:
+                        - Path=/api/transactions/**
+                      filters:
+                        - StripPrefix=0
+
+                    # Budget 服务路由
+                    - id: budget-route
+                      uri: lb://Piggy-Budget
+                      predicates:
+                        - Path=/api/budgets/**
+                      filters:
+                        - StripPrefix=0
+
+                    # Report 服务路由
+                    - id: report-route
+                      uri: lb://Piggy-Report
+                      predicates:
+                        - Path=/api/reports/**
+                      filters:
+                        - StripPrefix=0
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                          allowedOriginPatterns: "*"
+                          allowedMethods:
+                            - GET
+                            - POST
+                            - PUT
+                            - DELETE
+                            - OPTIONS
+                          allowedHeaders: "*"
+                          allowCredentials: true
+                          maxAge: 3600
+
+# JWT 配置（与 Common 模块保持一致）
+jwt:
+  secret: "PiggyMiniSecretKeyForJWTSigning2026SecureString"

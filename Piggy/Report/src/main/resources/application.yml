@@ -1,9 +1,8 @@
 server:
-  port: 10002
-
+  port: 10006
 spring:
   application:
-    name: Piggy-Auth
+    name: Piggy-Report
   # MySQL 数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/piggy?useSSL=false&serverTimezone=UTC
@@ -22,7 +21,11 @@ spring:
         namespace: public            # 命名空间，默认 public
         group: DEFAULT_GROUP         # 分组，默认 DEFAULT_GROUP
         enabled: true                # 是否启用
-
+    # Sentinel 配置
+    sentinel:
+      enabled: true  # 显式开启
+      transport:
+        dashboard: localhost:8080
 # MyBatis-Plus 配置
 mybatis-plus:
   configuration:
