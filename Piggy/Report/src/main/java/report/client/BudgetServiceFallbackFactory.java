@@ -19,7 +19,7 @@ public class BudgetServiceFallbackFactory implements FallbackFactory<BudgetServi
     public BudgetServiceClient create(Throwable cause) {
         return new BudgetServiceClient() {
             @Override
-            public Result getCurrentBudgets() {
+            public Result getCurrentBudgets(Long userId) {
                 log.error("Budget 服务熔断降级, 异常: {}", cause.getMessage());
                 return Result.error(503, "预算服务暂时不可用,预算数据无法获取");
             }

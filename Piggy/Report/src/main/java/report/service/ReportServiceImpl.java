@@ -186,7 +186,7 @@ public class ReportServiceImpl implements ReportService {
         // 远程调用预算服务获取数据
         Result budgetResult;
         try {
-            budgetResult = budgetClient.getCurrentBudgets();
+            budgetResult = budgetClient.getCurrentBudgets(userId);
         } catch (Exception e) {
             log.error("调用预算服务获取数据失败, userId: {}", userId, e);
             throw new GlobalException("获取预算数据失败");
@@ -326,7 +326,13 @@ public class ReportServiceImpl implements ReportService {
     // 解析时间范围
     private LocalDateTime[] parseTimeRange(String period, String date) {
         // 1. 解析目标日期
-        LocalDate targetDate = LocalDate.parse(date);
+        LocalDate targetDate;
+        if (date.length() == 7) {
+            // 格式为 yyyy-MM，补充为 yyyy-MM-01
+            targetDate = LocalDate.parse(date + "-01");
+        } else {
+            targetDate = LocalDate.parse(date);
+        }
         LocalDateTime startTime;
         LocalDateTime endTime;
         // 2. 根据时间周期解析时间范围 月还是年
