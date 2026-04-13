@@ -7,25 +7,28 @@ import account.mapper.AccountMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import common.exception.GlobalException;
+import common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
-@RequiredArgsConstructor // 创建构造函数
-@Transactional(rollbackFor = Exception.class)  // 开启事务保证数据一致性
+@RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class AccountServiceImpl implements AccountService {
 
     private final AccountMapper accountMapper;
+    private final RedisUtil redisUtil;
+
+    private static final long CACHE_EXPIRE_SECONDS = 300;
 
     @Override
     public Account createAccount(Long userId, CreateAccountRequest request) {
-        // 1. 校验账户名称是否已存在
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-        // 先查用户id 再查账户名称，确保账户名称的唯一性
         queryWrapper.eq(Account::getUserId, userId)
                 .eq(Account::getAccountName, request.getAccountName());
         Long count = accountMapper.selectCount(queryWrapper);
@@ -34,7 +37,6 @@ public class AccountServiceImpl implements AccountService {
             throw GlobalException.businessError("账户名称已存在");
         }
 
-        // 2. 创建账户
         Account account = Account.builder()
                 .userId(userId)
                 .accountName(request.getAccountName())
@@ -50,25 +52,54 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         accountMapper.insert(account);
+
+        clearAccountCache(userId, account.getId());
+
         return account;
     }
 
     @Override
     public Page<Account> getAccountsByUserId(Long userId, Integer page, Integer size) {
+        String cacheKey = "account:list:" + userId;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (Page<Account>) cached;
+        }
+
         Page<Account> accountPage = new Page<>(page, size);
         LambdaQueryWrapper<Account> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Account::getUserId, userId)
                 .orderByAsc(Account::getSortOrder)
                 .orderByDesc(Account::getCreateTime);
-        return accountMapper.selectPage(accountPage, wrapper);
+        Page<Account> result = accountMapper.selectPage(accountPage, wrapper);
+
+        if (result.getTotal() > 0) {
+            redisUtil.set(cacheKey, result, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        }
+
+        return result;
     }
 
     @Override
     public Account getAccountById(Long userId, Long id) {
+        String cacheKey = "account:detail:" + id;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            Account account = (Account) cached;
+            if (account.getUserId().equals(userId)) {
+                return account;
+            }
+        }
+
         Account account = accountMapper.selectById(id);
         if (account == null || !account.getUserId().equals(userId)) {
             throw GlobalException.businessError("账户不存在");
         }
+
+        redisUtil.set(cacheKey, account, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+
         return account;
     }
 
@@ -76,7 +107,6 @@ public class AccountServiceImpl implements AccountService {
     public Account updateAccount(Long userId, Long id, UpdateAccountRequest request) {
         Account account = getAccountById(userId, id);
 
-        // 如果修改了名称，需要校验新名称是否与其他账户重复
         if (request.getAccountName() != null && !request.getAccountName().equals(account.getAccountName())) {
             LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Account::getUserId, userId)
@@ -86,39 +116,34 @@ public class AccountServiceImpl implements AccountService {
             }
             account.setAccountName(request.getAccountName());
         }
-        // 修改账户类型
+
         if (request.getAccountType() != null) {
             account.setAccountType(request.getAccountType());
         }
-        // 修改账户余额
         if (request.getBalance() != null) {
             account.setBalance(request.getBalance());
         }
-        // 修改账户币种
         if (request.getCurrency() != null) {
             account.setCurrency(request.getCurrency());
         }
-        // 修改账户图标
         if (request.getIcon() != null) {
             account.setIcon(request.getIcon());
         }
-        // 修改账户备注
         if (request.getRemark() != null) {
             account.setRemark(request.getRemark());
         }
-        // 修改账户排序
         if (request.getSortOrder() != null) {
             account.setSortOrder(request.getSortOrder());
         }
-        // 修改账户是否默认
         if (request.getIsDefault() != null) {
             account.setIsDefault(request.getIsDefault());
         }
-        // 修改更新时间
-        account.setUpdateTime(LocalDateTime.now());
 
-        // 更新账户
+        account.setUpdateTime(LocalDateTime.now());
         accountMapper.updateById(account);
+
+        clearAccountCache(userId, id);
+
         return account;
     }
 
@@ -126,6 +151,8 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long userId, Long id) {
         Account account = getAccountById(userId, id);
         accountMapper.deleteById(account.getId());
+
+        clearAccountCache(userId, id);
     }
 
     @Override
@@ -135,16 +162,25 @@ public class AccountServiceImpl implements AccountService {
             throw GlobalException.businessError("账户不存在");
         }
 
-        // 1. 执行原子更新（数据库层面累加）
         int rows = accountMapper.updateBalanceById(accountId, amount);
         if (rows == 0) {
             throw GlobalException.businessError("余额更新失败");
         }
 
-        // 2. 校验余额不能为负（根据业务需求可选）
         Account updatedAccount = accountMapper.selectById(accountId);
         if (updatedAccount.getBalance().compareTo(java.math.BigDecimal.ZERO) < 0) {
             throw GlobalException.businessError("账户余额不足");
         }
+
+        String detailCacheKey = "account:detail:" + accountId;
+        redisUtil.delete(detailCacheKey);
+
+        String listCacheKey = "account:list:" + updatedAccount.getUserId();
+        redisUtil.delete(listCacheKey);
+    }
+
+    private void clearAccountCache(Long userId, Long accountId) {
+        redisUtil.delete("account:list:" + userId);
+        redisUtil.delete("account:detail:" + accountId);
     }
 }
