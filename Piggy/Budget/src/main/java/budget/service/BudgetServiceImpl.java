@@ -7,6 +7,7 @@ import budget.entity.Budget;
 import budget.mapper.BudgetMapper;
 import common.model.Result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * 预算服务实现类
- *
- * @author: rj
- * @TODO: 后续会给每个微服务做降级熔断处理
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,28 +29,21 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetMapper budgetMapper;
     private final TransactionServiceClient transactionServiceClient;
-    /**
-     * 创建或更新预算
-     *
-     * @param userId  用户ID
-     * @param request 创建预算请求参数
-     * @return 创建/更新后的预算对象
-     *
-     * @Author: rj
-     */
+    private final RedisUtil redisUtil;
+
+    private static final long CACHE_EXPIRE_SECONDS = 300;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Budget createOrUpdateBudget(Long userId, CreateBudgetRequest request) {
         log.info("创建/更新预算, userId: {}, request: {}", userId, request);
-        // 1.获取当月的开始时间和结束时间
+
         LocalDate monthDate = LocalDate.parse(request.getMonth() + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         LocalDateTime startTime = monthDate.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endTime = monthDate.withDayOfMonth(monthDate.lengthOfMonth()).atTime(23, 59, 59);
 
-        // 2. 复用已抽取的范围查询方法
         List<Budget> budgets = queryBudgetsByTimeRange(userId, startTime, endTime);
 
-        // 3. 过滤出匹配分类的预算
         Budget existBudget = budgets.stream()
                 .filter(b -> {
                     if (request.getCategory() == null) {
@@ -64,15 +53,13 @@ public class BudgetServiceImpl implements BudgetService {
                 })
                 .findFirst()
                 .orElse(null);
-        // 4. 如果存在则更新
+
         if (existBudget != null) {
             existBudget.setBudgetAmount(request.getAmount());
             existBudget.setUpdateTime(LocalDateTime.now());
             budgetMapper.updateById(existBudget);
             log.info("更新预算成功, budgetId: {}", existBudget.getId());
-            return existBudget;
         } else {
-            // 5. 否则 创建预算
             Budget budget = Budget.builder()
                     .userId(userId)
                     .budgetAmount(request.getAmount())
@@ -88,36 +75,37 @@ public class BudgetServiceImpl implements BudgetService {
                     .build();
             budgetMapper.insert(budget);
             log.info("创建预算成功, budgetId: {}", budget.getId());
-            return budget;
         }
+
+        redisUtil.delete("budget:" + userId);
+
+        return existBudget != null ? existBudget : null;
     }
-    /**
-     * 查询当月所有预算
-     *
-     * @param userId 用户ID
-     * @return 当月所有预算列表（包含已用金额和剩余金额）
-     *
-     * @Author: rj
-     */
+
     @Override
     public List<BudgetResponse> getCurrentBudgets(Long userId) {
+        String cacheKey = "budget:" + userId;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (List<BudgetResponse>) cached;
+        }
+
         log.info("查询当月所有预算, userId: {}", userId);
 
         LocalDateTime[] timeRange = getCurrentMonthTimeRange();
         List<Budget> budgets = queryBudgetsByTimeRange(userId, timeRange[0], timeRange[1]);
         Map<String, BigDecimal> categoryExpenseMap = getCategoryExpenseStatistics(userId, timeRange[0], timeRange[1]);
-        // 构建预算响应列表
-        return buildBudgetResponses(budgets, categoryExpenseMap, false);
+
+        List<BudgetResponse> responses = buildBudgetResponses(budgets, categoryExpenseMap, false);
+
+        if (!responses.isEmpty()) {
+            redisUtil.set(cacheKey, responses, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        }
+
+        return responses;
     }
 
-    /**
-     * 查询超支预警列表
-     *
-     * @param userId 用户ID
-     * @return 超支预算列表
-     *
-     * @Author: rj
-     */
     @Override
     public List<BudgetResponse> getWarningBudgets(Long userId) {
         log.info("查询超支预警列表, userId: {}", userId);
@@ -129,26 +117,24 @@ public class BudgetServiceImpl implements BudgetService {
         return buildBudgetResponses(budgets, categoryExpenseMap, true);
     }
 
-    // 获取当前月份的开始时间和结束时间
     private LocalDateTime[] getCurrentMonthTimeRange() {
         LocalDate now = LocalDate.now();
         LocalDateTime startTime = now.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endTime = now.withDayOfMonth(now.lengthOfMonth()).atTime(23, 59, 59);
         return new LocalDateTime[]{startTime, endTime};
     }
-    // 查询指定时间范围内的预算
+
     private List<Budget> queryBudgetsByTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         LambdaQueryWrapper<Budget> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Budget::getUserId, userId)
-                .le(Budget::getStartTime, endTime)        // 预算开始时间 <= 查询结束时间
-                .ge(Budget::getEndTime, startTime)        // 预算结束时间 >= 查询开始时间
+                .le(Budget::getStartTime, endTime)
+                .ge(Budget::getEndTime, startTime)
                 .eq(Budget::getStatus, 1)
                 .orderByDesc(Budget::getCategory)
                 .orderByDesc(Budget::getCreateTime);
         return budgetMapper.selectList(wrapper);
     }
 
-    // 获取指定时间范围内的分类消费统计
     @SuppressWarnings("unchecked")
     private Map<String, BigDecimal> getCategoryExpenseStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         Result result = transactionServiceClient.getCategoryExpenseStatistics(userId, startTime, endTime);
@@ -163,7 +149,6 @@ public class BudgetServiceImpl implements BudgetService {
         return new HashMap<>();
     }
 
-    // 构建预算响应列表
     private List<BudgetResponse> buildBudgetResponses(List<Budget> budgets, Map<String, BigDecimal> categoryExpenseMap, boolean onlyWarning) {
         List<BudgetResponse> responses = new ArrayList<>();
 
@@ -188,7 +173,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         return responses;
     }
-    // 计算已用金额
+
     private BigDecimal calculateSpentAmount(Budget budget, Map<String, BigDecimal> categoryExpenseMap) {
         if (budget.getCategory() != null) {
             return categoryExpenseMap.getOrDefault(budget.getCategory().name(), BigDecimal.ZERO);
@@ -197,7 +182,7 @@ public class BudgetServiceImpl implements BudgetService {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
     }
-    // 判断是否为超支预算
+
     private boolean isWarningBudget(Budget budget, BigDecimal spent) {
         if (budget.getWarningThreshold() == null || budget.getBudgetAmount().compareTo(BigDecimal.ZERO) == 0) {
             return false;
@@ -209,6 +194,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         return spent.compareTo(thresholdAmount) >= 0;
     }
+
     private BigDecimal convertToBigDecimal(Object value) {
         if (value instanceof BigDecimal) {
             return (BigDecimal) value;

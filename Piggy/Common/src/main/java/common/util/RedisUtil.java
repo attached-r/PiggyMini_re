@@ -1,12 +1,10 @@
 package common.util;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -665,4 +663,48 @@ public class RedisUtil {
             return 0;
         }
     }
+
+    // ==================== 分布式锁操作 ====================
+
+    private static final Long RELEASE_SUCCESS = 1L;
+
+    private static final String UNLOCK_LUA =
+            "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+                    "   return redis.call('del', KEYS[1]) " +
+                    "else " +
+                    "   return 0 " +
+                    "end";
+
+    public boolean tryLock(String lockKey, String requestId, long expireTime, TimeUnit timeUnit) {
+        try {
+            Boolean result = redisTemplate.opsForValue().setIfAbsent(
+                    lockKey,
+                    requestId,
+                    expireTime,
+                    timeUnit
+            );
+            return Boolean.TRUE.equals(result);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean tryLock(String lockKey, String requestId, long expireTimeMs) {
+        return tryLock(lockKey, requestId, expireTimeMs, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean releaseLock(String lockKey, String requestId) {
+        try {
+            DefaultRedisScript<Long> script = new DefaultRedisScript<>(UNLOCK_LUA, Long.class);
+            Long result = redisTemplate.execute(script, Collections.singletonList(lockKey), requestId);
+            return RELEASE_SUCCESS.equals(result);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String generateLockId() {
+        return Thread.currentThread().getId() + ":" + System.currentTimeMillis();
+    }
+
 }

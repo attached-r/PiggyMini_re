@@ -4,6 +4,7 @@ import common.enums.ExpenseCategory;
 import report.dto.BudgetResponse;
 import common.exception.GlobalException;
 import common.model.Result;
+import common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,26 +28,27 @@ public class ReportServiceImpl implements ReportService {
 
     private final TransactionServiceClient transactionClient;
     private final BudgetServiceClient budgetClient;
+    private final RedisUtil redisUtil;
 
-    /**
-     * 获取收支总览报表
-     *
-     * @param userId 用户ID
-     * @param period 时间周期（month/year）
-     * @param date   目标日期（yyyy-MM-dd格式）
-     * @return 收支总览报表
-     */
+    private static final long CACHE_EXPIRE_SECONDS = 300;
+
+    @Override
     public SummaryReportResponse getSummary(Long userId, String period, String date) {
         if (userId == null) {
             throw new GlobalException("用户ID不能为空");
         }
 
-        // 解析时间范围
+        String cacheKey = "report:summary:" + userId + ":" + period + ":" + date;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (SummaryReportResponse) cached;
+        }
+
         LocalDateTime[] timeRange = parseTimeRange(period, date);
         LocalDateTime startTime = timeRange[0];
         LocalDateTime endTime = timeRange[1];
 
-        // 分别调用收入和支出统计接口
         Result expenseResult;
         Result incomeResult;
         try {
@@ -56,7 +59,6 @@ public class ReportServiceImpl implements ReportService {
             throw new GlobalException("获取交易数据失败");
         }
 
-        // 计算总支出
         BigDecimal expense = BigDecimal.ZERO;
         if (expenseResult != null && expenseResult.isSuccess() && expenseResult.getData() != null) {
             @SuppressWarnings("unchecked")
@@ -68,7 +70,6 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        // 计算总收入
         BigDecimal income = BigDecimal.ZERO;
         if (incomeResult != null && incomeResult.isSuccess() && incomeResult.getData() != null) {
             @SuppressWarnings("unchecked")
@@ -80,39 +81,38 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        // 计算结余并判断趋势
         BigDecimal balance = income.subtract(expense);
         String trend = balance.compareTo(BigDecimal.ZERO) >= 0 ? "positive" : "negative";
 
-        return SummaryReportResponse.builder()
+        SummaryReportResponse response = SummaryReportResponse.builder()
                 .income(income)
                 .expense(expense)
                 .balance(balance)
                 .trend(trend)
                 .build();
+
+        redisUtil.set(cacheKey, response, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+
+        return response;
     }
 
-
-    /**
-     * 获取分类报表
-     *
-     * @param userId 用户ID
-     * @param period 时间周期（month/year）
-     * @param date   目标日期（yyyy-MM-dd格式）
-     * @return 分类报表响应列表，按金额降序排列
-     */
     @Override
     public List<CategoryReportResponse> getCategoryReport(Long userId, String period, String date) {
         if (userId == null) {
             throw new GlobalException("用户ID不能为空");
         }
 
-        // 解析时间范围
+        String cacheKey = "report:category:" + userId + ":" + period + ":" + date;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (List<CategoryReportResponse>) cached;
+        }
+
         LocalDateTime[] timeRange = parseTimeRange(period, date);
         LocalDateTime startTime = timeRange[0];
         LocalDateTime endTime = timeRange[1];
 
-        // 调用支出统计接口
         Result result;
         try {
             result = transactionClient.getCategoryExpenseStatistics(userId, startTime, endTime);
@@ -132,10 +132,8 @@ public class ReportServiceImpl implements ReportService {
             return Collections.emptyList();
         }
 
-        // 提取常量减少对象创建
         BigDecimal hundred = new BigDecimal("100");
 
-        // 第一次遍历：计算总支出金额
         BigDecimal totalExpense = BigDecimal.ZERO;
         for (Object value : statistics.values()) {
             if (value != null) {
@@ -143,7 +141,6 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        // 第二次遍历：构建分类报表响应列表，计算每个分类的占比
         List<CategoryReportResponse> responses = new ArrayList<>();
         for (Map.Entry<String, Object> entry : statistics.entrySet()) {
             Object value = entry.getValue();
@@ -165,25 +162,28 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        // 按金额降序排序
         responses.sort((a, b) -> b.getAmount().compareTo(a.getAmount()));
+
+        if (!responses.isEmpty()) {
+            redisUtil.set(cacheKey, responses, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        }
+
         return responses;
     }
 
-    /**
-     * 获取预算执行率报表
-     *
-     * @param userId 用户ID
-     * @param month  目标月份（yyyy-MM格式）
-     * @return 预算执行率响应列表
-     */
     @Override
     public List<BudgetExecutionResponse> getBudgetExecution(Long userId, String month) {
         if (userId == null) {
             throw new GlobalException("用户ID不能为空");
         }
 
-        // 远程调用预算服务获取数据
+        String cacheKey = "report:budgetExecution:" + userId + ":" + month;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (List<BudgetExecutionResponse>) cached;
+        }
+
         Result budgetResult;
         try {
             budgetResult = budgetClient.getCurrentBudgets(userId);
@@ -203,22 +203,18 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
         BigDecimal hundred = new BigDecimal("100");
 
-        // 转换预算数据为执行率报表
-        return budgets.stream()
+        List<BudgetExecutionResponse> responses = budgets.stream()
                 .map(budget -> {
-                    // 防御性处理：预算金额可能为空
                     BigDecimal budgetAmount = budget.getBudget() != null ? budget.getBudget() : BigDecimal.ZERO;
                     BigDecimal usedAmount = budget.getSpent() != null ? budget.getSpent() : BigDecimal.ZERO;
                     BigDecimal remainingAmount = budgetAmount.subtract(usedAmount);
 
-                    // 计算预算执行率
                     double executionRate = budgetAmount.compareTo(BigDecimal.ZERO) > 0
                             ? usedAmount.multiply(hundred)
                             .divide(budgetAmount, 2, RoundingMode.HALF_UP)
                             .doubleValue()
                             : 0.0;
 
-                    // 判断是否超支
                     Boolean isOverBudget = usedAmount.compareTo(budgetAmount) > 0;
 
                     return BudgetExecutionResponse.builder()
@@ -231,22 +227,27 @@ public class ReportServiceImpl implements ReportService {
                             .build();
                 })
                 .collect(Collectors.toList());
+
+        if (!responses.isEmpty()) {
+            redisUtil.set(cacheKey, responses, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        }
+
+        return responses;
     }
-    /**
-     * 获取收支趋势报表
-     *
-     * @param userId    用户ID
-     * @param startDate 开始日期（yyyy-MM-dd格式）
-     * @param endDate   结束日期（yyyy-MM-dd格式）
-     * @return 收支趋势报表响应
-     */
+
     @Override
     public TrendReportResponse getTrend(Long userId, String startDate, String endDate) {
         if (userId == null || startDate == null || endDate == null) {
             throw new GlobalException("请求参数不能为空");
         }
 
-        // 初始化日期和收支数据列表
+        String cacheKey = "report:trend:" + userId + ":" + startDate + ":" + endDate;
+        Object cached = redisUtil.get(cacheKey);
+
+        if (cached != null) {
+            return (TrendReportResponse) cached;
+        }
+
         List<String> dates;
         List<BigDecimal> incomeData;
         List<BigDecimal> expenseData;
@@ -260,16 +261,13 @@ public class ReportServiceImpl implements ReportService {
             throw new GlobalException("日期格式错误，请使用 yyyy-MM-dd");
         }
 
-        // 预分配容量，减少扩容开销
         int estimatedSize = Math.toIntExact(start.until(end, ChronoUnit.DAYS) + 2);
         dates = new ArrayList<>(estimatedSize);
         incomeData = new ArrayList<>(estimatedSize);
         expenseData = new ArrayList<>(estimatedSize);
 
-        // 提取日期格式化器，避免重复创建
         java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // 按天遍历时间范围，逐日统计收支数据
         for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
             dates.add(date.format(formatter));
 
@@ -277,14 +275,12 @@ public class ReportServiceImpl implements ReportService {
             LocalDateTime dayEnd = date.plusDays(1).atStartOfDay();
 
             try {
-                // 分别调用收入和支出统计接口
                 Result expenseResult = transactionClient.getCategoryExpenseStatistics(userId, dayStart, dayEnd);
                 Result incomeResult = transactionClient.getCategoryIncomeStatistics(userId, dayStart, dayEnd);
 
                 BigDecimal dayIncome = BigDecimal.ZERO;
                 BigDecimal dayExpense = BigDecimal.ZERO;
 
-                // 处理支出数据
                 if (expenseResult != null && expenseResult.isSuccess() && expenseResult.getData() != null) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> expenseStats = (Map<String, Object>) expenseResult.getData();
@@ -295,7 +291,6 @@ public class ReportServiceImpl implements ReportService {
                     }
                 }
 
-                // 处理收入数据
                 if (incomeResult != null && incomeResult.isSuccess() && incomeResult.getData() != null) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> incomeStats = (Map<String, Object>) incomeResult.getData();
@@ -309,33 +304,38 @@ public class ReportServiceImpl implements ReportService {
                 incomeData.add(dayIncome);
                 expenseData.add(dayExpense);
             } catch (Exception e) {
-                // 记录具体日期的调用失败，便于排查微服务通信问题
                 log.error("获取 {} 的交易统计数据失败", date.format(formatter), e);
                 throw new GlobalException("获取 " + date.format(formatter) + " 的数据失败");
             }
         }
 
-        // 构建并返回趋势报表响应
-        return TrendReportResponse.builder()
+        TrendReportResponse response = TrendReportResponse.builder()
                 .dates(dates)
                 .income(incomeData)
                 .expense(expenseData)
                 .build();
+
+        redisUtil.set(cacheKey, response, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+
+        return response;
     }
 
-    // 解析时间范围
     private LocalDateTime[] parseTimeRange(String period, String date) {
+        LocalDate targetDate;
+        if (date.length() == 7) {
+
         // 1. 解析目标日期
         LocalDate targetDate;
         if (date.length() == 7) {
             // 格式为 yyyy-MM，补充为 yyyy-MM-01
+
             targetDate = LocalDate.parse(date + "-01");
         } else {
             targetDate = LocalDate.parse(date);
         }
         LocalDateTime startTime;
         LocalDateTime endTime;
-        // 2. 根据时间周期解析时间范围 月还是年
+
         switch (period.toLowerCase()) {
             case "month" -> {
                 startTime = targetDate.withDayOfMonth(1).atStartOfDay();
@@ -350,6 +350,7 @@ public class ReportServiceImpl implements ReportService {
 
         return new LocalDateTime[]{startTime, endTime};
     }
+
     private BigDecimal convertToBigDecimal(Object value) {
         if (value instanceof BigDecimal) {
             return (BigDecimal) value;
@@ -364,6 +365,7 @@ public class ReportServiceImpl implements ReportService {
             }
         }
     }
+
     private BudgetResponse convertToBudgetResponse(Map<String, Object> map) {
         return BudgetResponse.builder()
                 .category(map.get("category") != null ? ExpenseCategory.valueOf(map.get("category").toString()) : null)
