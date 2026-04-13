@@ -323,6 +323,12 @@ public class ReportServiceImpl implements ReportService {
     private LocalDateTime[] parseTimeRange(String period, String date) {
         LocalDate targetDate;
         if (date.length() == 7) {
+
+        // 1. 解析目标日期
+        LocalDate targetDate;
+        if (date.length() == 7) {
+            // 格式为 yyyy-MM，补充为 yyyy-MM-01
+
             targetDate = LocalDate.parse(date + "-01");
         } else {
             targetDate = LocalDate.parse(date);
