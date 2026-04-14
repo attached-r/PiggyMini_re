@@ -6,11 +6,23 @@ spring:
     name: Piggy-Transaction
   # MySQL 数据源配置
   datasource:
-    url: jdbc:mysql://localhost:3306/piggy_data?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/piggy?useSSL=false&serverTimezone=UTC
     username: root
-    password: ${mysql.password:Dengyuxin666}
+    password: ${mysql.password:20050603RJ}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  # Redis 配置
+  data:
+    redis:
+      host: localhost          # Redis 服务器地址
+      port: 6379               # Redis 端口
+      password: ${password:20050603RJ}              # Redis 密码（如果没有密码则留空）
+      database: 5              # 使用的数据库索引
+      lettuce:
+        pool:
+          max-active: 8        # 连接池最大连接数
+          max-idle: 8          # 连接池最大空闲连接数
+          min-idle: 0          # 连接池最小空闲连接数
+          max-wait: -1ms       # 连接池最大阻塞等待时间
   # Nacos 配置
   cloud:
     nacos:
@@ -18,7 +30,7 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848  # Nacos 服务器地址 localhost:8848
         username: nacos              # 由于开启了认证 需要填写
-        password: ${PASSWORD:123456fyx}
+        password: ${PASSWORD:123456789rj}
         namespace: public            # 命名空间，默认 public
         group: DEFAULT_GROUP         # 分组，默认 DEFAULT_GROUP
         enabled: true                # 是否启用

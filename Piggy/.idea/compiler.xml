@@ -15,6 +15,7 @@
         <module name="Report" />
         <module name="Gateway" />
         <module name="Auth" />
+        <module name="Ai" />
         <module name="Budget" />
         <module name="Common" />
       </profile>
@@ -23,6 +24,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Account" options="-parameters" />
+      <module name="Ai" options="-parameters" />
       <module name="Auth" options="-parameters" />
       <module name="Budget" options="-parameters" />
       <module name="Common" options="-parameters" />

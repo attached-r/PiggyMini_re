@@ -4,25 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2951ad1b-1df5-4c7a-89ed-32f6d28360ed" name="更改" comment="dyx:修改了传入日期参数的问题以及内部调用feign参数不完整的问题">
-    <list default="true" id="2951ad1b-1df5-4c7a-89ed-32f6d28360ed" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Account/src/main/java/account/AccountApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/java/account/AccountApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Account/src/main/java/account/service/AccountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/java/account/service/AccountServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Budget/src/main/java/budget/BudgetApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/java/budget/BudgetApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Budget/src/main/java/budget/service/BudgetServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/java/budget/service/BudgetServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/ReportApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/ReportApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceFallbackFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceFallbackFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" afterDir="false" />
+    <list default="true" id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Account/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/target/classes/common/config/RedisConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/common/config/RedisConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/target/classes/common/util/RedisUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/common/util/RedisUtil.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Report/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +34,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -40,126 +41,40 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {}
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
 }]]></component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
-    {
-      "id": {
-        "id": "PR_kwDOR6PRhc7R_dPM",
-        "number": 25
-      },
-      "lastSeen": 1776087173899
-    }
-  ]
-}]]></component>
-  <component name="GithubProjectSettings">
-    <option name="branchProtectionPatterns">
-      <list>
-        <option value="main" />
-      </list>
-    </option>
-  </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/attached-r/PiggyMini_re.git&quot;,
-    &quot;accountId&quot;: &quot;3abf06c9-c613-4037-9d66-df497efc8c0c&quot;
-  }
-}</component>
-
-  <component name="HighlightingSettingsPerFile">
-    <setting file="jar://E:/Inteilj_Java/JDK17/lib/src.zip!/java.base/java/lang/ClassNotFoundException.java" root0="SKIP_INSPECTION" />
-  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 2
-}</component>
-  <component name="ProjectId" id="3C7GOE7bYnnsoTUZTnch3yZcmm5" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-    <option name="showVisibilityIcons" value="true" />
-  </component>
-
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Maven.Gateway [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.AccountApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.BudgetApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.CommonApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ReportApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.TransactionApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;rj/gateway&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Spring Boot.AccountApplication.executor": "Run",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "Spring Boot.AccountApplication.executor": "Debug",
     "Spring Boot.AuthApplication.executor": "Run",
-    "Spring Boot.BudgetApplication.executor": "Run",
-    "Spring Boot.CommonApplication.executor": "Run",
-    "Spring Boot.GatewayApplication.executor": "Run",
-    "Spring Boot.ReportApplication.executor": "Run",
-    "Spring Boot.TransactionApplication.executor": "Run",
-    "git-widget-placeholder": "dyx/gateway",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.语言默认设置",
-    "vue.rearranger.settings.migration": "true"
+    "Spring Boot.BudgetApplication.executor": "Debug",
+    "Spring Boot.CommonApplication.executor": "Debug",
+    "Spring Boot.GatewayApplication.executor": "Debug",
+    "Spring Boot.ReportApplication.executor": "Debug",
+    "Spring Boot.TransactionApplication.executor": "Debug",
+    "git-widget-placeholder": "rj/gateway",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
-        <option value="KtorApplicationConfigurationType" />
-        <option value="MicronautRunConfigurationType" />
-        <option value="QuarkusRunConfigurationType" />
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
@@ -168,21 +83,20 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="AccountApplication" value="STOPPED" />
-              <entry key="AuthApplication" value="FAILED" />
+              <entry key="AccountApplication" value="FAILED" />
               <entry key="AuthApplication" value="STOPPED" />
-              <entry key="BudgetApplication" value="STOPPED" />
+              <entry key="BudgetApplication" value="FAILED" />
               <entry key="CommonApplication" value="STOPPED" />
-              <entry key="GatewayApplication" value="STOPPED" />
-              <entry key="ReportApplication" value="STOPPED" />
-              <entry key="TransactionApplication" value="STOPPED" />
+              <entry key="GatewayApplication" value="FAILED" />
+              <entry key="ReportApplication" value="FAILED" />
+              <entry key="TransactionApplication" value="FAILED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.GatewayApplication">
+  <component name="RunManager" selected="Spring Boot.AccountApplication">
     <configuration name="AccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Account" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="account.AccountApplication" />
@@ -197,15 +111,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BudgetApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="BudgetApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Budget" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="budget.BudgetApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="budget.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -217,28 +125,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Gateway" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="gateway.GatewayApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="gateway.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ReportApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="ReportApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Report" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="report.ReportApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="report.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -250,49 +146,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.ReportApplication" />
-        <item itemvalue="Spring Boot.BudgetApplication" />
-        <item itemvalue="Spring Boot.GatewayApplication" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
-      </set>
-    </attachedChunks>
+    <list>
+      <item itemvalue="Spring Boot.GatewayApplication" />
+      <item itemvalue="Spring Boot.CommonApplication" />
+      <item itemvalue="Spring Boot.AuthApplication" />
+      <item itemvalue="Spring Boot.AccountApplication" />
+      <item itemvalue="Spring Boot.TransactionApplication" />
+      <item itemvalue="Spring Boot.BudgetApplication" />
+      <item itemvalue="Spring Boot.ReportApplication" />
+    </list>
   </component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="默认任务">
-      <changelist id="2951ad1b-1df5-4c7a-89ed-32f6d28360ed" name="更改" comment="" />
-      <created>1775729161877</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1775729161877</updated>
-      <workItem from="1775729163398" duration="3090000" />
-      <workItem from="1775796769666" duration="4261000" />
-      <workItem from="1776088803825" duration="853000" />
-    </task>
-    <task id="LOCAL-00001" summary="dyx:修改了传入日期参数的问题以及内部调用feign参数不完整的问题">
-      <option name="closed" value="true" />
-      <created>1775997160681</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1775997160681</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="dyx:修改了传入日期参数的问题以及内部调用feign参数不完整的问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="dyx:修改了传入日期参数的问题以及内部调用feign参数不完整的问题" />
   </component>
 </project>
