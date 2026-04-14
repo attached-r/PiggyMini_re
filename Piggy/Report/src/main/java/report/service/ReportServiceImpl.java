@@ -321,57 +321,55 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private LocalDateTime[] parseTimeRange(String period, String date) {
-        LocalDate targetDate;
-        if (date.length() == 7) {
+            // 1. 解析目标日期
+            LocalDate targetDate;
+            if (date.length() == 7) {
+                // 格式为 yyyy-MM，补充为 yyyy-MM-01
 
-        // 1. 解析目标日期
-        LocalDate targetDate;
-        if (date.length() == 7) {
-            // 格式为 yyyy-MM，补充为 yyyy-MM-01
-
-            targetDate = LocalDate.parse(date + "-01");
-        } else {
-            targetDate = LocalDate.parse(date);
-        }
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-
-        switch (period.toLowerCase()) {
-            case "month" -> {
-                startTime = targetDate.withDayOfMonth(1).atStartOfDay();
-                endTime = targetDate.plusMonths(1).withDayOfMonth(1).atStartOfDay();
+                targetDate = LocalDate.parse(date + "-01");
+            } else {
+                targetDate = LocalDate.parse(date);
             }
-            case "year" -> {
-                startTime = targetDate.withDayOfYear(1).atStartOfDay();
-                endTime = targetDate.plusYears(1).withDayOfYear(1).atStartOfDay();
+            LocalDateTime startTime;
+            LocalDateTime endTime;
+
+            switch (period.toLowerCase()) {
+                case "month" -> {
+                    startTime = targetDate.withDayOfMonth(1).atStartOfDay();
+                    endTime = targetDate.plusMonths(1).withDayOfMonth(1).atStartOfDay();
+                }
+                case "year" -> {
+                    startTime = targetDate.withDayOfYear(1).atStartOfDay();
+                    endTime = targetDate.plusYears(1).withDayOfYear(1).atStartOfDay();
+                }
+                default -> throw new GlobalException("不支持的时间周期: " + period);
             }
-            default -> throw new GlobalException("不支持的时间周期: " + period);
+
+            return new LocalDateTime[]{startTime, endTime};
         }
 
-        return new LocalDateTime[]{startTime, endTime};
-    }
-
-    private BigDecimal convertToBigDecimal(Object value) {
-        if (value instanceof BigDecimal) {
-            return (BigDecimal) value;
-        } else if (value instanceof Number) {
-            return new BigDecimal(value.toString());
-        } else {
-            try {
+        private BigDecimal convertToBigDecimal (Object value){
+            if (value instanceof BigDecimal) {
+                return (BigDecimal) value;
+            } else if (value instanceof Number) {
                 return new BigDecimal(value.toString());
-            } catch (NumberFormatException e) {
-                log.warn("无法转换值为BigDecimal: {}", value);
-                return BigDecimal.ZERO;
+            } else {
+                try {
+                    return new BigDecimal(value.toString());
+                } catch (NumberFormatException e) {
+                    log.warn("无法转换值为BigDecimal: {}", value);
+                    return BigDecimal.ZERO;
+                }
             }
         }
-    }
 
-    private BudgetResponse convertToBudgetResponse(Map<String, Object> map) {
-        return BudgetResponse.builder()
-                .category(map.get("category") != null ? ExpenseCategory.valueOf(map.get("category").toString()) : null)
-                .budget(convertToBigDecimal(map.get("budget")))
-                .spent(convertToBigDecimal(map.get("spent")))
-                .remain(convertToBigDecimal(map.get("remain")))
-                .build();
-    }
+        private BudgetResponse convertToBudgetResponse (Map < String, Object > map){
+            return BudgetResponse.builder()
+                    .category(map.get("category") != null ? ExpenseCategory.valueOf(map.get("category").toString()) : null)
+                    .budget(convertToBigDecimal(map.get("budget")))
+                    .spent(convertToBigDecimal(map.get("spent")))
+                    .remain(convertToBigDecimal(map.get("remain")))
+                    .build();
+        }
+
 }

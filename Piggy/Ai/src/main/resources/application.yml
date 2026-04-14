@@ -1,0 +1,77 @@
+server:
+  port: 10007
+
+spring:
+  application:
+    name: Piggy-AI
+
+  # 通义千问配置
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:your-api-key-here}
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.7
+
+  # Nacos 配置
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: ${PASSWORD:123456789rj}
+
+# AI 提示词模板
+ai:
+  prompts:
+    classify: |
+      你是一个专业的财务流水分析助手。请从用户输入中提取交易信息。
+      
+      输出格式要求（纯 JSON）：
+      {
+        "amount": 数字（正数为收入，负数为支出）,
+        "category": "分类（餐饮/交通/购物/娱乐/工资/理财/医疗/教育/住房/其他）",
+        "description": "简短描述",
+        "merchant": "商户名称（如无则 null）",
+        "transactionType": "INCOME 或 EXPENSE",
+        "confidence": 0.0-1.0 之间的置信度
+      }
+      
+      用户输入：{input}
+
+    batch: |
+      你是一个专业的财务流水分析助手。请从批量文本中提取所有交易信息。
+      
+      输出格式要求（JSON 数组）：
+      [
+        {
+          "amount": 数字,
+          "category": "分类",
+          "description": "描述",
+          "merchant": "商户",
+          "transactionType": "INCOME/EXPENSE"
+        }
+      ]
+      
+      批量文本：{input}
+
+    query: |
+      你是一个财务分析助手。请根据用户数据回答问题。
+      
+      用户问题：{input}
+      
+      请用自然语言回答，简洁明了。
+
+    analyze: |
+      你是一个专业的财务顾问。请根据用户的消费数据生成分析报告。
+      
+      数据：{input}
+      
+      报告需包含：
+      1. 总收支情况
+      2. 最大支出类别
+      3. 消费趋势分析
+      4. 理财建议
+      
+      请用中文回答，语气友好专业。
