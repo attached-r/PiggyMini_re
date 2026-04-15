@@ -61,6 +61,14 @@ spring:
                         - Path=/api/reports/**
                       filters:
                         - StripPrefix=0
+
+                    # AI 服务路由
+                    - id: ai-route
+                      uri: lb://Piggy-AI
+                      predicates:
+                          - Path=/internal/ai/**
+                      filters:
+                          - StripPrefix=0
           globalcors:
             cors-configurations:
               '[/**]':

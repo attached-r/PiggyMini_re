@@ -9,6 +9,7 @@ import transaction.entity.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public interface TransactionService {
@@ -85,6 +86,7 @@ public interface TransactionService {
      * @return 分类收入统计 Map<分类, 收入总额>
      */
     Map<String, BigDecimal> getCategoryIncomeStatistics(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
 
 }
 
