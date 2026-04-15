@@ -1,4 +1,4 @@
-import { apiService } from './index'
+import request from '@/utils/request'
 
 export const authApi = {
   // 登录
@@ -9,7 +9,8 @@ export const authApi = {
     // 如果是管理员，直接生成一个模拟的 token
     if (isAdmin) {
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ijg4ODgiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTk5OTk5OTksImV4cCI6MTcwMDAwMzU5OX0.mock_signature'
-      apiService.setToken(mockToken)
+      localStorage.setItem('piggy_token', mockToken)
+      localStorage.setItem('piggy_user_id', '8888')
       localStorage.setItem('userRole', 'admin')
       localStorage.setItem('username', '8888')
       
@@ -21,14 +22,22 @@ export const authApi = {
     }
     
     // 普通用户需要调用后端 API
-    const response = await apiService.post('/auth/login', credentials)
+    const response = await request.post('/api/auth/login', credentials)
     console.log('登录响应:', response)
     
     // 尝试不同的 token 字段名
     const token = response.token || response.data?.token || response.access_token || response.result?.token
+    const refreshToken = response.refreshToken || response.data?.refreshToken
+    const userId = response.userId || response.data?.userId
     
     if (token) {
-      apiService.setToken(token)
+      localStorage.setItem('piggy_token', token)
+      if (refreshToken) {
+        localStorage.setItem('piggy_refresh_token', refreshToken)
+      }
+      if (userId) {
+        localStorage.setItem('piggy_user_id', userId)
+      }
       localStorage.setItem('userRole', 'user')
       localStorage.setItem('username', credentials.username)
     }
@@ -42,29 +51,28 @@ export const authApi = {
 
   // 注册
   async register(userData) {
-    const response = await apiService.post('/auth/register', userData)
+    const response = await request.post('/api/auth/register', userData)
     return response
   },
 
   // 刷新 token
   async refreshToken() {
-    const response = await apiService.post('/auth/refresh')
-    if (response.token) {
-      apiService.setToken(response.token)
-    }
+    const response = await request.post('/api/auth/refresh')
     return response
   },
 
   // 登出
   logout() {
-    apiService.removeToken()
+    localStorage.removeItem('piggy_token')
+    localStorage.removeItem('piggy_refresh_token')
+    localStorage.removeItem('piggy_user_id')
     localStorage.removeItem('userRole')
     localStorage.removeItem('username')
   },
 
   // 检查是否已登录
   isAuthenticated() {
-    return !!apiService.getToken()
+    return !!localStorage.getItem('piggy_token')
   },
 
   // 检查是否是管理员
