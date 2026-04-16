@@ -31,6 +31,18 @@ const router = createRouter({
       name: 'UserHome',
       component: () => import('@/views/UserHomeView.vue'),
       meta: { requiresAuth: true, requiresAdmin: false }
+    },
+    {
+      path: '/accounts',
+      name: 'AccountSelect',
+      component: () => import('@/views/AccountSelectView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: false }
+    },
+    {
+      path: '/services',
+      name: 'CoreServices',
+      component: () => import('@/views/CoreServicesView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: false }
     }
   ],
 })
@@ -57,8 +69,13 @@ router.beforeEach((to, from) => {
 
   // 已登录用户访问登录/注册页
   if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
-    // 管理员跳转到控制台，普通用户跳转到用户首页
-    return isAdmin ? '/home' : '/user'
+    // 管理员跳转到控制台，普通用户跳转到账户选择页面
+    return isAdmin ? '/home' : '/accounts'
+  }
+
+  // 访问核心功能页面但未选择账户
+  if (to.path === '/services' && !localStorage.getItem('selectedAccount')) {
+    return '/accounts'
   }
 
   return true
