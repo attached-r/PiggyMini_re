@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: Piggy-Transaction
+  rabbitmq:
+      host: localhost
+      port: 5672
+      username: ${username:guest}
+      password: ${password:guest}
+      listener:
+        simple: # 监听器配置
+          acknowledge-mode: manual
+          prefetch: 1
   # MySQL 数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/piggy?useSSL=false&serverTimezone=UTC

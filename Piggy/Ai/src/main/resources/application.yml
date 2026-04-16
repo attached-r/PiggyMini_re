@@ -4,17 +4,22 @@ server:
 spring:
   application:
     name: Piggy-AI
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: ${PASSWORD:guest}
+    virtual-host: /
 
-  # 通义千问配置
   ai:
     dashscope:
       api-key: ${DASHSCOPE_API_KEY:your-api-key-here}
       chat:
         options:
-          model: qwen-plus
+          model: qwen-flash
           temperature: 0.7
+          max-tokens: 2000
 
-  # Nacos 配置
   cloud:
     nacos:
       discovery:
@@ -22,8 +27,18 @@ spring:
         username: nacos
         password: ${PASSWORD:123456789rj}
 
-# AI 提示词模板
 ai:
+  model:
+    name: qwen-plus
+    temperature: 0.7
+    max-tokens: 2000
+    top-p: 0.8
+    top-k: 50
+
+  memory:
+    max-messages: 10
+    max-token-count: 4000
+
   prompts:
     classify: |
       你是一个专业的财务流水分析助手。请从用户输入中提取交易信息。
@@ -75,3 +90,8 @@ ai:
       4. 理财建议
       
       请用中文回答，语气友好专业。
+
+    chat: |
+      你是一个友好的财务助手，可以回答用户的财务相关问题。
+      你可以提供记账建议、消费分析、理财指导等服务。
+      请用简洁、专业的中文回答，保持友好和耐心。

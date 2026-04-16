@@ -5,26 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Account/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/config/RedisConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/java/common/util/RedisUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/target/classes/common/config/RedisConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/common/config/RedisConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/target/classes/common/util/RedisUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/common/util/RedisUtil.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/controller/AiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/controller/AiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/AnalyzeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/AnalyzeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/client/BudgetServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/java/report/service/ReportServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Transaction/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +28,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -41,15 +36,36 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;attached-r&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/attached-r/PiggyMini_re.git&quot;,
+    &quot;accountId&quot;: &quot;3abf06c9-c613-4037-9d66-df497efc8c0c&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3CNMokBEEEJMCCbRaOdTUse24cD" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
@@ -57,16 +73,27 @@
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.AccountApplication.executor": "Debug",
-    "Spring Boot.AuthApplication.executor": "Run",
+    "Spring Boot.AuthApplication.executor": "Debug",
     "Spring Boot.BudgetApplication.executor": "Debug",
     "Spring Boot.CommonApplication.executor": "Debug",
     "Spring Boot.GatewayApplication.executor": "Debug",
     "Spring Boot.ReportApplication.executor": "Debug",
     "Spring Boot.TransactionApplication.executor": "Debug",
-    "git-widget-placeholder": "rj/gateway",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "git-widget-placeholder": "rj/ai",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "run.configurations.included.in.services": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="ReactorSettings">
@@ -75,6 +102,9 @@
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
@@ -83,13 +113,13 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="AccountApplication" value="FAILED" />
+              <entry key="AccountApplication" value="STOPPED" />
               <entry key="AuthApplication" value="STOPPED" />
-              <entry key="BudgetApplication" value="FAILED" />
+              <entry key="BudgetApplication" value="STOPPED" />
               <entry key="CommonApplication" value="STOPPED" />
-              <entry key="GatewayApplication" value="FAILED" />
-              <entry key="ReportApplication" value="FAILED" />
-              <entry key="TransactionApplication" value="FAILED" />
+              <entry key="GatewayApplication" value="STOPPED" />
+              <entry key="ReportApplication" value="STOPPED" />
+              <entry key="TransactionApplication" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -100,6 +130,13 @@
     <configuration name="AccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Account" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="account.AccountApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Ai" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="ai.AiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -147,6 +184,7 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Spring Boot.AiApplication" />
       <item itemvalue="Spring Boot.GatewayApplication" />
       <item itemvalue="Spring Boot.CommonApplication" />
       <item itemvalue="Spring Boot.AuthApplication" />
@@ -156,7 +194,30 @@
       <item itemvalue="Spring Boot.ReportApplication" />
     </list>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="逻辑" />
+  </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="" />
+      <created>1776221752182</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776221752182</updated>
+      <workItem from="1776221753708" duration="5377000" />
+      <workItem from="1776243099222" duration="13267000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
