@@ -32,6 +32,9 @@
           <option value="Transaction" />
           <option value="Account" />
           <option value="Gateway" />
+          <option value="Ai" />
+          <option value="Piggy" />
+          <option value="Ai" />
         </list>
       </option>
       <option name="ignoredPackages">
@@ -45,10 +48,16 @@
           <option value="commons-fileupload:commons-fileupload:1.5" />
           <option value="commons-fileupload:commons-fileupload:1.5" />
           <option value="io.jsonwebtoken:jjwt-impl:0.12.5" />
+          <option value="io.modelcontextprotocol.sdk:mcp-core:0.14.0" />
+          <option value="org.apache.tomcat.embed:tomcat-embed-core:11.0.20" />
+          <option value="commons-fileupload:commons-fileupload:1.5" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />
           <option value="不可利用" />

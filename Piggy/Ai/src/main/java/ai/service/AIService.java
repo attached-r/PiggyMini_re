@@ -1,8 +1,7 @@
 package ai.service;
 
 import ai.client.TransactionServiceClient;
-import ai.config.AiConfig;
-import ai.config.RabbitMqConfig;
+import ai.config.PromptConfig;
 import ai.dto.*;
 import ai.util.JsonExtractor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,7 +12,6 @@ import common.model.Result;
 import common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -27,17 +25,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
+/**
+ * AI 服务类
+ * 提供智能记账分类、自然语言查询、消费分析及流式对话等功能
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AIService {
 
-    private final ChatClient chatClient;
-    private final ObjectMapper objectMapper;
-    private final AiConfig aiConfig;
-    private final TransactionServiceClient transactionServiceClient;
-    private final RabbitTemplate rabbitTemplate;
+    private final ClassifyAssistant classifyAssistant;  //智能分类
+    private final QueryAssistant queryAssistant; //智能查询
+    private final AnalyzeAssistant analyzeAssistant; //智能分析
+    private final ChatAssistant chatAssistant; //流式对话
+    private final PromptConfig promptProperties; //提示语
+    private final ObjectMapper objectMapper; //JSON转换
+    private final TransactionServiceClient transactionServiceClient; //交易服务
+    private final RabbitTemplate rabbitTemplate; //消息队列
     private final RedisUtil redisUtil;
 
     /**
@@ -46,16 +50,8 @@ public class AIService {
     public ClassifyResponse classify(ClassifyRequest request) {
         log.info("AI 流水分类，userId: {}, input: {}", request.getUserId(), request.getInput());
         try {
-            String prompt = PromptBuilder.buildClassifyPrompt(
-                    aiConfig.getPrompts().getClassify(),
-                    request.getInput()
-            );
-
-            String aiOutput = chatClient.prompt()
-                    .system("你是一个专业的财务流水分析助手，只返回 JSON 格式数据。")
-                    .user(prompt)
-                    .call()
-                    .content();
+            String aiOutput = classifyAssistant.classify(request.getInput(),
+                    promptProperties.getClassify());
 
             String jsonStr = JsonExtractor.extract(aiOutput);
             log.info("AI 返回：{}", jsonStr);
@@ -94,7 +90,7 @@ public class AIService {
         message.setUserId(request.getUserId());
         message.setInputs(request.getInputs());
 
-        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE, RabbitMqConfig.ROUTING_KEY, message);
+        rabbitTemplate.convertAndSend(ai.config.RabbitMqConfig.EXCHANGE, ai.config.RabbitMqConfig.ROUTING_KEY, message);
 
         log.info("AI批量分类任务已提交, taskId: {}, count: {}", taskId, request.getInputs().size());
         return taskId;
@@ -139,19 +135,9 @@ public class AIService {
             Map<String, BigDecimal> incomeData = getIncomeData(request.getUserId(), startTime, endTime);
 
             Map<String, Object> summaryData = buildSummaryData(expenseData, incomeData, "最近1个月");
+            String summaryDataJson = objectMapper.writeValueAsString(summaryData);
 
-            String prompt = PromptBuilder.buildQueryPrompt(
-                    aiConfig.getPrompts().getQuery(),
-                    request.getUserId(),
-                    request.getQuery(),
-                    summaryData
-            );
-
-            return chatClient.prompt()
-                    .system("你是一个财务分析助手，根据用户真实交易数据回答问题。如果数据为空，请明确告知用户。")
-                    .user(prompt)
-                    .call()
-                    .content();
+            return queryAssistant.query(request.getQuery(), summaryDataJson, promptProperties.getQuery());
 
         } catch (Exception e) {
             log.error("查询失败", e);
@@ -177,19 +163,15 @@ public class AIService {
 
             Map<String, Object> analysisData = buildSummaryData(expenseData, incomeData, period);
             analysisData.put("date", date);
+            String dataJson = objectMapper.writeValueAsString(analysisData);
 
-            String prompt = PromptBuilder.buildAnalyzePrompt(
-                    aiConfig.getPrompts().getAnalyze(),
-                    request.getUserId(),
+            return analyzeAssistant.analyze(
+                    "生成分析报告",
+                    String.valueOf(request.getUserId()),
                     period,
-                    analysisData
+                    dataJson,
+                    promptProperties.getAnalyze()
             );
-
-            return chatClient.prompt()
-                    .system("你是一个专业的财务顾问，基于用户真实交易数据生成详细的消费分析报告，包含趋势分析、分类占比、优化建议等。")
-                    .user(prompt)
-                    .call()
-                    .content();
 
         } catch (Exception e) {
             log.error("分析失败", e);
@@ -204,11 +186,7 @@ public class AIService {
         log.info("AI 流式对话，userId: {}, message: {}", userId, message);
 
         try {
-            return chatClient.prompt()
-                    .advisors(advisor -> advisor.param("chat_memory_conversation", "user_" + userId))
-                    .user(message)
-                    .stream()
-                    .content()
+            return chatAssistant.streamChat(message, promptProperties.getChat())
                     .doOnNext(chunk -> log.debug("流式输出片段: {}", chunk))
                     .doOnComplete(() -> log.info("流式对话完成，userId: {}", userId))
                     .doOnError(error -> log.error("流式对话异常，userId: {}", userId, error));

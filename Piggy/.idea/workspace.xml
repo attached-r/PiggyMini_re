@@ -5,20 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Ai/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/controller/AiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/controller/AiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/AnalyzeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/AnalyzeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/BatchClassifyRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/BatchClassifyRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/ClassifyRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/ClassifyRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/QueryRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/QueryRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +50,7 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="安全分析" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -69,6 +66,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Maven.Ai [clean].executor": "Run",
+    "Maven.Ai [compile].executor": "Run",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "发现新的/更新的数据库配置",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -77,6 +78,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.AccountApplication.executor": "Debug",
+    "Spring Boot.AiApplication.executor": "Debug",
     "Spring Boot.AuthApplication.executor": "Debug",
     "Spring Boot.BudgetApplication.executor": "Debug",
     "Spring Boot.CommonApplication.executor": "Debug",
@@ -88,11 +90,13 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -114,6 +118,7 @@
           <value>
             <map>
               <entry key="AccountApplication" value="STOPPED" />
+              <entry key="AiApplication" value="STOPPED" />
               <entry key="AuthApplication" value="STOPPED" />
               <entry key="BudgetApplication" value="STOPPED" />
               <entry key="CommonApplication" value="STOPPED" />
@@ -126,7 +131,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.AccountApplication">
+  <component name="RunManager" selected="Spring Boot.AiApplication">
     <configuration name="AccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Account" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="account.AccountApplication" />
@@ -184,14 +189,14 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Spring Boot.AiApplication" />
-      <item itemvalue="Spring Boot.GatewayApplication" />
-      <item itemvalue="Spring Boot.CommonApplication" />
-      <item itemvalue="Spring Boot.AuthApplication" />
       <item itemvalue="Spring Boot.AccountApplication" />
-      <item itemvalue="Spring Boot.TransactionApplication" />
+      <item itemvalue="Spring Boot.AiApplication" />
+      <item itemvalue="Spring Boot.AuthApplication" />
       <item itemvalue="Spring Boot.BudgetApplication" />
+      <item itemvalue="Spring Boot.CommonApplication" />
+      <item itemvalue="Spring Boot.GatewayApplication" />
       <item itemvalue="Spring Boot.ReportApplication" />
+      <item itemvalue="Spring Boot.TransactionApplication" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -214,6 +219,9 @@
       <updated>1776221752182</updated>
       <workItem from="1776221753708" duration="5377000" />
       <workItem from="1776243099222" duration="13267000" />
+      <workItem from="1776347681615" duration="2211000" />
+      <workItem from="1776420161785" duration="6180000" />
+      <workItem from="1776482254203" duration="5966000" />
     </task>
     <servers />
   </component>

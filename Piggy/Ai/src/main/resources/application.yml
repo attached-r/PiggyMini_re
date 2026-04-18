@@ -11,15 +11,6 @@ spring:
     password: ${PASSWORD:guest}
     virtual-host: /
 
-  ai:
-    dashscope:
-      api-key: ${DASHSCOPE_API_KEY:your-api-key-here}
-      chat:
-        options:
-          model: qwen-flash
-          temperature: 0.7
-          max-tokens: 2000
-
   cloud:
     nacos:
       discovery:
@@ -27,17 +18,20 @@ spring:
         username: nacos
         password: ${PASSWORD:123456789rj}
 
-ai:
-  model:
-    name: qwen-plus
-    temperature: 0.7
-    max-tokens: 2000
-    top-p: 0.8
-    top-k: 50
+langchain4j:
+  open-ai:
+    chat-model:
+      api-key: ${OPENAI_API_KEY:}
+      base-url: ${OPENAI_BASE_URL:}
+      model-name: qwen3-omni-flash
+      temperature: 0.7
+      max-tokens: 2000
+      top-p: 0.8
+      top-k: 50
 
+ai:
   memory:
     max-messages: 10
-    max-token-count: 4000
 
   prompts:
     classify: |
@@ -53,7 +47,7 @@ ai:
         "confidence": 0.0-1.0 之间的置信度
       }
       
-      用户输入：{input}
+      用户输入：{{input}}
 
     batch: |
       你是一个专业的财务流水分析助手。请从批量文本中提取所有交易信息。
@@ -69,19 +63,23 @@ ai:
         }
       ]
       
-      批量文本：{input}
+      批量文本：{{input}}
 
     query: |
       你是一个财务分析助手。请根据用户数据回答问题。
       
-      用户问题：{input}
+      用户问题：{{query}}
+      
+      交易数据摘要：{{summaryData}}
       
       请用自然语言回答，简洁明了。
 
     analyze: |
       你是一个专业的财务顾问。请根据用户的消费数据生成分析报告。
       
-      数据：{input}
+      用户ID：{{userId}}
+      分析周期：{{period}}
+      数据：{{data}}
       
       报告需包含：
       1. 总收支情况
