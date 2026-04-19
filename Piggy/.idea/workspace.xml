@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Ai/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/config/AiConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/BatchClassifyRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/BatchClassifyRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/ClassifyRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/ClassifyRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/QueryRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/dto/QueryRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/PromptBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AnalyzeAssistant.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AnalyzeAssistant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,42 +57,42 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.Ai [clean].executor": "Run",
-    "Maven.Ai [compile].executor": "Run",
-    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "发现新的/更新的数据库配置",
-    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AccountApplication.executor": "Debug",
-    "Spring Boot.AiApplication.executor": "Debug",
-    "Spring Boot.AuthApplication.executor": "Debug",
-    "Spring Boot.BudgetApplication.executor": "Debug",
-    "Spring Boot.CommonApplication.executor": "Debug",
-    "Spring Boot.GatewayApplication.executor": "Debug",
-    "Spring Boot.ReportApplication.executor": "Debug",
-    "Spring Boot.TransactionApplication.executor": "Debug",
-    "git-widget-placeholder": "rj/ai",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.Ai [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Ai [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;发现新的/更新的数据库配置&quot;,
+    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AccountApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.AiApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.BudgetApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.CommonApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.GatewayApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.ReportApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.TransactionApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;rj/ai&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -222,6 +215,8 @@
       <workItem from="1776347681615" duration="2211000" />
       <workItem from="1776420161785" duration="6180000" />
       <workItem from="1776482254203" duration="5966000" />
+      <workItem from="1776488730432" duration="15705000" />
+      <workItem from="1776522501907" duration="120000" />
     </task>
     <servers />
   </component>
