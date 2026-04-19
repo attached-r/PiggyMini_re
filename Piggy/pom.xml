@@ -133,6 +133,12 @@
                 <artifactId>langchain4j-spring-boot4-starter</artifactId>
                 <version>1.13.0-beta23</version>
             </dependency>
+            <!-- LangChain4j Reactor 支持（用于流式输出 Flux<String>） -->
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-reactor</artifactId>
+                <version>1.13.0-beta23</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
