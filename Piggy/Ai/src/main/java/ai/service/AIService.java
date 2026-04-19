@@ -204,6 +204,8 @@ public class AIService {
         log.info("清除对话历史，userId: {}", userId);
     }
 
+    // ... existing code ...
+
     /**
      * 获取支出统计数据
      */
@@ -211,7 +213,17 @@ public class AIService {
     private Map<String, BigDecimal> getExpenseData(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         Result result = transactionServiceClient.getCategoryExpenseStatistics(userId, startTime, endTime);
         if (result != null && result.getData() != null) {
-            return (Map<String, BigDecimal>) result.getData();
+            Map<String, Object> rawData = (Map<String, Object>) result.getData();
+            Map<String, BigDecimal> expenseData = new HashMap<>();
+            for (Map.Entry<String, Object> entry : rawData.entrySet()) {
+                Object value = entry.getValue();
+                if (value instanceof Number) {
+                    expenseData.put(entry.getKey(), new BigDecimal(value.toString()));
+                } else {
+                    expenseData.put(entry.getKey(), BigDecimal.ZERO);
+                }
+            }
+            return expenseData;
         }
         return new HashMap<>();
     }
@@ -223,10 +235,22 @@ public class AIService {
     private Map<String, BigDecimal> getIncomeData(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         Result result = transactionServiceClient.getCategoryIncomeStatistics(userId, startTime, endTime);
         if (result != null && result.getData() != null) {
-            return (Map<String, BigDecimal>) result.getData();
+            Map<String, Object> rawData = (Map<String, Object>) result.getData();
+            Map<String, BigDecimal> incomeData = new HashMap<>();
+            for (Map.Entry<String, Object> entry : rawData.entrySet()) {
+                Object value = entry.getValue();
+                if (value instanceof Number) {
+                    incomeData.put(entry.getKey(), new BigDecimal(value.toString()));
+                } else {
+                    incomeData.put(entry.getKey(), BigDecimal.ZERO);
+                }
+            }
+            return incomeData;
         }
         return new HashMap<>();
     }
+
+// ... existing code ...
 
     /**
      * 组装汇总数据

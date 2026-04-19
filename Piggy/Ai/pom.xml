@@ -31,6 +31,9 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot4-starter</artifactId>
         </dependency>
+
+        <!-- LangChain4j Reactor 支持（用于流式输出 Flux<String>） -->
+
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-reactor</artifactId>

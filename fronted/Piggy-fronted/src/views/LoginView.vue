@@ -53,8 +53,8 @@ const handleSubmit = async () => {
         // 管理员跳转到控制台
         router.replace('/home')
       } else {
-        // 普通用户跳转到用户首页
-        router.replace('/user')
+        // 普通用户跳转到账户选择页面
+        router.replace('/accounts')
       }
     } else {
       console.error('响应中没有 token 字段，完整响应:', response)
