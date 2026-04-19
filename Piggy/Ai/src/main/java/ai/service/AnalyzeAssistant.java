@@ -5,7 +5,7 @@ import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import dev.langchain4j.service.spring.AiService;
 
-@AiService
+@AiService  // 自动装配
 public interface AnalyzeAssistant {
 
     @SystemMessage("{{prompt}}")
