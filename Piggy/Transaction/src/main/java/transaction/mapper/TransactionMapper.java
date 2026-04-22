@@ -47,13 +47,14 @@ public interface TransactionMapper extends BaseMapper<Transaction> {
      * @param endTime   结束时间
      * @return List<Map<category, total>> 分类收入统计
      */
-    @Select("SELECT category, SUM(amount) as total " +
+    // lxy: 修复收入统计SQL，移除category IS NOT NULL条件，因为收入记录可能没有分类
+    @Select(
+            "SELECT COALESCE(category, '未分类') as category, SUM(amount) as total " +
             "FROM transactions " +
             "WHERE user_id = #{userId} " +
             "AND transaction_type = 'INCOME' " +
             "AND transaction_time >= #{startTime} " +
             "AND transaction_time < #{endTime} " +
-            "AND category IS NOT NULL " +
             "GROUP BY category")
     List<Map<String, Object>> selectCategoryIncomeSum(@Param("userId") Long userId,
                                                       @Param("startTime") LocalDateTime startTime,
