@@ -1,92 +1,151 @@
 import request from '@/utils/request'
 
+/**
+ * 认证 API
+ * 严格根据后端 AuthController 接口
+ */
+
 export const authApi = {
-  // 登录
+  /**
+   * 用户登录
+   * POST /api/auth/login
+   * 请求体: { username, password }
+   * 响应: { code: 200, data: { userId, username, nickname, token, refreshToken }, message }
+   */
   async login(credentials) {
-    // 检查是否是管理员账号
-    const isAdmin = credentials.username === '8888' && credentials.password === '8888'
+    const response = await request.post('/api/auth/login', credentials)
     
-    // 如果是管理员，直接生成一个模拟的 token
-    if (isAdmin) {
-      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ijg4ODgiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTk5OTk5OTksImV4cCI6MTcwMDAwMzU5OX0.mock_signature'
-      localStorage.setItem('piggy_token', mockToken)
-      localStorage.setItem('piggy_user_id', '8888')
-      localStorage.setItem('userRole', 'admin')
-      localStorage.setItem('username', '8888')
+    // 响应格式: { code, data: { userId, username, nickname, token, refreshToken }, message }
+    if (response.code === 200 && response.data) {
+      const { userId, username, nickname, token, refreshToken } = response.data
+      
+      // 保存到 localStorage
+      localStorage.setItem('piggy_token', token)
+      localStorage.setItem('piggy_refresh_token', refreshToken)
+      localStorage.setItem('piggy_user_id', userId)
+      localStorage.setItem('piggy_username', username)
+      if (nickname) {
+        localStorage.setItem('piggy_nickname', nickname)
+      }
       
       return {
-        token: mockToken,
-        isAdmin: true,
-        message: '管理员登录成功'
+        success: true,
+        token,
+        userId,
+        username,
+        nickname,
+        isAdmin: false
       }
     }
     
-    // 普通用户需要调用后端 API
-    const response = await request.post('/api/auth/login', credentials)
-    console.log('登录响应:', response)
-    
-    // 尝试不同的 token 字段名
-    const token = response.token || response.data?.token || response.access_token || response.result?.token
-    const refreshToken = response.refreshToken || response.data?.refreshToken
-    const userId = response.userId || response.data?.userId
-    
-    if (token) {
-      localStorage.setItem('piggy_token', token)
-      if (refreshToken) {
-        localStorage.setItem('piggy_refresh_token', refreshToken)
-      }
-      if (userId) {
-        localStorage.setItem('piggy_user_id', userId)
-      }
-      localStorage.setItem('userRole', 'user')
-      localStorage.setItem('username', credentials.username)
-    }
-    
-    return {
-      ...response,
-      token,
-      isAdmin: false
-    }
+    throw new Error(response.message || '登录失败')
   },
 
-  // 注册
+  /**
+   * 用户注册
+   * POST /api/auth/register
+   * 请求体: { username, password, nickname? }
+   */
   async register(userData) {
     const response = await request.post('/api/auth/register', userData)
-    return response
+    
+    if (response.code === 200 && response.data) {
+      const { userId, username, token, refreshToken } = response.data
+      
+      localStorage.setItem('piggy_token', token)
+      localStorage.setItem('piggy_refresh_token', refreshToken)
+      localStorage.setItem('piggy_user_id', userId)
+      localStorage.setItem('piggy_username', username)
+      
+      return {
+        success: true,
+        userId,
+        username,
+        token
+      }
+    }
+    
+    throw new Error(response.message || '注册失败')
   },
 
-  // 刷新 token
+  /**
+   * 刷新 Token
+   * POST /api/auth/refresh
+   * 请求体: { refreshToken }
+   */
   async refreshToken() {
-    const response = await request.post('/api/auth/refresh')
-    return response
+    const refreshToken = localStorage.getItem('piggy_refresh_token')
+    if (!refreshToken) {
+      throw new Error('没有刷新令牌')
+    }
+    
+    const response = await request.post('/api/auth/refresh', { refreshToken })
+    
+    if (response.code === 200 && response.data) {
+      const { token, refreshToken: newRefreshToken, userId } = response.data
+      
+      localStorage.setItem('piggy_token', token)
+      localStorage.setItem('piggy_refresh_token', newRefreshToken)
+      localStorage.setItem('piggy_user_id', userId)
+      
+      return { token, userId }
+    }
+    
+    throw new Error(response.message || '刷新令牌失败')
   },
 
-  // 登出
+  /**
+   * 登出
+   */
   logout() {
     localStorage.removeItem('piggy_token')
     localStorage.removeItem('piggy_refresh_token')
     localStorage.removeItem('piggy_user_id')
+    localStorage.removeItem('piggy_username')
+    localStorage.removeItem('piggy_nickname')
     localStorage.removeItem('userRole')
-    localStorage.removeItem('username')
+    localStorage.removeItem('selectedAccountId')
   },
 
-  // 检查是否已登录
+  /**
+   * 检查是否已登录
+   */
   isAuthenticated() {
     return !!localStorage.getItem('piggy_token')
   },
 
-  // 检查是否是管理员
+  /**
+   * 获取当前用户ID
+   */
+  getUserId() {
+    return localStorage.getItem('piggy_user_id')
+  },
+
+  /**
+   * 获取当前用户名
+   */
+  getUsername() {
+    return localStorage.getItem('piggy_username') || ''
+  },
+
+  /**
+   * 获取当前昵称
+   */
+  getNickname() {
+    return localStorage.getItem('piggy_nickname') || ''
+  },
+
+  /**
+   * 获取 Token
+   */
+  getToken() {
+    return localStorage.getItem('piggy_token')
+  },
+
+  /**
+   * 检查是否是管理员（默认返回 false，需要后端支持）
+   */
   isAdmin() {
     return localStorage.getItem('userRole') === 'admin'
-  },
-
-  // 获取当前用户角色
-  getUserRole() {
-    return localStorage.getItem('userRole') || 'user'
-  },
-
-  // 获取当前用户名
-  getUsername() {
-    return localStorage.getItem('username') || ''
   }
 }

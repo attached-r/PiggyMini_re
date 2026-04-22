@@ -2,20 +2,17 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
-import { getTransactions, createTransaction, deleteTransaction } from '@/api/transaction'
 import { getAccounts } from '@/api/account'
+import { getTransactions, createTransaction, deleteTransaction, TransactionTypeLabels, getCategoryInfo } from '@/api/transaction'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import Sidebar from '@/components/Sidebar.vue'
 
 const router = useRouter()
 
-// Transaction types
-const transactionTypes = [
-  { value: 'EXPENSE', label: '支出', sign: '-', icon: '💸', color: 'red' },
-  { value: 'INCOME', label: '收入', sign: '+', icon: '💰', color: 'green' },
-  { value: 'TRANSFER', label: '转账', sign: '=', icon: '🔄', color: 'blue' }
-]
+// 侧边栏状态
+const sidebarCollapsed = ref(false)
 
-// Data
+// 数据
 const allAccounts = ref([])
 const selectedAccountId = ref(null)
 const selectedAccount = ref(null)
@@ -27,7 +24,7 @@ const showTransactionModal = ref(false)
 const submittingTransaction = ref(false)
 const expenseParentCategory = ref('餐饮')
 
-// Form
+// 表单
 const transactionForm = ref({
   type: 'EXPENSE',
   amount: '',
@@ -39,33 +36,30 @@ const transactionForm = ref({
   targetAccountId: null
 })
 
-// Categories
+// 交易类型
+const transactionTypes = [
+  { value: 'EXPENSE', label: '支出', icon: '💸', color: 'red' },
+  { value: 'INCOME', label: '收入', icon: '💰', color: 'green' },
+  { value: 'TRANSFER', label: '转账', icon: '🔄', color: 'blue' }
+]
+
+// 分类数据
 const expenseCategoriesByParent = {
-  '餐饮': [
-    { value: 'FOOD_BREAKFAST', label: '早餐', icon: '🥐' },
-    { value: 'FOOD_LUNCH', label: '午餐', icon: '🍱' },
-    { value: 'FOOD_DINNER', label: '晚餐', icon: '🍜' }
-  ],
-  '交通': [
-    { value: 'TRANSPORT_SUBWAY', label: '地铁', icon: '🚇' },
-    { value: 'TRANSPORT_BUS', label: '公交', icon: '🚌' }
-  ]
+  '餐饮': ['FOOD_BREAKFAST', 'FOOD_LUNCH', 'FOOD_DINNER', 'FOOD_SNACK', 'FOOD_FRUIT', 'FOOD_DRINK', 'FOOD_GROCERY', 'FOOD_TREAT', 'FOOD_DELIVERY'],
+  '交通': ['TRANSPORT_SUBWAY', 'TRANSPORT_BUS', 'TRANSPORT_TAXI', 'TRANSPORT_DIDI', 'TRANSPORT_FUEL', 'TRANSPORT_PARKING', 'TRANSPORT_TOLL', 'TRANSPORT_BIKE', 'TRANSPORT_TRAIN', 'TRANSPORT_FLIGHT'],
+  '购物': ['SHOP_CLOTHES', 'SHOP_SHOES', 'SHOP_BAG', 'SHOP_COSMETIC', 'SHOP_DIGITAL', 'SHOP_HOME', 'SHOP_DAILY', 'SHOP_BOOK', 'SHOP_GIFT'],
+  '居住': ['LIVING_RENT', 'LIVING_MORTGAGE', 'LIVING_PROPERTY', 'LIVING_WATER', 'LIVING_ELECTRIC', 'LIVING_GAS', 'LIVING_INTERNET', 'LIVING_MAINTENANCE'],
+  '娱乐': ['ENTERTAIN_MOVIE', 'ENTERTAIN_GAME', 'ENTERTAIN_KTV', 'ENTERTAIN_TRAVEL', 'ENTERTAIN_SPORT', 'ENTERTAIN_GYM', 'ENTERTAIN_STREAM'],
+  '医疗': ['MEDICAL_HOSPITAL', 'MEDICAL_MEDICINE', 'MEDICAL_DENTAL', 'MEDICAL_CHECKUP', 'MEDICAL_INSURANCE'],
+  '教育': ['EDUCATION_TUITION', 'EDUCATION_COURSE', 'EDUCATION_EXAM', 'EDUCATION_MATERIAL'],
+  '社交': ['SOCIAL_RED_PACKET', 'SOCIAL_DONATION', 'SOCIAL_TIP'],
+  '其他': ['OTHER_MISC', 'OTHER_LOSS', 'OTHER_PENALTY']
 }
 
 const parentCategories = Object.keys(expenseCategoriesByParent)
 
 const currentExpenseCategories = computed(() => {
   return expenseCategoriesByParent[expenseParentCategory.value] || []
-})
-
-const categoryMap = computed(() => {
-  const map = {}
-  for (const parent of Object.keys(expenseCategoriesByParent)) {
-    for (const cat of expenseCategoriesByParent[parent]) {
-      map[cat.value] = cat
-    }
-  }
-  return map
 })
 
 const targetAccountOptions = computed(() => {
@@ -76,10 +70,7 @@ const currentTransactionType = computed(() => {
   return transactionTypes.find(t => t.value === transactionForm.value.type) || transactionTypes[0]
 })
 
-// Methods
-const goBack = () => router.push('/dashboard')
-const handleLogout = () => { authApi.logout(); router.push('/login') }
-
+// 方法
 const formatBalance = (balance) => {
   return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(balance || 0)
 }
@@ -89,43 +80,57 @@ const formatDateTime = (dateStr) => {
   return new Date(dateStr).toLocaleString('zh-CN')
 }
 
-const getCategoryInfo = (category) => categoryMap.value[category] || { label: category, icon: '📦' }
-const getTransactionTypeInfo = (type) => transactionTypes.find(t => t.value === type) || transactionTypes[0]
+const getCategoryLabel = (category) => {
+  const info = getCategoryInfo(category)
+  return info.label || category
+}
+
+const getCategoryIcon = (category) => {
+  const info = getCategoryInfo(category)
+  return info.icon || '📦'
+}
+
+const getTransactionTypeInfo = (type) => {
+  return TransactionTypeLabels[type] || { label: type, icon: '📦', sign: '', color: 'gray' }
+}
 
 const getTransactionBgClass = (type) => {
-  const isExpense = type === 'EXPENSE' || type === 'expense'
-  const isIncome = type === 'INCOME' || type === 'income'
-  return ['w-12 h-12 rounded-full flex items-center justify-center text-2xl', isExpense ? 'bg-red-100' : isIncome ? 'bg-green-100' : 'bg-blue-100']
+  const info = getTransactionTypeInfo(type)
+  const colorClass = info.color === 'red' ? 'bg-rose-500/20' : info.color === 'green' ? 'bg-emerald-500/20' : 'bg-blue-500/20'
+  return ['w-12 h-12 rounded-full flex items-center justify-center text-2xl', colorClass]
 }
 
 const getTransactionBadgeClass = (type) => {
-  const isExpense = type === 'EXPENSE' || type === 'expense'
-  const isIncome = type === 'INCOME' || type === 'income'
-  return isExpense ? 'bg-red-100 text-red-700' : isIncome ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+  const info = getTransactionTypeInfo(type)
+  return info.color === 'red' ? 'bg-rose-500/20 text-rose-400' : info.color === 'green' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'
 }
 
 const getTransactionAmountClass = (type) => {
-  const isExpense = type === 'EXPENSE' || type === 'expense'
-  const isIncome = type === 'INCOME' || type === 'income'
-  return isExpense ? 'text-red-600' : isIncome ? 'text-green-600' : 'text-blue-600'
+  const info = getTransactionTypeInfo(type)
+  return info.color === 'red' ? 'text-rose-400' : info.color === 'green' ? 'text-emerald-400' : 'text-blue-400'
 }
 
 const getTransactionLabel = (t) => {
-  const isExpense = t.transactionType === 'EXPENSE' || t.transactionType === 'expense'
-  const isIncome = t.transactionType === 'INCOME' || t.transactionType === 'income'
-  return isExpense ? (getCategoryInfo(t.category)?.label || '支出') : isIncome ? '收入' : '转账'
+  const info = getTransactionTypeInfo(t.transactionType)
+  if (t.transactionType === 'EXPENSE') {
+    return getCategoryLabel(t.category) || '支出'
+  } else if (t.transactionType === 'INCOME') {
+    return '收入'
+  } else {
+    return '转账'
+  }
 }
 
-// Load data
+// 加载账户
 const loadAccounts = async () => {
   loadingAccounts.value = true
   try {
     const response = await getAccounts(1, 100)
     let accountList = []
-    if (Array.isArray(response?.data?.data?.records)) {
-      accountList = response.data.data.records
-    } else if (Array.isArray(response?.data?.data)) {
-      accountList = response.data.data
+    if (response.data?.records) {
+      accountList = response.data.records
+    } else if (Array.isArray(response.data)) {
+      accountList = response.data
     }
     allAccounts.value = accountList
     
@@ -139,13 +144,14 @@ const loadAccounts = async () => {
       localStorage.setItem('selectedAccountId', accountList[0].id)
     }
   } catch (err) {
-    console.error('Failed to load accounts:', err)
+    console.error('加载账户列表失败:', err)
     ElMessage.error('加载账户列表失败')
   } finally {
     loadingAccounts.value = false
   }
 }
 
+// 加载交易记录
 const loadTransactions = async () => {
   if (!selectedAccountId.value) {
     transactions.value = []
@@ -153,17 +159,21 @@ const loadTransactions = async () => {
   }
   loadingTransactions.value = true
   try {
-    const params = { accountId: selectedAccountId.value, page: 1, size: 50 }
+    const params = { 
+      accountId: selectedAccountId.value, 
+      page: 1, 
+      size: 50 
+    }
     const response = await getTransactions(params)
     let records = []
-    if (response?.data?.data?.records) {
-      records = response.data.data.records
-    } else if (response?.data?.data) {
-      records = response.data.data
+    if (response.data?.records) {
+      records = response.data.records
+    } else if (Array.isArray(response.data)) {
+      records = response.data
     }
     transactions.value = records
   } catch (err) {
-    console.error('Failed to load transactions:', err)
+    console.error('加载交易记录失败:', err)
     transactions.value = []
   } finally {
     loadingTransactions.value = false
@@ -173,7 +183,7 @@ const loadTransactions = async () => {
 const getCurrentDateTime = () => {
   const now = new Date()
   const pad = (n) => String(n).padStart(2, '0')
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:00`
 }
 
 const openTransactionModal = (type = 'EXPENSE') => {
@@ -194,14 +204,15 @@ const openTransactionModal = (type = 'EXPENSE') => {
 const onExpenseParentChange = () => {
   const categories = currentExpenseCategories.value
   if (categories.length > 0) {
-    transactionForm.value.category = categories[0].value
-    transactionForm.value.description = categories[0].label
+    transactionForm.value.category = categories[0]
+    const info = getCategoryInfo(categories[0])
+    transactionForm.value.description = info.label
   }
 }
 
 const onExpenseCategoryChange = () => {
-  const cat = categoryMap.value[transactionForm.value.category]
-  if (cat) transactionForm.value.description = cat.label
+  const info = getCategoryInfo(transactionForm.value.category)
+  if (info.label) transactionForm.value.description = info.label
 }
 
 const handleSubmitTransaction = async () => {
@@ -223,7 +234,7 @@ const handleSubmitTransaction = async () => {
     const currentBalance = selectedAccount.value ? selectedAccount.value.balance : 0
     if (amount > currentBalance) {
       ElMessageBox.alert(
-        `您的账户余额为 ${formatBalance(currentBalance)}，不足以支付这笔 ${formatBalance(amount)} 的支出。\n\n建议：\n1. 充值账户\n2. 选择余额充足的账户\n3. 减少支出金额`,
+        `您的账户余额为 ${formatBalance(currentBalance)}，不足以支付这笔 ${formatBalance(amount)} 的支出。`,
         '余额不足',
         { confirmButtonText: '我知道了', type: 'warning' }
       )
@@ -250,8 +261,8 @@ const handleSubmitTransaction = async () => {
     await loadTransactions()
     await loadAccounts()
   } catch (err) {
-    console.error('Failed to add transaction:', err)
-    ElMessage.error(err.response?.data?.message || err.response?.data?.msg || err.message || '添加交易失败，请重试')
+    console.error('添加交易失败:', err)
+    ElMessage.error(err.message || '添加交易失败，请重试')
   } finally {
     submittingTransaction.value = false
   }
@@ -270,37 +281,35 @@ const handleDeleteTransaction = async (transaction) => {
     await loadAccounts()
   } catch (err) {
     if (err !== 'cancel') {
-      console.error('Failed to delete:', err)
-      ElMessage.error(err.response?.data?.message || '删除失败，请重试')
+      console.error('删除失败:', err)
+      ElMessage.error(err.message || '删除失败，请重试')
     }
   }
 }
 
-// Computed
+// 计算统计数据
 const stats = computed(() => {
   let expense = 0, income = 0, transfer = 0
   transactions.value.forEach(t => {
     const amount = parseFloat(t.amount || 0)
-    const type = t.transactionType
-    if (type === 'EXPENSE' || type === 'expense') expense += amount
-    else if (type === 'INCOME' || type === 'income') income += amount
-    else if (type === 'TRANSFER' || type === 'transfer') transfer += amount
+    if (t.transactionType === 'EXPENSE') expense += amount
+    else if (t.transactionType === 'INCOME') income += amount
+    else if (t.transactionType === 'TRANSFER') transfer += amount
   })
   return { expense, income, transfer, count: transactions.value.length }
 })
 
 const filteredTransactions = computed(() => {
   if (selectedTransactionType.value === 'ALL') return transactions.value
-  return transactions.value.filter(t => t.transactionType === selectedTransactionType.value || t.transactionType?.toString() === selectedTransactionType.value)
+  return transactions.value.filter(t => t.transactionType === selectedTransactionType.value)
 })
 
-// Watch
+// 监听账户变化
 watch(selectedAccountId, (newId) => {
   if (newId) {
     localStorage.setItem('selectedAccountId', newId)
     selectedAccount.value = allAccounts.value.find(acc => acc.id === Number(newId))
     loadTransactions()
-    loadAccounts()
   }
 })
 
@@ -308,7 +317,8 @@ watch(() => transactionForm.value.type, (newType) => {
   if (newType === 'EXPENSE') {
     expenseParentCategory.value = '餐饮'
     transactionForm.value.category = 'FOOD_LUNCH'
-    transactionForm.value.description = '午餐'
+    const info = getCategoryInfo('FOOD_LUNCH')
+    transactionForm.value.description = info.label
     transactionForm.value.targetAccountId = null
   } else if (newType === 'TRANSFER') {
     transactionForm.value.category = ''
@@ -334,132 +344,171 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
-      <div class="flex items-center justify-between px-6 py-4">
-        <div class="flex items-center space-x-3">
-          <button @click="goBack" class="text-gray-600 hover:text-primary-600 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-          </button>
-          <div>
-            <span class="text-xl font-bold text-gray-900 block">Piggy</span>
-            <span class="text-xs text-blue-600 font-medium block -mt-1">交易服务</span>
-          </div>
-        </div>
-        <button @click="handleLogout" class="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-          </svg>
-          <span class="text-sm font-medium">退出登录</span>
-        </button>
-      </div>
-    </header>
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- 侧边栏 -->
+    <Sidebar :collapsed="sidebarCollapsed" @toggle="sidebarCollapsed = !sidebarCollapsed" />
 
-    <!-- Account Selector -->
-    <div class="bg-white border-b border-gray-200 py-4 px-6">
-      <div class="max-w-6xl mx-auto">
-        <div class="flex items-center space-x-4">
-          <label class="text-sm font-medium text-gray-700">选择账户：</label>
-          <select v-model="selectedAccountId" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-[200px]">
-            <option v-if="allAccounts.length === 0" value="">暂无账户</option>
-            <option v-for="account in allAccounts" :key="account.id" :value="account.id">{{ account.accountName }} - {{ formatBalance(account.balance) }}</option>
-          </select>
-          <span v-if="selectedAccount" class="text-sm text-gray-500">余额: <span class="font-medium text-blue-600">{{ formatBalance(selectedAccount.balance) }}</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Stats -->
-      <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center space-x-2 mb-1"><span class="text-lg">💸</span><span class="text-sm text-gray-500">总支出</span></div>
-          <div class="text-xl font-bold text-red-600">{{ formatBalance(stats.expense) }}</div>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center space-x-2 mb-1"><span class="text-lg">💰</span><span class="text-sm text-gray-500">总收入</span></div>
-          <div class="text-xl font-bold text-green-600">{{ formatBalance(stats.income) }}</div>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center space-x-2 mb-1"><span class="text-lg">🔄</span><span class="text-sm text-gray-500">转账</span></div>
-          <div class="text-xl font-bold text-blue-600">{{ formatBalance(stats.transfer) }}</div>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-          <h2 class="text-lg font-semibold text-gray-900">交易操作</h2>
-          <div class="flex space-x-3">
-            <button @click="openTransactionModal('EXPENSE')" class="btn-primary px-4 py-2 flex items-center bg-red-600 hover:bg-red-700"><span class="mr-2">💸</span>记支出</button>
-            <button @click="openTransactionModal('INCOME')" class="btn-primary px-4 py-2 flex items-center bg-green-600 hover:bg-green-700"><span class="mr-2">💰</span>记收入</button>
-            <button @click="openTransactionModal('TRANSFER')" class="btn-primary px-4 py-2 flex items-center bg-blue-600 hover:bg-blue-700" :disabled="targetAccountOptions.length === 0"><span class="mr-2">🔄</span>转账</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filter -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <div class="flex items-center space-x-2">
-          <span class="text-sm text-gray-600">筛选：</span>
-          <button v-for="type in [{value:'ALL',label:'全部'},{value:'EXPENSE',label:'支出'},{value:'INCOME',label:'收入'},{value:'TRANSFER',label:'转账'}]" :key="type.value" @click="selectedTransactionType = type.value" :class="['px-3 py-1 rounded-full text-sm transition-colors', selectedTransactionType === type.value ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']">{{ type.label }}</button>
-        </div>
-      </div>
-
-      <!-- List -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">交易记录</h2>
-          <span class="text-sm text-gray-500">{{ filteredTransactions.length }} 笔</span>
-        </div>
-
-        <div v-if="loadingTransactions" class="flex justify-center items-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-600"></div>
-        </div>
-
-        <div v-else-if="filteredTransactions.length === 0" class="text-center py-12">
-          <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-          </svg>
-          <p class="text-gray-500">暂无交易记录</p>
-        </div>
-
-        <div v-else class="space-y-3">
-          <div v-for="transaction in filteredTransactions" :key="transaction.id" class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-            <div class="flex items-center space-x-4">
-              <div :class="getTransactionBgClass(transaction.transactionType)">{{ getTransactionTypeInfo(transaction.transactionType).icon }}</div>
-              <div>
-                <div class="flex items-center space-x-2">
-                  <span class="font-medium text-gray-900">{{ getTransactionLabel(transaction) }}</span>
-                  <span :class="['text-xs px-2 py-0.5 rounded', getTransactionBadgeClass(transaction.transactionType)]">{{ getTransactionTypeInfo(transaction.transactionType).label }}</span>
-                </div>
-                <p class="text-sm text-gray-500 mt-1">{{ transaction.transactionType === 'TRANSFER' || transaction.transactionType === 'transfer' ? `转至账户ID: ${transaction.targetAccountId}` : (transaction.remark || getCategoryInfo(transaction.category)?.label || '-') }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ formatDateTime(transaction.transactionTime || transaction.createTime) }}</p>
-              </div>
+    <!-- 主内容区 -->
+    <main 
+      class="transition-all duration-300"
+      :class="sidebarCollapsed ? 'ml-16' : 'ml-56'"
+    >
+      <!-- Header -->
+      <header class="bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-bold text-white">交易记录</h1>
+              <p class="text-slate-400 text-sm">管理您的收支和转账</p>
             </div>
             <div class="flex items-center space-x-4">
-              <span :class="['text-lg font-bold', getTransactionAmountClass(transaction.transactionType)]">{{ getTransactionTypeInfo(transaction.transactionType).sign }}{{ formatBalance(transaction.amount) }}</span>
-              <button @click="handleDeleteTransaction(transaction)" class="text-gray-400 hover:text-red-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
+              <!-- 账户选择 -->
+              <select v-model="selectedAccountId" class="bg-slate-800/50 border border-slate-600/50 text-slate-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[200px]">
+                <option v-if="allAccounts.length === 0" value="">暂无账户</option>
+                <option v-for="account in allAccounts" :key="account.id" :value="account.id">
+                  {{ account.icon || '' }} {{ account.accountName }} - {{ formatBalance(account.balance) }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4">
+            <div class="flex items-center space-x-2 mb-1">
+              <span class="text-lg">💸</span>
+              <span class="text-sm text-slate-400">总支出</span>
+            </div>
+            <div class="text-xl font-bold text-rose-400">{{ formatBalance(stats.expense) }}</div>
+          </div>
+          <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4">
+            <div class="flex items-center space-x-2 mb-1">
+              <span class="text-lg">💰</span>
+              <span class="text-sm text-slate-400">总收入</span>
+            </div>
+            <div class="text-xl font-bold text-emerald-400">{{ formatBalance(stats.income) }}</div>
+          </div>
+          <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4">
+            <div class="flex items-center space-x-2 mb-1">
+              <span class="text-lg">🔄</span>
+              <span class="text-sm text-slate-400">转账</span>
+            </div>
+            <div class="text-xl font-bold text-blue-400">{{ formatBalance(stats.transfer) }}</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 mb-6">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <h2 class="text-lg font-semibold text-white">交易操作</h2>
+            <div class="flex space-x-3">
+              <button 
+                @click="openTransactionModal('EXPENSE')" 
+                class="px-4 py-2 flex items-center bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors"
+              >
+                <span class="mr-2">💸</span>记支出
+              </button>
+              <button 
+                @click="openTransactionModal('INCOME')" 
+                class="px-4 py-2 flex items-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+              >
+                <span class="mr-2">💰</span>记收入
+              </button>
+              <button 
+                @click="openTransactionModal('TRANSFER')" 
+                class="px-4 py-2 flex items-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="targetAccountOptions.length === 0"
+              >
+                <span class="mr-2">🔄</span>转账
               </button>
             </div>
           </div>
         </div>
-      </div>
+
+        <!-- Filter -->
+        <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mb-6">
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-slate-400">筛选：</span>
+            <button 
+              v-for="type in [{value:'ALL',label:'全部'},{value:'EXPENSE',label:'支出'},{value:'INCOME',label:'收入'},{value:'TRANSFER',label:'转账'}]" 
+              :key="type.value" 
+              @click="selectedTransactionType = type.value" 
+              :class="[
+                'px-3 py-1 rounded-full text-sm transition-colors',
+                selectedTransactionType === type.value ? 'bg-indigo-600 text-white' : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50'
+              ]"
+            >
+              {{ type.label }}
+            </button>
+          </div>
+        </div>
+
+        <!-- List -->
+        <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-white">交易记录</h2>
+            <span class="text-sm text-slate-400">{{ filteredTransactions.length }} 笔</span>
+          </div>
+
+          <div v-if="loadingTransactions" class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
+          </div>
+
+          <div v-else-if="filteredTransactions.length === 0" class="text-center py-12">
+            <div class="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-3xl">📝</span>
+            </div>
+            <p class="text-slate-400">暂无交易记录</p>
+            <p class="text-slate-500 text-sm mt-1">点击上方按钮开始记账</p>
+          </div>
+
+          <div v-else class="space-y-3">
+            <div v-for="transaction in filteredTransactions" :key="transaction.id" class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl hover:bg-slate-900/70 transition-colors">
+              <div class="flex items-center space-x-4">
+                <div :class="getTransactionBgClass(transaction.transactionType)">
+                  {{ getTransactionTypeInfo(transaction.transactionType).icon }}
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <span class="font-medium text-white">{{ getTransactionLabel(transaction) }}</span>
+                    <span :class="['text-xs px-2 py-0.5 rounded', getTransactionBadgeClass(transaction.transactionType)]">
+                      {{ getTransactionTypeInfo(transaction.transactionType).label }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-slate-400 mt-1">
+                    {{ transaction.transactionType === 'TRANSFER' ? `转至账户ID: ${transaction.targetAccountId}` : (transaction.remark || getCategoryLabel(transaction.category) || '-') }}
+                  </p>
+                  <p class="text-xs text-slate-500 mt-1">{{ formatDateTime(transaction.transactionTime || transaction.createTime) }}</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span :class="['text-lg font-bold', getTransactionAmountClass(transaction.transactionType)]">
+                  {{ getTransactionTypeInfo(transaction.transactionType).sign }}{{ formatBalance(transaction.amount) }}
+                </span>
+                <button @click="handleDeleteTransaction(transaction)" class="text-slate-400 hover:text-rose-400 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </main>
 
     <!-- Modal -->
-    <div v-if="showTransactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+    <div v-if="showTransactionModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">{{ currentTransactionType.icon }} 记{{ currentTransactionType.label }}</h3>
-          <button @click="showTransactionModal = false" class="text-gray-400 hover:text-gray-600">
+          <h3 class="text-xl font-bold text-white">
+            {{ currentTransactionType.icon }} 记{{ currentTransactionType.label }}
+          </h3>
+          <button @click="showTransactionModal = false" class="text-slate-400 hover:text-white">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -467,55 +516,110 @@ onMounted(async () => {
         </div>
 
         <div class="flex space-x-2 mb-6">
-          <button v-for="type in transactionTypes" :key="type.value" @click="transactionForm.type = type.value" :class="['flex-1 py-2 rounded-lg text-center transition-colors', transactionForm.type === type.value ? (type.color === 'red' ? 'bg-red-100 text-red-700 border-2 border-red-500' : type.color === 'green' ? 'bg-green-100 text-green-700 border-2 border-green-500' : 'bg-blue-100 text-blue-700 border-2 border-blue-500') : 'bg-gray-100 text-gray-500']">{{ type.icon }} {{ type.label }}</button>
+          <button 
+            v-for="type in transactionTypes" 
+            :key="type.value" 
+            @click="transactionForm.type = type.value" 
+            :class="[
+              'flex-1 py-2 rounded-lg text-center transition-colors',
+              transactionForm.type === type.value 
+                ? (type.color === 'red' ? 'bg-rose-500/20 text-rose-400 border-2 border-rose-500' 
+                  : type.color === 'green' ? 'bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500' 
+                  : 'bg-blue-500/20 text-blue-400 border-2 border-blue-500')
+                : 'bg-slate-700/50 text-slate-400'
+            ]"
+          >
+            {{ type.icon }} {{ type.label }}
+          </button>
         </div>
 
         <form @submit.prevent="handleSubmitTransaction" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">金额</label>
-            <input v-model="transactionForm.amount" type="number" step="0.01" min="0" placeholder="0.00" class="input-field text-xl" required>
+            <label class="block text-sm font-medium text-slate-300 mb-2">金额</label>
+            <input 
+              v-model="transactionForm.amount" 
+              type="number" 
+              step="0.01" 
+              min="0" 
+              placeholder="0.00" 
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+            />
           </div>
 
-          <template v-if="transactionForm.type === 'EXPENSE'">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">大分类</label>
-              <select v-model="expenseParentCategory" @change="onExpenseParentChange" class="input-field">
-                <option v-for="parent in parentCategories" :key="parent" :value="parent">{{ parent }}</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
-              <select v-model="transactionForm.category" @change="onExpenseCategoryChange" class="input-field">
-                <option v-for="cat in currentExpenseCategories" :key="cat.value" :value="cat.value">{{ cat.icon }} {{ cat.label }}</option>
-              </select>
-            </div>
-          </template>
+          <!-- 支出分类选择 -->
+          <div v-if="transactionForm.type === 'EXPENSE'">
+            <label class="block text-sm font-medium text-slate-300 mb-2">支出分类</label>
+            <select 
+              v-model="expenseParentCategory" 
+              @change="onExpenseParentChange"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+            >
+              <option v-for="parent in parentCategories" :key="parent" :value="parent">{{ parent }}</option>
+            </select>
+            <select 
+              v-model="transactionForm.category"
+              @change="onExpenseCategoryChange"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option v-for="cat in currentExpenseCategories" :key="cat" :value="cat">
+                {{ getCategoryIcon(cat) }} {{ getCategoryLabel(cat) }}
+              </option>
+            </select>
+          </div>
 
-          <template v-if="transactionForm.type === 'TRANSFER'">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">目标账户</label>
-              <select v-model="transactionForm.targetAccountId" class="input-field" required>
-                <option v-if="targetAccountOptions.length === 0" value="">暂无其他账户</option>
-                <option v-for="acc in targetAccountOptions" :key="acc.id" :value="acc.id">{{ acc.accountName }} ({{ formatBalance(acc.balance) }})</option>
-              </select>
-            </div>
-          </template>
+          <!-- 转账目标账户 -->
+          <div v-if="transactionForm.type === 'TRANSFER'">
+            <label class="block text-sm font-medium text-slate-300 mb-2">目标账户</label>
+            <select 
+              v-model="transactionForm.targetAccountId"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option v-for="acc in targetAccountOptions" :key="acc.id" :value="acc.id">
+                {{ acc.icon || '' }} {{ acc.accountName }}
+              </option>
+            </select>
+          </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">时间</label>
-            <input v-model="transactionForm.tradeTime" type="datetime-local" class="input-field" required>
+            <label class="block text-sm font-medium text-slate-300 mb-2">时间</label>
+            <input 
+              v-model="transactionForm.tradeTime" 
+              type="datetime-local" 
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+            />
           </div>
+
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">备注</label>
-            <input v-model="transactionForm.remark" type="text" placeholder="可选" class="input-field">
+            <label class="block text-sm font-medium text-slate-300 mb-2">备注</label>
+            <input 
+              v-model="transactionForm.remark" 
+              type="text" 
+              placeholder="可选" 
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+            />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">标签</label>
-            <input v-model="transactionForm.tags" type="text" placeholder="可选，多个标签用逗号分隔" class="input-field">
-          </div>
-          <div class="flex space-x-4 pt-4">
-            <button type="button" @click="showTransactionModal = false" class="flex-1 btn-secondary">取消</button>
-            <button type="submit" :disabled="submittingTransaction" class="flex-1 btn-primary">{{ submittingTransaction ? '提交中...' : '确定' }}</button>
+
+          <div class="flex space-x-3 pt-4">
+            <button 
+              type="button" 
+              @click="showTransactionModal = false"
+              class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+            >
+              取消
+            </button>
+            <button 
+              type="submit" 
+              :disabled="submittingTransaction"
+              :class="[
+                'flex-1 py-3 rounded-lg transition-colors',
+                transactionForm.type === 'EXPENSE' ? 'bg-rose-600 hover:bg-rose-700 text-white' :
+                transactionForm.type === 'INCOME' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' :
+                'bg-blue-600 hover:bg-blue-700 text-white',
+                submittingTransaction ? 'opacity-50 cursor-not-allowed' : ''
+              ]"
+            >
+              {{ submittingTransaction ? '提交中...' : '确认' }}
+            </button>
           </div>
         </form>
       </div>

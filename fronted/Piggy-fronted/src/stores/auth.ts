@@ -1,7 +1,7 @@
 // src/stores/auth.ts
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import request from '@/utils/request'
+import apiClient from '@/utils/axios'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       console.log('开始登录:', credentials)
 
-      const response = await request.post('/api/auth/login', credentials)
+      const response = await apiClient.post('/auth/login', credentials)
       console.log('登录响应原始数据:', response.data)
 
       let data = response.data
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const register = async (userData: { username: string; password: string; nickname: string }) => {
     try {
-      const response = await request.post('/api/auth/register', userData)
+      const response = await apiClient.post('/auth/register', userData)
       console.log('注册响应:', response.data)
 
       // 检查注册是否成功

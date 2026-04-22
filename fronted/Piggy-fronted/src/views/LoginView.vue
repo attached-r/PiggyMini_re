@@ -1,68 +1,80 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { authApi } from '@/api/auth'
+import { useAuthStore } from '@/stores/auth'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const loading = ref(false)
 const error = ref('')
 
 const form = reactive({
   username: '',
-  password: ''
+  password: '',
 })
 
-// 检测是否是管理员账号
-const isAdminAccount = () => {
-  return form.username === '8888'
-}
+const errors = reactive({
+  username: '',
+  password: '',
+})
 
+// 表单验证
 const validateForm = () => {
+  let isValid = true
+  errors.username = ''
+  errors.password = ''
+  error.value = ''
+
   if (!form.username.trim()) {
-    error.value = '请输入账号'
-    return false
+    errors.username = '请输入账号'
+    isValid = false
   }
   if (!form.password) {
-    error.value = '请输入密码'
-    return false
+    errors.password = '请输入密码'
+    isValid = false
+  } else if (form.password.length < 6) {
+    errors.password = '密码长度至少为 6 位'
+    isValid = false
   }
-  return true
+  return isValid
 }
 
 const handleSubmit = async () => {
-  error.value = ''
-  
-  if (!validateForm()) {
-    return
-  }
+  if (!validateForm()) return
 
   loading.value = true
+  error.value = ''
 
   try {
-    const response = await authApi.login({
+    console.log('=== [LoginView] 开始登录 ===')
+    
+    const success = await authStore.login({
       username: form.username,
-      password: form.password
+      password: form.password,
     })
 
-    console.log('登录成功，响应数据:', response)
-    
-    // 检查 token 是否存在
-    if (response.token) {
-      // 根据用户角色跳转到不同页面
-      if (response.isAdmin) {
-        // 管理员跳转到控制台
-        router.replace('/home')
-      } else {
-        // 普通用户跳转到账户选择页面
-        router.replace('/accounts')
-      }
+    console.log('=== [LoginView] 登录结果:', success)
+    console.log('=== [LoginView] localStorage token:', localStorage.getItem('piggy_token'))
+
+    if (success === true) {
+      ElMessage.success('登录成功！')
+
+      // 增加一点延迟，确保 store 和 localStorage 完全同步
+      await new Promise(resolve => setTimeout(resolve, 200))
+
+      console.log('=== [LoginView] 准备跳转到 /dashboard')
+      router.replace('/dashboard')
     } else {
-      console.error('响应中没有 token 字段，完整响应:', response)
-      error.value = '登录失败：服务器未返回 token。请检查后端接口。'
+      console.log('=== [LoginView] 登录失败，success =', success)
+      error.value = '登录失败'
     }
   } catch (err) {
     console.error('Login error:', err)
-    error.value = err.message || '登录失败，请检查账号和密码'
+    const message = err?.message || '登录失败'
+    error.value = message
+    ElMessage.error(message)
   } finally {
     loading.value = false
   }
@@ -71,8 +83,14 @@ const handleSubmit = async () => {
 const goToRegister = () => {
   router.push('/register')
 }
-</script>
 
+// 已登录用户访问登录页时自动跳转
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    router.replace('/dashboard')
+  }
+})
+</script>
 <template>
   <div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 flex items-center justify-center p-4">
     <div class="w-full max-w-md">
@@ -92,7 +110,7 @@ const goToRegister = () => {
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Error Message -->
           <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
             {{ error }}
@@ -114,9 +132,11 @@ const goToRegister = () => {
                 type="text"
                 placeholder="请输入账号"
                 class="input-field pl-10"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.username }"
                 :disabled="loading"
               />
             </div>
+            <p v-if="errors.username" class="mt-1 text-sm text-red-600">{{ errors.username }}</p>
           </div>
 
           <!-- Password Input -->
@@ -135,17 +155,11 @@ const goToRegister = () => {
                 type="password"
                 placeholder="请输入密码"
                 class="input-field pl-10"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.password }"
                 :disabled="loading"
               />
             </div>
-          </div>
-
-          <!-- Admin Hint -->
-          <div v-if="isAdminAccount()" class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg flex items-center text-sm">
-            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
-            <span>管理员登录：将进入系统控制台</span>
+            <p v-if="errors.password" class="mt-1 text-sm text-red-600">{{ errors.password }}</p>
           </div>
 
           <!-- Submit Button -->

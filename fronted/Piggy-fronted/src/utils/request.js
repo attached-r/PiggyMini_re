@@ -49,8 +49,8 @@ request.interceptors.response.use(
           const refreshToken = localStorage.getItem('piggy_refresh_token');
           if (!refreshToken) throw new Error('No refresh token');
 
-          // Call refresh api
-          const res = await axios.post('http://localhost:8080/api/auth/refresh', {
+          // 调用刷新 token 接口
+          const res = await axios.post('http://localhost:9000/api/auth/refresh', {
             refreshToken
           });
 

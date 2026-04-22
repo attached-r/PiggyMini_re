@@ -10,7 +10,8 @@ const error = ref('')
 const form = reactive({
   username: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  nickname: ''
 })
 
 const validateForm = () => {
@@ -47,19 +48,24 @@ const handleSubmit = async () => {
   loading.value = true
 
   try {
+    // 注册
     await authApi.register({
       username: form.username,
-      password: form.password
+      password: form.password,
+      nickname: form.nickname || form.username
     })
 
     // 注册成功后自动登录
-    const response = await authApi.login({
+    const result = await authApi.login({
       username: form.username,
       password: form.password
     })
 
-    if (response.token) {
-      router.push('/home')
+    if (result.success && authApi.isAuthenticated()) {
+      router.push('/accounts')
+    } else {
+      error.value = '注册成功，但自动登录失败，请手动登录'
+      router.push('/login')
     }
   } catch (err) {
     error.value = err.message || '注册失败，请稍后重试'
@@ -113,6 +119,27 @@ const goToLogin = () => {
                 v-model="form.username"
                 type="text"
                 placeholder="请输入账号（至少 3 个字符）"
+                class="input-field pl-10"
+                :disabled="loading"
+              />
+            </div>
+          </div>
+
+          <!-- Nickname Input -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              昵称
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <input
+                v-model="form.nickname"
+                type="text"
+                placeholder="请输入昵称（可选）"
                 class="input-field pl-10"
                 :disabled="loading"
               />

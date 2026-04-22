@@ -15,4 +15,22 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    port: 5173,
+    proxy: {
+      // 代理 /api 请求到后端网关服务
+      '/api': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      // 也代理 /internal 路径
+      '/internal': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })
