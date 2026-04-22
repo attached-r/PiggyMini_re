@@ -139,11 +139,12 @@ public class TransactionController {
      */
     @GetMapping("/statistics/category-income")
     public Result getCategoryIncomeStatistics(
-            @RequestParam Long userId,
-            @RequestParam LocalDateTime startTime,
-            @RequestParam LocalDateTime endTime) {
+            @RequestParam("userId") Long userId,
+            @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
         Map<String, BigDecimal> statistics = transactionService.getCategoryIncomeStatistics(userId, startTime, endTime);
         return Result.success("统收入计成功", statistics);
     }
+
 
 }
