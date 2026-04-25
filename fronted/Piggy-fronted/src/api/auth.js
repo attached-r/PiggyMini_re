@@ -10,14 +10,14 @@ export const authApi = {
    * 用户登录
    * POST /api/auth/login
    * 请求体: { username, password }
-   * 响应: { code: 200, data: { userId, username, nickname, token, refreshToken }, message }
+   * 响应: { code: 200, data: { userId, username, nickname, avatar, token, refreshToken }, message }
    */
   async login(credentials) {
     const response = await request.post('/api/auth/login', credentials)
     
-    // 响应格式: { code, data: { userId, username, nickname, token, refreshToken }, message }
+    // 响应格式: { code, data: { userId, username, nickname, avatar, token, refreshToken }, message }
     if (response.code === 200 && response.data) {
-      const { userId, username, nickname, token, refreshToken } = response.data
+      const { userId, username, nickname, avatar, token, refreshToken } = response.data
       
       // 保存到 localStorage
       localStorage.setItem('piggy_token', token)
@@ -27,6 +27,9 @@ export const authApi = {
       if (nickname) {
         localStorage.setItem('piggy_nickname', nickname)
       }
+      if (avatar) {
+        localStorage.setItem('piggy_avatar', avatar)
+      }
       
       return {
         success: true,
@@ -34,6 +37,7 @@ export const authApi = {
         userId,
         username,
         nickname,
+        avatar,
         isAdmin: false
       }
     }
@@ -95,6 +99,30 @@ export const authApi = {
   },
 
   /**
+   * 更新用户头像
+   * PUT /api/auth/avatar
+   * 请求体: { avatar: string } - 头像URL或Base64编码的图片数据
+   * @param {string} avatarUrl - 头像URL
+   * @returns {Promise<object>} 更新后的用户信息
+   */
+  async updateAvatar(avatarUrl) {
+    const response = await request.put('/api/auth/avatar', { avatar: avatarUrl })
+    
+    if (response.code === 200 && response.data) {
+      const { avatar } = response.data
+      
+      // 更新本地存储的头像
+      if (avatar) {
+        localStorage.setItem('piggy_avatar', avatar)
+      }
+      
+      return { avatar }
+    }
+    
+    throw new Error(response.message || '头像更新失败')
+  },
+
+  /**
    * 登出
    */
   logout() {
@@ -103,6 +131,7 @@ export const authApi = {
     localStorage.removeItem('piggy_user_id')
     localStorage.removeItem('piggy_username')
     localStorage.removeItem('piggy_nickname')
+    localStorage.removeItem('piggy_avatar')
     localStorage.removeItem('userRole')
     localStorage.removeItem('selectedAccountId')
   },
@@ -133,6 +162,13 @@ export const authApi = {
    */
   getNickname() {
     return localStorage.getItem('piggy_nickname') || ''
+  },
+
+  /**
+   * 获取用户头像URL
+   */
+  getAvatar() {
+    return localStorage.getItem('piggy_avatar') || ''
   },
 
   /**

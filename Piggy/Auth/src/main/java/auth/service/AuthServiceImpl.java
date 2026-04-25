@@ -27,7 +27,14 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
 
+    /**
+     * Access Token 过期时间：2小时（毫秒）
+     */
     private static final long ACCESS_TOKEN_EXPIRE = 2 * 60 * 60 * 1000;
+    
+    /**
+     * Redis 缓存过期时间：300秒（5分钟）
+     */
     private static final long CACHE_EXPIRE_SECONDS = 300;
 
     @Override
@@ -104,6 +111,45 @@ public class AuthServiceImpl implements AuthService {
         return generateAuthResponse(user);
     }
 
+    /**
+     * 更新用户头像
+     *
+     * @param userId   用户ID
+     * @param request  头像更新请求，包含新头像URL
+     * @return 更新后的认证响应
+     * @throws GlobalException 如果用户不存在
+     */
+    @Override
+    public AuthResponse updateAvatar(Long userId, UpdateAvatarRequest request) {
+        // 从缓存或数据库获取用户信息
+        User user = getUserByIdFromCacheOrDB(userId);
+        
+        if (user == null) {
+            throw GlobalException.businessError("用户不存在");
+        }
+
+        // 更新头像URL
+        String newAvatarUrl = request.getAvatar();
+        user.setAvatar(newAvatarUrl);
+        user.setUpdateTime(LocalDateTime.now());
+
+        // 更新数据库中的用户信息
+        userMapper.updateById(user);
+
+        // 清除缓存，确保下次获取最新数据
+        String cacheKey = "user:" + userId;
+        redisUtil.delete(cacheKey);
+
+        // 返回更新后的认证响应
+        return generateAuthResponse(user);
+    }
+
+    /**
+     * 从缓存或数据库获取用户（根据用户名）
+     *
+     * @param username 用户名
+     * @return 用户对象，如果不存在则返回null
+     */
     private User getUserByUsernameFromCacheOrDB(String username) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
@@ -150,6 +196,7 @@ public class AuthServiceImpl implements AuthService {
                 .userId(user.getId())
                 .username(user.getUsername())
                 .nickname(user.getNickname())
+                .avatar(user.getAvatar())
                 .token(accessToken)
                 .refreshToken(refreshToken)
                 .build();

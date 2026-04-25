@@ -50,6 +50,8 @@ export const useAuthStore = defineStore('auth', () => {
       if (refreshToken.value) {
         localStorage.setItem('piggy_refresh_token', refreshToken.value)
       }
+      // 保存 userId 供其他 API 使用
+      localStorage.setItem('piggy_user_id', userInfo.value.userId)
       localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
 
       console.log('✅ 登录成功！token 已保存:', tokenValue.substring(0, 30) + '...')

@@ -20,6 +20,12 @@ const loadingAccounts = ref(false)
 const transactions = ref([])
 const loadingTransactions = ref(false)
 const selectedTransactionType = ref('ALL')
+
+// 分页相关
+const currentPage = ref(1)
+const pageSize = ref(20)
+const totalPages = ref(1)
+const totalTransactions = ref(0)
 const showTransactionModal = ref(false)
 const submittingTransaction = ref(false)
 const expenseParentCategory = ref('餐饮')
@@ -161,20 +167,27 @@ const loadTransactions = async () => {
   try {
     const params = { 
       accountId: selectedAccountId.value, 
-      page: 1, 
-      size: 50 
+      page: currentPage.value, 
+      size: pageSize.value 
     }
     const response = await getTransactions(params)
     let records = []
     if (response.data?.records) {
       records = response.data.records
+      // 更新分页信息
+      totalPages.value = response.data.pages || 1
+      totalTransactions.value = response.data.total || records.length
     } else if (Array.isArray(response.data)) {
       records = response.data
+      totalPages.value = 1
+      totalTransactions.value = records.length
     }
     transactions.value = records
   } catch (err) {
     console.error('加载交易记录失败:', err)
     transactions.value = []
+    totalPages.value = 1
+    totalTransactions.value = 0
   } finally {
     loadingTransactions.value = false
   }
@@ -304,11 +317,65 @@ const filteredTransactions = computed(() => {
   return transactions.value.filter(t => t.transactionType === selectedTransactionType.value)
 })
 
+// 分页后的数据
+const paginatedTransactions = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredTransactions.value.slice(start, end)
+})
+
+// 基于过滤后数据计算总页数
+const filteredTotalPages = computed(() => {
+  return Math.ceil(filteredTransactions.value.length / pageSize.value) || 1
+})
+
+// 分页相关方法
+const handlePageChange = (page) => {
+  if (page < 1 || page > filteredTotalPages.value) return
+  currentPage.value = page
+  // 滚动到列表顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// 每页条数变化
+const handlePageSizeChange = () => {
+  currentPage.value = 1 // 重置到第一页
+}
+
+// 计算可见的页码（最多显示7个页码）
+const visiblePages = computed(() => {
+  const pages = []
+  const total = filteredTotalPages.value
+  const current = currentPage.value
+  
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    if (current <= 4) {
+      for (let i = 1; i <= 6; i++) pages.push(i)
+      pages.push('...')
+      pages.push(total)
+    } else if (current >= total - 3) {
+      pages.push(1)
+      pages.push('...')
+      for (let i = total - 5; i <= total; i++) pages.push(i)
+    } else {
+      pages.push(1)
+      pages.push('...')
+      for (let i = current - 1; i <= current + 1; i++) pages.push(i)
+      pages.push('...')
+      pages.push(total)
+    }
+  }
+  return pages
+})
+
 // 监听账户变化
 watch(selectedAccountId, (newId) => {
   if (newId) {
     localStorage.setItem('selectedAccountId', newId)
     selectedAccount.value = allAccounts.value.find(acc => acc.id === Number(newId))
+    currentPage.value = 1 // 重置到第一页
     loadTransactions()
   }
 })
@@ -451,7 +518,7 @@ onMounted(async () => {
         <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-white">交易记录</h2>
-            <span class="text-sm text-slate-400">{{ filteredTransactions.length }} 笔</span>
+            <span class="text-sm text-slate-400">{{ totalTransactions }} 笔</span>
           </div>
 
           <div v-if="loadingTransactions" class="flex justify-center items-center py-12">
@@ -467,7 +534,7 @@ onMounted(async () => {
           </div>
 
           <div v-else class="space-y-3">
-            <div v-for="transaction in filteredTransactions" :key="transaction.id" class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl hover:bg-slate-900/70 transition-colors">
+            <div v-for="transaction in paginatedTransactions" :key="transaction.id" class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl hover:bg-slate-900/70 transition-colors">
               <div class="flex items-center space-x-4">
                 <div :class="getTransactionBgClass(transaction.transactionType)">
                   {{ getTransactionTypeInfo(transaction.transactionType).icon }}
@@ -493,6 +560,60 @@ onMounted(async () => {
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                   </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分页控件 -->
+          <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-700/50">
+            <!-- 每页条数选择 -->
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-slate-400">每页</span>
+              <select 
+                v-model="pageSize" 
+                @change="handlePageSizeChange"
+                class="bg-slate-700 border border-slate-600/50 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option :value="5">5条</option>
+                <option :value="10">10条</option>
+                <option :value="20">20条</option>
+                <option :value="50">50条</option>
+              </select>
+              <span class="text-sm text-slate-400">条</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-slate-400">
+                共 {{ filteredTransactions.length }} 笔，第 {{ currentPage }} / {{ filteredTotalPages }} 页
+              </span>
+              <div class="flex items-center space-x-1 ml-4">
+                <button 
+                  @click="handlePageChange(currentPage - 1)" 
+                  :disabled="currentPage === 1"
+                  class="px-3 py-1 text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                >
+                  上一页
+                </button>
+                <div class="flex items-center space-x-1">
+                  <button 
+                    v-for="page in visiblePages" 
+                    :key="page"
+                    @click="handlePageChange(page)"
+                    :class="[
+                      'px-3 py-1 text-sm rounded transition-colors',
+                      page === currentPage ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white'
+                    ]"
+                  >
+                    {{ page }}
+                  </button>
+                </div>
+                <button 
+                  @click="handlePageChange(currentPage + 1)" 
+                  :disabled="currentPage >= filteredTotalPages"
+                  class="px-3 py-1 text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                >
+                  下一页
                 </button>
               </div>
             </div>

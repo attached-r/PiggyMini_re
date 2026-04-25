@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
 import { createOrUpdateBudget, getCurrentBudgets } from '@/api/budget'
+import { ExpenseCategory, ExpenseCategoryGroups } from '@/api/transaction'
 import { ElMessage } from 'element-plus'
 import Sidebar from '@/components/Sidebar.vue'
 
@@ -14,6 +15,33 @@ const showBudgetModal = ref(false)
 const creatingBudget = ref(false)
 const budgetError = ref('')
 const sidebarCollapsed = ref(false)
+
+// 编辑预算相关
+const editingBudget = ref(null) // 当前编辑的预算
+const isEditMode = ref(false) // 是否是编辑模式
+
+// 分类筛选
+const selectedCategoryFilter = ref('all')
+const categories = ref([])
+const parentCategories = ref([])
+
+// 加载分类数据（使用前端定义的分类，避免后端接口问题）
+const loadCategories = () => {
+  // 构建分类列表
+  const categoryList = []
+  for (const [categoryKey, categoryInfo] of Object.entries(ExpenseCategory)) {
+    categoryList.push({
+      value: categoryKey,
+      label: categoryInfo.label,
+      icon: categoryInfo.icon,
+      parent: categoryInfo.parent
+    })
+  }
+  categories.value = categoryList
+  
+  // 获取父分类列表（按定义顺序）
+  parentCategories.value = Object.keys(ExpenseCategoryGroups)
+}
 
 // 预算表单数据
 const budgetForm = ref({
@@ -68,11 +96,48 @@ const loadBudgets = async () => {
   }
 }
 
+// 根据分类获取父分类
+const getCategoryParent = (category) => {
+  const cat = categories.value.find(c => c.value === category)
+  return cat ? cat.parent : '其他'
+}
+
+// 处理分类筛选切换
+const handleCategoryFilterChange = (filter) => {
+  selectedCategoryFilter.value = filter
+}
+
+// 过滤后的预算
+const filteredBudgets = computed(() => {
+  if (selectedCategoryFilter.value === 'all') {
+    return budgets.value
+  }
+  return budgets.value.filter(budget => {
+    const parent = getCategoryParent(budget.category)
+    return parent === selectedCategoryFilter.value
+  })
+})
+
 const openBudgetModal = () => {
   budgetForm.value = {
     month: currentMonth.value,
     category: '',
     amount: 0
+  }
+  editingBudget.value = null
+  isEditMode.value = false
+  budgetError.value = ''
+  showBudgetModal.value = true
+}
+
+// 打开编辑预算模态框
+const openEditBudgetModal = (budget) => {
+  editingBudget.value = budget
+  isEditMode.value = true
+  budgetForm.value = {
+    month: currentMonth.value,
+    category: budget.category,
+    amount: budget.amount
   }
   budgetError.value = ''
   showBudgetModal.value = true
@@ -100,12 +165,14 @@ const handleCreateBudget = async () => {
     const data = {
       month: budgetForm.value.month,
       category: budgetForm.value.category,
-      budget: budgetForm.value.amount
+      amount: budgetForm.value.amount
     }
     
     await createOrUpdateBudget(data)
-    ElMessage.success('设置预算成功')
+    ElMessage.success(isEditMode.value ? '更新预算成功' : '设置预算成功')
     showBudgetModal.value = false
+    editingBudget.value = null
+    isEditMode.value = false
     await loadBudgets()
   } catch (err) {
     console.error('创建预算失败:', err)
@@ -118,16 +185,24 @@ const handleCreateBudget = async () => {
 const cancelCreateBudget = () => {
   showBudgetModal.value = false
   budgetError.value = ''
+  editingBudget.value = null
+  isEditMode.value = false
 }
 
 const refreshBudgets = () => {
   loadBudgets()
 }
 
-// 获取分类文本
+// 获取分类文本（使用后端返回的分类数据）
 const getCategoryText = (category) => {
   if (!category) return '总预算'
   
+  const cat = categories.value.find(c => c.value === category)
+  if (cat) {
+    return `${cat.parent}-${cat.label}`
+  }
+  
+  // 备用映射表
   const categoryMap = {
     FOOD_GROCERY: '餐饮-买菜',
     FOOD_SNACK: '餐饮-零食',
@@ -167,6 +242,7 @@ onMounted(() => {
     router.replace('/login')
     return
   }
+  loadCategories()
   loadBudgets()
 })
 </script>
@@ -207,19 +283,66 @@ onMounted(() => {
         </div>
 
         <template v-else>
+          <!-- 分类筛选器 -->
+          <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mb-6">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-300 font-medium">按分类筛选</span>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  @click="handleCategoryFilterChange('all')"
+                  :class="[
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                    selectedCategoryFilter === 'all' 
+                      ? 'bg-indigo-600 text-white' 
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  ]"
+                >
+                  全部
+                </button>
+                <button
+                  v-for="parent in parentCategories"
+                  :key="parent"
+                  @click="handleCategoryFilterChange(parent)"
+                  :class="[
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                    selectedCategoryFilter === parent 
+                      ? 'bg-indigo-600 text-white' 
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  ]"
+                >
+                  {{ parent }}
+                </button>
+              </div>
+            </div>
+            <div v-if="filteredBudgets.length > 0" class="mt-3 text-sm text-slate-400">
+              共 {{ filteredBudgets.length }} 个预算
+            </div>
+          </div>
+
           <!-- 预算卡片列表 -->
-          <div v-if="budgets.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            <div v-for="(budget, index) in budgets" :key="index" class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6">
+          <div v-if="filteredBudgets.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <div v-for="(budget, index) in filteredBudgets" :key="index" class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6">
               <div class="flex items-center justify-between mb-4">
                 <h3 class="font-medium text-white">{{ getCategoryText(budget.category) }}</h3>
-                <span :class="[
-                  'text-sm font-medium px-2 py-1 rounded-full',
-                  (budget.usageRate || 0) >= 100 ? 'bg-rose-500/20 text-rose-400' : 
-                  (budget.usageRate || 0) >= 80 ? 'bg-amber-500/20 text-amber-400' : 
-                  'bg-emerald-500/20 text-emerald-400'
-                ]">
-                  {{ formatPercentage(budget.usageRate || 0) }}
-                </span>
+                <div class="flex items-center space-x-2">
+                  <button 
+                    @click="openEditBudgetModal(budget)"
+                    class="text-slate-400 hover:text-indigo-400 transition-colors p-1"
+                    title="编辑预算"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <span :class="[
+                    'text-sm font-medium px-2 py-1 rounded-full',
+                    (budget.usageRate || 0) >= 100 ? 'bg-rose-500/20 text-rose-400' : 
+                    (budget.usageRate || 0) >= 80 ? 'bg-amber-500/20 text-amber-400' : 
+                    'bg-emerald-500/20 text-emerald-400'
+                  ]">
+                    {{ formatPercentage(budget.usageRate || 0) }}
+                  </span>
+                </div>
               </div>
               
               <div class="space-y-3">
@@ -259,15 +382,17 @@ onMounted(() => {
           <!-- 空状态 -->
           <div v-else class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-12 text-center">
             <div class="text-6xl mb-4">📊</div>
-            <h3 class="text-xl font-semibold text-white mb-2">暂无预算计划</h3>
-            <p class="text-slate-400 mb-6">创建您的第一个预算来管理支出</p>
+            <h3 v-if="selectedCategoryFilter === 'all'" class="text-xl font-semibold text-white mb-2">暂无预算计划</h3>
+            <h3 v-else class="text-xl font-semibold text-white mb-2">该分类暂无预算</h3>
+            <p v-if="selectedCategoryFilter === 'all'" class="text-slate-400 mb-6">创建您的第一个预算来管理支出</p>
+            <p v-else class="text-slate-400 mb-6">选择其他分类查看，或创建新的预算</p>
             <button @click="openBudgetModal" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
               创建预算
             </button>
           </div>
 
           <!-- 设置预算按钮 -->
-          <div v-if="budgets.length > 0" class="flex justify-end">
+          <div v-if="filteredBudgets.length > 0" class="flex justify-end">
             <button @click="openBudgetModal" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -283,7 +408,7 @@ onMounted(() => {
     <div v-if="showBudgetModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-white">设置预算</h3>
+          <h3 class="text-xl font-bold text-white">{{ isEditMode ? '编辑预算' : '设置预算' }}</h3>
           <button @click="cancelCreateBudget" class="text-slate-400 hover:text-white transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -298,6 +423,12 @@ onMounted(() => {
 
         <!-- Budget Form -->
         <form @submit.prevent="handleCreateBudget" class="space-y-4">
+          <!-- 分类信息（编辑模式下只读） -->
+          <div v-if="isEditMode" class="bg-slate-900/50 border border-slate-600/50 rounded-lg p-3">
+            <label class="block text-sm font-medium text-slate-400 mb-1">分类</label>
+            <div class="text-white font-medium">{{ getCategoryText(editingBudget?.category) }}</div>
+          </div>
+
           <!-- Month -->
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">月份</label>
@@ -310,7 +441,7 @@ onMounted(() => {
           </div>
 
           <!-- Category -->
-          <div>
+          <div v-if="!isEditMode">
             <label class="block text-sm font-medium text-slate-300 mb-2">预算分类</label>
             <select
               v-model="budgetForm.category"

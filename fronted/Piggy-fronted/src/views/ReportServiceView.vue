@@ -1,9 +1,10 @@
-<script setup>
+﻿<script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
 import { getAccounts } from '@/api/account'
 import { getSummary, getCategoryReport, getBudgetExecution, getTrend } from '@/api/report'
+import { createOrUpdateBudget } from '@/api/budgets'
 import { ElMessage } from 'element-plus'
 import Sidebar from '@/components/Sidebar.vue'
 
@@ -17,9 +18,6 @@ const allAccounts = ref([])
 const selectedAccountId = ref(null) // null 表示全部账户
 const selectedAccount = ref(null)
 const loadingAccounts = ref(false)
-
-// 是否选择全部账户
-const isAllAccounts = computed(() => selectedAccountId.value === null)
 
 const selectedPeriod = ref('month')
 const currentDate = new Date()
@@ -39,6 +37,7 @@ const monthToDate = (monthStr) => {
 
 const selectedDate = ref(monthToDate(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`))
 const selectedMonth = ref(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`)
+const selectedYear = ref(currentDate.getFullYear())
 
 watch(selectedMonth, (newMonth) => {
   selectedDate.value = monthToDate(newMonth)
@@ -54,6 +53,74 @@ const categoryReport = ref([])
 const budgetExecution = ref([])
 const trendReport = ref(null)
 const loadingReport = ref(false)
+
+// 分页配置
+const categoryPageSize = ref(5)
+const categoryCurrentPage = ref(1)
+const budgetPageSize = ref(5)
+const budgetCurrentPage = ref(1)
+
+// 编辑预算相关
+const editDialogVisible = ref(false)
+const editingBudget = ref({
+  category: '',
+  categoryLabel: '',
+  amount: 0
+})
+const editLoading = ref(false)
+
+// 分页计算
+const paginatedCategoryReport = computed(() => {
+  const start = (categoryCurrentPage.value - 1) * categoryPageSize.value
+  const end = start + categoryPageSize.value
+  return categoryReport.value.slice(start, end)
+})
+
+const paginatedBudgetExecution = computed(() => {
+  const start = (budgetCurrentPage.value - 1) * budgetPageSize.value
+  const end = start + budgetPageSize.value
+  return budgetExecution.value.slice(start, end)
+})
+
+// 重置分页
+const resetPagination = () => {
+  categoryCurrentPage.value = 1
+  budgetCurrentPage.value = 1
+}
+
+// 编辑预算
+const openEditDialog = (item) => {
+  editingBudget.value = {
+    category: item.category,
+    categoryLabel: getCategoryInfo(item.category).icon + ' ' + getCategoryInfo(item.category).label,
+    amount: item.budgetAmount
+  }
+  editDialogVisible.value = true
+}
+
+const handleEditBudget = async () => {
+  if (!editingBudget.value.amount || editingBudget.value.amount <= 0) {
+    ElMessage.warning('请输入有效的预算金额')
+    return
+  }
+  
+  editLoading.value = true
+  try {
+    await createOrUpdateBudget({
+      month: selectedMonth.value,
+      category: editingBudget.value.category,
+      amount: editingBudget.value.amount
+    })
+    ElMessage.success('预算更新成功')
+    editDialogVisible.value = false
+    await loadReportData()
+  } catch (err) {
+    console.error('Failed to update budget:', err)
+    ElMessage.error('预算更新失败')
+  } finally {
+    editLoading.value = false
+  }
+}
 
 // Category mapping
 const categoryLabels = {
@@ -101,17 +168,33 @@ const formatBalance = (balance) => {
 
 const formatPercent = (value) => `${((value || 0) * 100).toFixed(1)}%`
 
-const getTrendClass = (trend) => {
+// 趋势值映射（需要传入收入和支出来判断无数据情况）
+const hasNoData = (income, expense) => {
+  return (income === 0 || income === null || income === undefined) && 
+         (expense === 0 || expense === null || expense === undefined)
+}
+
+const getTrendText = (trend, income, expense) => {
+  if (hasNoData(income, expense)) return '暂无数据'
+  if (!trend) return '持平'
+  if (trend.includes('positive') || trend.includes('up') || trend.includes('增加')) return '盈余'
+  if (trend.includes('negative') || trend.includes('down') || trend.includes('减少')) return '亏损'
+  return '持平'
+}
+
+const getTrendClass = (trend, income, expense) => {
+  if (hasNoData(income, expense)) return 'text-slate-400'
   if (!trend) return 'text-slate-400'
-  if (trend.includes('up') || trend.includes('增加')) return 'text-emerald-400'
-  if (trend.includes('down') || trend.includes('减少')) return 'text-rose-400'
+  if (trend.includes('positive') || trend.includes('up') || trend.includes('增加')) return 'text-emerald-400'
+  if (trend.includes('negative') || trend.includes('down') || trend.includes('减少')) return 'text-rose-400'
   return 'text-slate-400'
 }
 
-const getTrendIcon = (trend) => {
+const getTrendIcon = (trend, income, expense) => {
+  if (hasNoData(income, expense)) return '📊'
   if (!trend) return '➡️'
-  if (trend.includes('up') || trend.includes('增加')) return '📈'
-  if (trend.includes('down') || trend.includes('减少')) return '📉'
+  if (trend.includes('positive') || trend.includes('up') || trend.includes('增加')) return '📈'
+  if (trend.includes('negative') || trend.includes('down') || trend.includes('减少')) return '📉'
   return '➡️'
 }
 
@@ -165,19 +248,28 @@ const loadReportData = async () => {
       categoryReport.value = categoryData
     }
 
-    // 预算执行只对单个账户有意义
-    if (accountId) {
-      const budgetResponse = await getBudgetExecution(selectedMonth.value)
-      const budgetData = budgetResponse?.data?.data ?? budgetResponse?.data ?? []
-      if (Array.isArray(budgetData)) {
-        budgetExecution.value = budgetData
-      }
+    // 预算执行（用户级别数据，与账户选择无关）
+    const budgetResponse = await getBudgetExecution(selectedMonth.value)
+    const budgetData = budgetResponse?.data?.data ?? budgetResponse?.data ?? []
+    if (Array.isArray(budgetData)) {
+      budgetExecution.value = budgetData
+    }
+
+    // 更新趋势图日期范围
+    if (selectedPeriod.value === 'year') {
+      // 年度视图：使用整年数据
+      trendStartDate.value = `${selectedYear.value}-01-01`
+      trendEndDate.value = `${selectedYear.value}-12-31`
     } else {
-      budgetExecution.value = []
+      // 月度视图：使用选择月份的数据
+      trendStartDate.value = `${selectedMonth.value}-01`
+      trendEndDate.value = monthToDate(selectedMonth.value)
     }
 
     const trendResponse = await getTrend(trendStartDate.value, trendEndDate.value)
-    const trendData = trendResponse?.data?.data ?? trendResponse?.data ?? null
+    console.log('Trend raw response:', trendResponse)
+    console.log('Trend dates:', trendResponse?.data?.dates)
+    const trendData = trendResponse?.data ?? null
     if (trendData && typeof trendData === 'object') {
       trendReport.value = trendData
     }
@@ -192,10 +284,45 @@ const loadReportData = async () => {
 // Generate trend chart data
 const trendChartData = computed(() => {
   if (!trendReport.value || !trendReport.value.dates) return null
+  
+  const rawLabels = trendReport.value.dates.map(d => d.substring(5))
+  const rawIncome = trendReport.value.income || []
+  const rawExpense = trendReport.value.expense || []
+  
+  // 年度视图：按月聚合
+  if (selectedPeriod.value === 'year') {
+    const monthlyLabels = []
+    const monthlyIncome = []
+    const monthlyExpense = []
+    
+    // 按月分组
+    for (let i = 0; i < rawLabels.length; i++) {
+      const monthKey = rawLabels[i].substring(0, 2) // MM
+      const monthIndex = monthlyLabels.indexOf(monthKey)
+      
+      if (monthIndex === -1) {
+        monthlyLabels.push(monthKey)
+        monthlyIncome.push(Number(rawIncome[i]) || 0)
+        monthlyExpense.push(Number(rawExpense[i]) || 0)
+      } else {
+        monthlyIncome[monthIndex] += Number(rawIncome[i]) || 0
+        monthlyExpense[monthIndex] += Number(rawExpense[i]) || 0
+      }
+    }
+    
+    // 年度视图显示简洁格式：1月、2月、3月...12月
+    return {
+      labels: monthlyLabels.map(l => parseInt(l) + '月'),
+      income: monthlyIncome,
+      expense: monthlyExpense
+    }
+  }
+  
+  // 月度视图：返回原始逐日数据
   return {
-    labels: trendReport.value.dates.map(d => d.substring(5)),
-    income: trendReport.value.income || [],
-    expense: trendReport.value.expense || []
+    labels: rawLabels,
+    income: rawIncome,
+    expense: rawExpense
   }
 })
 
@@ -205,6 +332,11 @@ const chartMaxValue = computed(() => {
   const maxExpense = Math.max(...trendChartData.value.expense, 0)
   return Math.max(maxIncome, maxExpense) * 1.2
 })
+
+// X轴标签显示 - 始终显示所有标签
+const shouldShowLabel = (index) => {
+  return true
+}
 
 // Watchers
 const onAccountChange = () => {
@@ -217,7 +349,8 @@ const onAccountChange = () => {
 
 watch(selectedAccountId, onAccountChange)
 
-watch([selectedPeriod, selectedMonth], () => {
+watch([selectedPeriod, selectedMonth, selectedYear], () => {
+  resetPagination()
   loadReportData()
 })
 
@@ -266,9 +399,15 @@ onMounted(async () => {
                 <option value="year">年度</option>
               </select>
             </div>
-            <div class="flex-1 min-w-[150px]">
+            <!-- 月度选择 -->
+            <div v-if="selectedPeriod === 'month'" class="flex-1 min-w-[150px]">
               <label class="block text-sm font-medium text-slate-300 mb-1">选择月份</label>
               <input v-model="selectedMonth" type="month" class="w-full bg-slate-900/50 border border-slate-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <!-- 年度选择 -->
+            <div v-else class="flex-1 min-w-[150px]">
+              <label class="block text-sm font-medium text-slate-300 mb-1">选择年份</label>
+              <input v-model="selectedYear" type="number" :min="currentDate.getFullYear() - 5" :max="currentDate.getFullYear()" class="w-full bg-slate-900/50 border border-slate-600/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <button @click="loadReportData" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
               查询报表
@@ -307,55 +446,89 @@ onMounted(async () => {
             </div>
             <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4">
               <div class="flex items-center space-x-2 mb-1">
-                <span class="text-lg">{{ getTrendIcon(reportSummary?.trend) }}</span>
+                <span class="text-lg">{{ getTrendIcon(reportSummary?.trend, reportSummary?.income, reportSummary?.expense) }}</span>
                 <span class="text-sm text-slate-400">趋势</span>
               </div>
-              <div class="text-xl font-bold" :class="getTrendClass(reportSummary?.trend)">
-                {{ reportSummary?.trend || '持平' }}
+              <div class="text-xl font-bold" :class="getTrendClass(reportSummary?.trend, reportSummary?.income, reportSummary?.expense)">
+                {{ getTrendText(reportSummary?.trend, reportSummary?.income, reportSummary?.expense) }}
               </div>
             </div>
           </div>
 
           <!-- Trend Chart -->
-          <div v-if="trendChartData" class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 mb-6">
+          <div v-if="trendChartData && trendChartData.labels.length > 0" class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 mb-6">
             <h3 class="text-lg font-semibold text-white mb-4">收支趋势</h3>
             <div class="relative">
-              <div class="flex items-stretch">
-                <!-- Y轴标签 -->
+              <!-- Y轴刻度 -->
+              <div class="flex items-stretch h-64">
                 <div class="flex flex-col justify-between text-xs text-slate-500 pr-3 py-2 min-w-[60px]">
                   <span class="text-right">{{ formatBalance(chartMaxValue) }}</span>
                   <span class="text-right">{{ formatBalance(chartMaxValue * 0.5) }}</span>
                   <span class="text-right">{{ formatBalance(0) }}</span>
                 </div>
-                <!-- 图表区域 - 可滚动 -->
-                <div class="flex-1 overflow-x-auto">
-                  <div class="h-48 flex items-end justify-start gap-1 min-w-max px-2">
-                    <div v-for="(label, index) in trendChartData.labels" :key="index" class="flex flex-col items-center w-8 flex-shrink-0">
-                      <div class="w-full flex items-end justify-center gap-0.5 h-36">
-                        <div 
-                          class="w-3 bg-emerald-500 rounded-t transition-all duration-300"
-                          :style="{ height: `${(trendChartData.income[index] / chartMaxValue) * 100}%`, minHeight: '2px' }"
-                        ></div>
-                        <div 
-                          class="w-3 bg-rose-500 rounded-t transition-all duration-300"
-                          :style="{ height: `${(trendChartData.expense[index] / chartMaxValue) * 100}%`, minHeight: '2px' }"
-                        ></div>
-                      </div>
-                      <span class="text-xs text-slate-500 mt-1 whitespace-nowrap">{{ label }}</span>
+                <!-- 图表主体 -->
+                <div class="flex-1 relative">
+                  <!-- 网格线 -->
+                  <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                    <div class="border-t border-slate-700/30"></div>
+                    <div class="border-t border-slate-700/30"></div>
+                    <div class="border-t border-slate-700/30"></div>
+                  </div>
+                  <!-- 垂直网格线 -->
+                  <div class="absolute inset-0 flex justify-around px-2 pointer-events-none">
+                    <div v-for="(_, index) in trendChartData.labels" :key="index" class="flex-1 max-w-[60px] flex justify-center">
+                      <div class="border-l border-slate-700/30 h-full"></div>
                     </div>
                   </div>
+                  <!-- 柱状图 -->
+                  <div class="absolute inset-0 flex items-end justify-between px-2">
+                    <div v-for="(label, index) in trendChartData.labels" :key="index" class="flex flex-col items-center" style="flex: 1; max-width: 60px;">
+                      <div class="flex items-end justify-center gap-1 h-52">
+                        <div 
+                          class="w-4 bg-emerald-500 rounded-t transition-all duration-300 hover:bg-emerald-400 cursor-pointer relative group"
+                          :style="{ height: `${(trendChartData.income[index] / chartMaxValue) * 100}%`, minHeight: trendChartData.income[index] > 0 ? '4px' : '0' }"
+                        >
+                          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-emerald-400 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                            收入: {{ formatBalance(trendChartData.income[index]) }}
+                          </div>
+                        </div>
+                        <div 
+                          class="w-4 bg-rose-500 rounded-t transition-all duration-300 hover:bg-rose-400 cursor-pointer relative group"
+                          :style="{ height: `${(trendChartData.expense[index] / chartMaxValue) * 100}%`, minHeight: trendChartData.expense[index] > 0 ? '4px' : '0' }"
+                        >
+                          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-rose-400 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                            支出: {{ formatBalance(trendChartData.expense[index]) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- X轴标签 -->
+              <div class="flex ml-[72px] mt-2 justify-between px-2" :style="selectedPeriod === 'month' ? 'height: 50px;' : ''">
+                <div v-for="(label, index) in trendChartData.labels" :key="index" class="flex items-start justify-center" style="flex: 1; max-width: 60px;">
+                  <span v-if="shouldShowLabel(index)" class="text-xs text-slate-500" :style="selectedPeriod === 'month' ? 'transform: rotate(-45deg); white-space: nowrap;' : ''">{{ label }}</span>
                 </div>
               </div>
             </div>
             <div class="flex items-center justify-center space-x-6 mt-4">
               <div class="flex items-center space-x-2">
-                <div class="w-4 h-4 bg-emerald-500 rounded"></div>
+                <div class="w-3 h-3 bg-emerald-500 rounded"></div>
                 <span class="text-sm text-slate-300">收入</span>
               </div>
               <div class="flex items-center space-x-2">
-                <div class="w-4 h-4 bg-rose-500 rounded"></div>
+                <div class="w-3 h-3 bg-rose-500 rounded"></div>
                 <span class="text-sm text-slate-300">支出</span>
               </div>
+            </div>
+          </div>
+          
+          <!-- 无趋势数据时显示 -->
+          <div v-else class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 mb-6">
+            <h3 class="text-lg font-semibold text-white mb-4">收支趋势</h3>
+            <div class="text-center py-8 text-slate-400">
+              暂无趋势数据
             </div>
           </div>
 
@@ -368,20 +541,45 @@ onMounted(async () => {
                 暂无分类支出数据
               </div>
               
-              <div v-else class="space-y-3">
-                <div v-for="(item, index) in categoryReport" :key="index" class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl hover:bg-slate-900/70 transition-colors">
-                  <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" :style="{ backgroundColor: getCategoryColor(index) + '20' }">
-                      {{ getCategoryInfo(item.category).icon }}
+              <div v-else>
+                <div class="space-y-3 mb-4">
+                  <div v-for="(item, index) in paginatedCategoryReport" :key="index" class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl hover:bg-slate-900/70 transition-colors">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" :style="{ backgroundColor: getCategoryColor((categoryCurrentPage - 1) * categoryPageSize + index) + '20' }">
+                        {{ getCategoryInfo(item.category).icon }}
+                      </div>
+                      <div>
+                        <span class="text-white font-medium">{{ getCategoryInfo(item.category).label }}</span>
+                        <span class="text-xs text-slate-500 ml-2">{{ getCategoryInfo(item.category).parent }}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span class="text-white font-medium">{{ getCategoryInfo(item.category).label }}</span>
-                      <span class="text-xs text-slate-500 ml-2">{{ getCategoryInfo(item.category).parent }}</span>
+                    <div class="text-right">
+                      <span class="font-medium text-white">{{ formatBalance(item.amount || 0) }}</span>
+                      <span class="text-slate-500 text-sm ml-2">({{ formatPercent(item.percent || 0) }})</span>
                     </div>
                   </div>
-                  <div class="text-right">
-                    <span class="font-medium text-white">{{ formatBalance(item.amount || 0) }}</span>
-                    <span class="text-slate-500 text-sm ml-2">({{ formatPercent(item.percent || 0) }})</span>
+                </div>
+                <!-- 分页控件 -->
+                <div class="flex items-center justify-between pt-2 border-t border-slate-700/50">
+                  <span class="text-xs text-slate-500">
+                    共 {{ categoryReport.length }} 条
+                  </span>
+                  <div class="flex items-center space-x-2">
+                    <button 
+                      @click="categoryCurrentPage--" 
+                      :disabled="categoryCurrentPage === 1"
+                      class="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                    >
+                      上一页
+                    </button>
+                    <span class="text-xs text-slate-400">{{ categoryCurrentPage }} / {{ Math.ceil(categoryReport.length / categoryPageSize) }}</span>
+                    <button 
+                      @click="categoryCurrentPage++" 
+                      :disabled="categoryCurrentPage >= Math.ceil(categoryReport.length / categoryPageSize)"
+                      class="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                    >
+                      下一页
+                    </button>
                   </div>
                 </div>
               </div>
@@ -392,38 +590,66 @@ onMounted(async () => {
               <h3 class="text-lg font-semibold text-white mb-4">预算执行</h3>
               
               <div v-if="budgetExecution.length === 0" class="text-center py-8 text-slate-400">
-                <template v-if="isAllAccounts">
-                  请选择单个账户查看预算执行情况
-                </template>
-                <template v-else>
-                  暂无预算数据
-                </template>
+                暂无预算数据
               </div>
               
-              <div v-else class="space-y-4">
-                <div v-for="item in budgetExecution" :key="item.category" class="bg-slate-900/50 rounded-xl p-4">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center space-x-2">
-                      <span class="font-medium text-white">{{ getCategoryInfo(item.category).icon }}</span>
-                      <span class="font-medium text-white">{{ getCategoryInfo(item.category).label }}</span>
+              <div v-else>
+                <div class="space-y-4 mb-4">
+                  <div v-for="item in paginatedBudgetExecution" :key="item.category" class="bg-slate-900/50 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center space-x-2">
+                        <span class="font-medium text-white">{{ getCategoryInfo(item.category).icon }}</span>
+                        <span class="font-medium text-white">{{ getCategoryInfo(item.category).label }}</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="text-sm text-slate-400">
+                          {{ formatBalance(item.usedAmount || 0) }} / {{ formatBalance(item.budgetAmount || 0) }}
+                        </span>
+                        <button 
+                          @click="openEditDialog(item)"
+                          class="px-2 py-1 text-xs bg-indigo-600/50 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded transition-colors"
+                        >
+                          编辑
+                        </button>
+                      </div>
                     </div>
-                    <span class="text-sm text-slate-400">
-                      {{ formatBalance(item.usedAmount || 0) }} / {{ formatBalance(item.budgetAmount || 0) }}
-                    </span>
+                    <div class="w-full bg-slate-700 rounded-full h-3 mb-2 overflow-hidden">
+                      <div 
+                        :class="[
+                          'h-full rounded-full transition-all duration-500',
+                          ((item.usedAmount || 0) / (item.budgetAmount || 1)) >= 1 ? 'bg-rose-500' :
+                          ((item.usedAmount || 0) / (item.budgetAmount || 1)) >= 0.8 ? 'bg-amber-500' : 'bg-emerald-500'
+                        ]"
+                        :style="{ width: `${Math.min((item.usedAmount || 0) / (item.budgetAmount || 1) * 100, 100)}%` }"
+                      ></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500">
+                      <span>已用 {{ formatPercent((item.usedAmount || 0) / (item.budgetAmount || 1)) }}</span>
+                      <span>剩余 {{ formatBalance((item.budgetAmount || 0) - (item.usedAmount || 0)) }}</span>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-700 rounded-full h-3 mb-2 overflow-hidden">
-                    <div 
-                      :class="[
-                        'h-full rounded-full transition-all duration-500',
-                        ((item.usedAmount || 0) / (item.budgetAmount || 1)) >= 1 ? 'bg-rose-500' :
-                        ((item.usedAmount || 0) / (item.budgetAmount || 1)) >= 0.8 ? 'bg-amber-500' : 'bg-emerald-500'
-                      ]"
-                      :style="{ width: `${Math.min((item.usedAmount || 0) / (item.budgetAmount || 1) * 100, 100)}%` }"
-                    ></div>
-                  </div>
-                  <div class="flex justify-between text-xs text-slate-500">
-                    <span>已用 {{ formatPercent((item.usedAmount || 0) / (item.budgetAmount || 1)) }}</span>
-                    <span>剩余 {{ formatBalance((item.budgetAmount || 0) - (item.usedAmount || 0)) }}</span>
+                </div>
+                <!-- 分页控件 -->
+                <div class="flex items-center justify-between pt-2 border-t border-slate-700/50">
+                  <span class="text-xs text-slate-500">
+                    共 {{ budgetExecution.length }} 条
+                  </span>
+                  <div class="flex items-center space-x-2">
+                    <button 
+                      @click="budgetCurrentPage--" 
+                      :disabled="budgetCurrentPage === 1"
+                      class="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                    >
+                      上一页
+                    </button>
+                    <span class="text-xs text-slate-400">{{ budgetCurrentPage }} / {{ Math.ceil(budgetExecution.length / budgetPageSize) }}</span>
+                    <button 
+                      @click="budgetCurrentPage++" 
+                      :disabled="budgetCurrentPage >= Math.ceil(budgetExecution.length / budgetPageSize)"
+                      class="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors text-white"
+                    >
+                      下一页
+                    </button>
                   </div>
                 </div>
               </div>
@@ -432,5 +658,60 @@ onMounted(async () => {
         </template>
       </main>
     </main>
-  </div>
-</template>
+
+    <!-- 编辑预算对话框 -->
+    <teleport to="body">
+        <div v-if="editDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center">
+          <!-- 遮罩 -->
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="editDialogVisible = false"></div>
+          
+          <!-- 对话框 -->
+          <div class="relative bg-slate-800 border border-slate-700 rounded-2xl p-6 w-96 shadow-2xl">
+            <h3 class="text-lg font-semibold text-white mb-4">编辑预算</h3>
+            
+            <div class="mb-4">
+              <label class="block text-sm text-slate-400 mb-1">分类</label>
+              <div class="px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white">
+                {{ editingBudget.categoryLabel }}
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm text-slate-400 mb-1">预算金额 (元)</label>
+              <input 
+                v-model.number="editingBudget.amount"
+                type="number"
+                min="0.01"
+                step="0.01"
+                class="w-full px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="请输入预算金额"
+              >
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm text-slate-400 mb-1">所属月份</label>
+              <div class="px-3 py-2 bg-slate-900/50 border border-slate-600/50 rounded-lg text-white">
+                {{ selectedMonth }}
+              </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+              <button 
+                @click="editDialogVisible = false"
+                class="px-4 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              >
+                取消
+              </button>
+              <button 
+                @click="handleEditBudget"
+                :disabled="editLoading"
+                class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 text-white rounded-lg transition-colors"
+              >
+                {{ editLoading ? '保存中...' : '保存' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </teleport>
+    </div>
+  </template>

@@ -2,6 +2,11 @@ server:
   port: 10007
 
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
   application:
     name: Piggy-AI
   rabbitmq:
@@ -16,13 +21,13 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         username: nacos
-        password: ${PASSWORD:123456789rj}
+        password: ${PASSWORD:123456789lxy}
 
 langchain4j:
   open-ai:
     chat-model:
-      api-key: ${OPENAI_API_KEY:}
-      base-url: ${OPENAI_BASE_URL:}
+      api-key: ${OPENAI_API_KEY:sk-99668dcdf2f2450eb4e35c525c69634f}
+      base-url: ${OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
       model-name: qwen3-omni-flash
       temperature: 0.7
       max-tokens: 2000

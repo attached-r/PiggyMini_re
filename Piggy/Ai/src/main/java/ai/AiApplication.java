@@ -7,7 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan(basePackages = {"ai", "common"})
 @EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(excludeName = {
+    "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+    "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration"
+})
 public class AiApplication {
     public static void main(String[] args) {
         SpringApplication.run(AiApplication.class, args);

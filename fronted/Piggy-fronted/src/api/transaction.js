@@ -197,3 +197,12 @@ export const deleteTransaction = (id) => {
 export const aiClassify = (text) => {
   return request.post('/api/transactions/ai-classify', { text })
 }
+
+/**
+ * 获取所有消费分类
+ * GET /api/transactions/categories
+ * 响应: { categories: [...], parentCategories: [...] }
+ */
+export const getAllCategories = () => {
+  return request.get('/api/transactions/categories')
+}

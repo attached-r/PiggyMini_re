@@ -9,7 +9,7 @@ spring:
     redis:
       host: localhost
       port: 6379   # Redis 默认端口号
-      password: ${redis.password:20050603RJ}
+      password: ${redis.password:}
       database: 5
       timeout: 10000ms
 

@@ -4,6 +4,7 @@ import auth.dto.AuthResponse;
 import auth.dto.LoginRequest;
 import auth.dto.RefreshTokenRequest;
 import auth.dto.RegisterRequest;
+import auth.dto.UpdateAvatarRequest;
 
 /**
  * 认证服务接口
@@ -33,4 +34,13 @@ public interface AuthService {
      * @return 刷新Token响应
      */
     AuthResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    /**
+     * 更新用户头像
+     *
+     * @param userId 用户ID
+     * @param request 头像更新请求参数
+     * @return 更新后的认证响应（包含新头像）
+     */
+    AuthResponse updateAvatar(Long userId, UpdateAvatarRequest request);
 }

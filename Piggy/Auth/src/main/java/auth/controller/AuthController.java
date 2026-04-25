@@ -6,8 +6,10 @@ import common.model.Result;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 /**
  * 认证控制器
+ * 提供用户注册、登录、Token刷新、头像更新等认证相关接口
  *
  * @author: rj
  */
@@ -52,5 +54,21 @@ public class AuthController {
     public Result refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         AuthResponse response = authService.refreshToken(request);
         return Result.success("Token 刷新成功", response);
+    }
+
+    /**
+     * 更新用户头像
+     * 从请求头 X-User-Id 获取当前登录用户ID
+     *
+     * @param userId  用户ID（由网关从Token解析并传递）
+     * @param request 头像更新请求参数
+     * @return 统一响应结果，包含更新后的用户信息
+     */
+    @PutMapping("/avatar")
+    public Result updateAvatar(
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody UpdateAvatarRequest request) {
+        AuthResponse response = authService.updateAvatar(userId, request);
+        return Result.success("头像更新成功", response);
     }
 }

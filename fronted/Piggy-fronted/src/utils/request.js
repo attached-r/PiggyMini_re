@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const request = axios.create({
-  baseURL: 'http://localhost:9000',
+  baseURL: '',  // 使用相对路径，经过 Vite 代理转发
   timeout: 10000,
 });
 

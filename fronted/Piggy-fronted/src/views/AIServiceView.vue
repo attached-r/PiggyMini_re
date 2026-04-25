@@ -4,24 +4,86 @@ import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
 import { getAccounts } from '@/api/account'
 import { classifyTransaction, queryAI, analyzeConsumption } from '@/api/ai'
+import { createTransaction } from '@/api/transaction'  // lxy: 引入创建交易 API
 import Sidebar from '@/components/Sidebar.vue'
+import CustomModal from '@/components/CustomModal.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 
 const router = useRouter()
 
-// 侧边栏状态
+// lxy: Toast 引用
+const toastRef = ref(null)
+
+// lxy: 弹窗状态
+const modalState = ref({
+  show: false,
+  type: 'info',
+  title: '',
+  message: '',
+  showCancel: false,
+  onConfirm: null,
+  onCancel: null
+})
+
+// lxy: 显示 Toast 提示
+const showToast = (type, message, duration = 3000) => {
+  if (toastRef.value) {
+    toastRef.value[type](message, duration)
+  }
+}
+
+// lxy: 显示弹窗
+const showModal = (options) => {
+  modalState.value = {
+    show: true,
+    type: options.type || 'info',
+    title: options.title || '',
+    message: options.message || '',
+    showCancel: options.showCancel || false,
+    onConfirm: options.onConfirm || null,
+    onCancel: options.onCancel || null
+  }
+}
+
+// lxy: 关闭弹窗
+const closeModal = () => {
+  modalState.value.show = false
+}
+
+// lxy: 弹窗确认回调
+const handleModalConfirm = () => {
+  if (modalState.value.onConfirm) {
+    modalState.value.onConfirm()
+  }
+  closeModal()
+}
+
+// lxy: 弹窗取消回调
+const handleModalCancel = () => {
+  if (modalState.value.onCancel) {
+    modalState.value.onCancel()
+  }
+  closeModal()
+}
+
+// lxy: 侧边栏状态
 const sidebarCollapsed = ref(false)
 
-// 账户相关
+// lxy: 账户相关
 const allAccounts = ref([])
 const selectedAccountId = ref(null)
 const selectedAccount = ref(null)
 
-// AI 相关
+// lxy: AI 相关
 const aiInput = ref('')
-const aiResponse = ref(null)  // 存储 ClassifyResponse
+const aiResponse = ref(null)  // lxy: 存储 ClassifyResponse
 const queryResult = ref('')
 const isLoading = ref(false)
 const activeTab = ref('classify')  // classify | query | analyze
+
+// lxy: 保存状态
+const saveLoading = ref(false)  // lxy: 保存中状态
+const saveSuccess = ref(false)  // lxy: 保存成功状态
 
 // 加载账户列表
 const loadAccounts = async () => {
@@ -66,7 +128,63 @@ const formatBalance = (balance) => {
   }).format(balance || 0)
 }
 
-// 格式化分类名称
+// lxy: 中文分类名到英文枚举值的映射
+const categoryMap = {
+  '餐饮': 'FOOD_LUNCH',
+  '早餐': 'FOOD_BREAKFAST',
+  '午餐': 'FOOD_LUNCH',
+  '晚餐': 'FOOD_DINNER',
+  '零食': 'FOOD_SNACK',
+  '水果': 'FOOD_FRUIT',
+  '饮品': 'FOOD_DRINK',
+  '买菜': 'FOOD_GROCERY',
+  '聚餐': 'FOOD_TREAT',
+  '外卖': 'FOOD_DELIVERY',
+  '交通': 'TRANSPORT_SUBWAY',
+  '地铁': 'TRANSPORT_SUBWAY',
+  '公交': 'TRANSPORT_BUS',
+  '打车': 'TRANSPORT_TAXI',
+  '网约车': 'TRANSPORT_DIDI',
+  '加油': 'TRANSPORT_FUEL',
+  '购物': 'SHOP_DAILY',
+  '服饰': 'SHOP_CLOTHES',
+  '数码': 'SHOP_DIGITAL',
+  '日用品': 'SHOP_DAILY',
+  '居住': 'LIVING_RENT',
+  '房租': 'LIVING_RENT',
+  '电费': 'LIVING_ELECTRIC',
+  '水费': 'LIVING_WATER',
+  '娱乐': 'ENTERTAIN_MOVIE',
+  '电影': 'ENTERTAIN_MOVIE',
+  '游戏': 'ENTERTAIN_GAME',
+  '旅游': 'ENTERTAIN_TRAVEL',
+  '医疗': 'MEDICAL_MEDICINE',
+  '买药': 'MEDICAL_MEDICINE',
+  '教育': 'EDUCATION_TUITION',
+  '学费': 'EDUCATION_TUITION',
+  '工资': 'SALARY',
+  '收入': 'SALARY',
+  '投资': 'INVESTMENT',
+  '其他': 'OTHER_MISC',
+  '杂项': 'OTHER_MISC'
+}
+
+// lxy: 将中文分类名转换为后端枚举值
+const getCategoryEnum = (category) => {
+  if (!category) return null
+  // 如果已经是枚举值，直接返回
+  if (category.startsWith('FOOD_') || category.startsWith('TRANSPORT_') ||
+      category.startsWith('SHOP_') || category.startsWith('LIVING_') ||
+      category.startsWith('ENTERTAIN_') || category.startsWith('MEDICAL_') ||
+      category.startsWith('EDUCATION_') || category.startsWith('SOCIAL_') ||
+      category.startsWith('OTHER_') || category === 'SALARY' || category === 'INVESTMENT') {
+    return category
+  }
+  // 尝试转换为中文映射
+  return categoryMap[category] || 'OTHER_MISC'
+}
+
+// lxy: 格式化分类名称（用于显示）
 const getCategoryText = (category) => {
   const textMap = {
     'FOOD_BREAKFAST': { label: '早餐', icon: '🥐', color: '#EF4444' },
@@ -96,7 +214,7 @@ const getCategoryText = (category) => {
     'EDUCATION_TUITION': { label: '学费', icon: '🎓', color: '#6366F1' },
     'SALARY': { label: '工资', icon: '💰', color: '#10B981' },
     'INVESTMENT': { label: '投资', icon: '📈', color: '#10B981' },
-    'OTHER': { label: '其他', icon: '📦', color: '#94A3B8' }
+    'OTHER_MISC': { label: '其他', icon: '📦', color: '#94A3B8' }
   }
   return textMap[category] || { label: category, icon: '🏷️', color: '#94A3B8' }
 }
@@ -106,24 +224,25 @@ const getTransactionTypeText = (type) => {
   return type === 'EXPENSE' ? '支出' : type === 'INCOME' ? '收入' : '转账'
 }
 
-// 智能分类 - 对应后端 POST /internal/ai/classify
+// lxy: 智能分类 - 对应后端 POST /internal/ai/classify
 const handleClassify = async () => {
   if (!aiInput.value.trim()) {
     return
   }
-  
+
   isLoading.value = true
   aiResponse.value = null
+  saveSuccess.value = false  // lxy: 重置保存状态
   try {
     console.log('智能分类输入:', aiInput.value)
-    
+
     // 调用后端 POST /api/ai/classify
     const response = await classifyTransaction(aiInput.value)
-    
+
     console.log('分类响应:', response)
-    
-    // 后端返回: { code: 200, data: ClassifyResponse, message: "..." }
-    // ClassifyResponse: { amount, category, description, merchant, transactionType, confidence }
+
+    // lxy: 后端返回: { code: 200, data: ClassifyResponse, message: "..." }
+    // lxy: ClassifyResponse: { amount, category, description, merchant, transactionType, confidence }
     if (response && response.code === 200 && response.data) {
       aiResponse.value = response.data
     } else {
@@ -135,6 +254,123 @@ const handleClassify = async () => {
     aiResponse.value = null
   } finally {
     isLoading.value = false
+  }
+}
+
+// lxy: 保存交易记录到指定账户
+const handleSaveTransaction = async () => {
+  // lxy: 检查是否有分类结果和选择的账户
+  if (!aiResponse.value) {
+    console.error('没有分类结果，无法保存')
+    return
+  }
+  if (!selectedAccountId.value) {
+    showModal({
+      type: 'warning',
+      title: '提示',
+      message: '请先选择一个账户'
+    })
+    return
+  }
+
+  // lxy: 获取当前选中的账户信息
+  const currentAccount = allAccounts.value.find(a => a.id === Number(selectedAccountId.value))
+  if (!currentAccount) {
+    showModal({
+      type: 'error',
+      title: '错误',
+      message: '账户信息获取失败，请刷新页面重试'
+    })
+    return
+  }
+
+  // lxy: 检查余额是否足够（支出类型且金额大于余额时提示）
+  const isExpense = (aiResponse.value.transactionType || 'EXPENSE') === 'EXPENSE'
+  const amount = Math.abs(aiResponse.value.amount)
+  const currentBalance = Number(currentAccount.balance) || 0
+  if (isExpense && currentBalance < amount) {
+    showModal({
+      type: 'warning',
+      title: '余额不足',
+      message: `账户「${currentAccount.accountName}」余额不足！\n\n当前余额: ¥${currentBalance.toFixed(2)}\n需要支付: ¥${amount.toFixed(2)}\n\n请选择其他账户或先充值。`
+    })
+    return
+  }
+
+  saveLoading.value = true
+  try {
+    // lxy: 构建交易数据
+    const transactionData = {
+      accountId: selectedAccountId.value,  // lxy: 用户选择的账户
+      type: aiResponse.value.transactionType || 'EXPENSE',  // lxy: 交易类型
+      amount: amount,  // lxy: 金额（取绝对值）
+      category: getCategoryEnum(aiResponse.value.category),  // lxy: 将中文分类转为枚举值
+      description: aiResponse.value.description || '',  // lxy: 描述
+      remark: aiResponse.value.merchant || '',  // lxy: 商户信息放入备注
+      tradeTime: new Date().toISOString()  // lxy: 交易时间
+    }
+
+    console.log('保存交易数据:', transactionData)
+
+    // lxy: 调用创建交易接口
+    const response = await createTransaction(transactionData)
+
+    if (response && response.code === 200) {
+      console.log('交易保存成功:', response)
+      saveSuccess.value = true  // lxy: 标记保存成功
+
+      // lxy: 更新本地账户余额显示（减少余额）
+      if (isExpense) {
+        currentAccount.balance -= amount
+      } else {
+        currentAccount.balance += amount
+      }
+
+      // lxy: 显示成功提示
+      showToast('success', '交易记录保存成功！')
+      
+      // lxy: 提示用户并可选跳转
+      setTimeout(() => {
+        showModal({
+          type: 'info',
+          title: '保存成功',
+          message: '交易记录已保存！是否前往查看交易列表？',
+          showCancel: true,
+          cancelText: '继续使用',
+          confirmText: '查看列表',
+          onConfirm: () => {
+            router.push('/transactions')
+          },
+          onCancel: () => {}
+        })
+      }, 500)
+    } else {
+      console.error('保存失败:', response)
+      showModal({
+        type: 'error',
+        title: '保存失败',
+        message: response?.message || '未知错误，请稍后重试'
+      })
+    }
+  } catch (error) {
+    console.error('保存交易失败:', error)
+    // lxy: 改进错误提示，显示后端返回的具体错误信息
+    const errorMsg = error?.response?.data?.message || error?.message || '网络错误'
+    if (errorMsg.includes('余额不足')) {
+      showModal({
+        type: 'warning',
+        title: '保存失败',
+        message: '账户余额不足，请选择其他账户或先充值。'
+      })
+    } else {
+      showModal({
+        type: 'error',
+        title: '保存失败',
+        message: errorMsg
+      })
+    }
+  } finally {
+    saveLoading.value = false
   }
 }
 
@@ -221,6 +457,23 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Toast 提示组件 -->
+    <ToastContainer ref="toastRef" />
+    
+    <!-- 自定义弹窗组件 -->
+    <CustomModal 
+      :show="modalState.show"
+      :type="modalState.type"
+      :title="modalState.title"
+      :message="modalState.message"
+      :show-cancel="modalState.showCancel"
+      :cancel-text="modalState.cancelText || '取消'"
+      :confirm-text="modalState.confirmText || '确定'"
+      @close="closeModal"
+      @confirm="handleModalConfirm"
+      @cancel="handleModalCancel"
+    />
+
     <!-- 侧边栏 -->
     <Sidebar :collapsed="sidebarCollapsed" @toggle="sidebarCollapsed = !sidebarCollapsed" />
 
@@ -326,7 +579,7 @@ onMounted(async () => {
               </button>
             </div>
 
-            <!-- 分类结果 -->
+            <!-- lxy: 分类结果 -->
             <div v-if="aiResponse" class="bg-slate-900/50 rounded-xl p-5">
               <h4 class="text-white font-semibold mb-4">📋 分类结果</h4>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -356,6 +609,43 @@ onMounted(async () => {
                 <div class="bg-slate-800/50 rounded-lg p-3">
                   <p class="text-slate-400 text-xs mb-1">置信度</p>
                   <p class="text-indigo-400 font-medium">{{ ((aiResponse.confidence || 0) * 100).toFixed(0) }}%</p>
+                </div>
+              </div>
+
+              <!-- lxy: 保存操作区域 -->
+              <div class="mt-6 pt-4 border-t border-slate-700/50">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                  <!-- lxy: 账户选择下拉框 -->
+                  <div class="flex items-center gap-2">
+                    <label class="text-slate-400 text-sm">保存到账户:</label>
+                    <select
+                      v-model="selectedAccountId"
+                      @change="onAccountChange"
+                      class="bg-slate-700/50 border border-slate-600/50 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option v-for="acc in allAccounts" :key="acc.id" :value="acc.id">
+                        {{ acc.accountName }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- lxy: 保存按钮 -->
+                  <button
+                    v-if="!saveSuccess"
+                    @click="handleSaveTransaction"
+                    :disabled="saveLoading || !selectedAccountId"
+                    class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl transition-colors"
+                  >
+                    <span v-if="saveLoading" class="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></span>
+                    <span v-else>💾</span>
+                    <span class="font-medium">{{ saveLoading ? '保存中...' : '保存到账户' }}</span>
+                  </button>
+
+                  <!-- lxy: 保存成功提示 -->
+                  <div v-if="saveSuccess" class="flex items-center space-x-2 text-emerald-400">
+                    <span>✅</span>
+                    <span class="font-medium">已保存到 {{ selectedAccount?.accountName }}</span>
+                  </div>
                 </div>
               </div>
             </div>

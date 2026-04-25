@@ -23,11 +23,10 @@ export default defineConfig({
         target: 'http://localhost:9000',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      // 也代理 /internal 路径
+      // 代理 /internal 请求到 AI 服务（绕过 Gateway CORS 问题）
       '/internal': {
-        target: 'http://localhost:9000',
+        target: 'http://localhost:10007',
         changeOrigin: true,
         secure: false,
       },
