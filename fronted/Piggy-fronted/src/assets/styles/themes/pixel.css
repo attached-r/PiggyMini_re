@@ -1,0 +1,730 @@
+/* 像素风主题 - Pixel Theme */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.theme-pixel {
+  /* 覆盖 CSS 变量 */
+  --color-primary: #22c55e;
+  --color-primary-hover: #16a34a;
+  --color-secondary: #84cc16;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-danger: #ef4444;
+  --color-info: #06b6d4;
+
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  --bg-hover: #533483;
+
+  --text-primary: #e2e8f0;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-inverse: #1a1a2e;
+
+  --border-primary: #4ade80;
+  --border-secondary: #86efac;
+
+  --card-bg: #1a1a2e;
+  --card-border: #4ade80;
+
+  --sidebar-bg: #0f0f23;
+  --sidebar-text: #4ade80;
+  --sidebar-hover: #1a1a2e;
+  --sidebar-active: #22c55e;
+
+  --input-bg: #0f0f23;
+  --input-border: #4ade80;
+  --input-text: #4ade80;
+  --input-placeholder: #166534;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  /* 圆角 - 像素风使用直角 */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-full: 0;
+
+  /* 像素风字体 */
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
+
+/* ========== 页面背景 ========== */
+.theme-pixel body,
+.theme-pixel #app,
+.theme-pixel {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  background-image:
+    linear-gradient(rgba(74, 222, 128, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 222, 128, 0.03) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+}
+
+/* ========== 渐变背景 ========== */
+.theme-pixel [class*="bg-gradient-to"] {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+  opacity: 0.9;
+}
+
+/* ========== 主内容区域 ========== */
+.theme-pixel main {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ========== 头部/Header ========== */
+.theme-pixel header,
+.theme-pixel .header,
+.theme-pixel [class*="bg-slate-900/80"],
+.theme-pixel [class*="bg-slate-900"],
+.theme-pixel .sticky {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel header *,
+.theme-pixel .header * {
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel header .text-white,
+.theme-pixel header .text-slate-300,
+.theme-pixel header .text-slate-400,
+.theme-pixel [class*="bg-slate-900"] .text-white,
+.theme-pixel [class*="bg-slate-900"] .text-slate-300,
+.theme-pixel [class*="bg-slate-900"] .text-slate-400 {
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel header .text-indigo-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 侧边栏 ========== */
+.theme-pixel aside,
+.theme-pixel .sidebar {
+  background-color: var(--sidebar-bg) !important;
+  border-right: 4px solid var(--sidebar-active) !important;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+.theme-pixel aside .text-white,
+.theme-pixel aside .text-slate-300,
+.theme-pixel aside .text-slate-400 {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-pixel aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-green"]) {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-pixel aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-green"]):hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.theme-pixel aside .border-slate-700\/50,
+.theme-pixel aside .border-slate-700 {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-pixel aside .bg-indigo-500\/20 {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  color: var(--sidebar-active) !important;
+}
+
+.theme-pixel aside .bg-indigo-500\/30 {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+.theme-pixel aside .border-indigo-500 {
+  border-color: var(--sidebar-active) !important;
+}
+
+/* 主题选择下拉 */
+.theme-pixel aside [class*="bg-slate-800"] {
+  background-color: var(--bg-primary) !important;
+  border: 3px solid var(--border-primary) !important;
+  box-shadow: 4px 4px 0px var(--bg-tertiary) !important;
+}
+
+.theme-pixel aside [class*="bg-slate-800"] .text-white,
+.theme-pixel aside [class*="bg-slate-800"] .text-slate-300,
+.theme-pixel aside [class*="bg-slate-800"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* 用户区域 */
+.theme-pixel aside [class*="bg-slate-700"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 标题样式 ========== */
+.theme-pixel h1,
+.theme-pixel h2,
+.theme-pixel h3,
+.theme-pixel h4,
+.theme-pixel h5,
+.theme-pixel h6 {
+  color: #4ade80 !important;
+  text-shadow: 2px 2px 0px #166534;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+/* ========== 卡片组件 ========== */
+.theme-pixel [class*="rounded-2xl"][class*="bg-slate-800"],
+.theme-pixel [class*="rounded-2xl"][class*="bg-slate-700"],
+.theme-pixel [class*="bg-slate-800/50"],
+.theme-pixel [class*="bg-slate-800"],
+.theme-pixel .card,
+.theme-pixel .el-card {
+  background-color: var(--card-bg) !important;
+  border: 4px solid var(--border-primary) !important;
+  box-shadow: 4px 4px 0px var(--border-secondary), inset 0 0 0 4px var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel [class*="rounded-2xl"] *,
+.theme-pixel [class*="bg-slate-800"] *,
+.theme-pixel .card *,
+.theme-pixel .el-card * {
+  color: var(--text-primary) !important;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+.theme-pixel [class*="bg-slate-800"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel [class*="bg-slate-800"] .text-slate-300,
+.theme-pixel [class*="bg-slate-800"] .text-slate-400,
+.theme-pixel [class*="bg-slate-800/50"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-pixel [class*="bg-slate-800"] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+/* 卡片内的小卡片 */
+.theme-pixel [class*="bg-slate-900/50"],
+.theme-pixel [class*="bg-slate-900"],
+.theme-pixel .bg-slate-900\/70 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 按钮样式 ========== */
+.theme-pixel button[class*="bg-indigo"],
+.theme-pixel .bg-indigo-600 {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+  border: 4px solid #166534 !important;
+  box-shadow: 4px 4px 0px #166534 !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  image-rendering: pixelated;
+}
+
+.theme-pixel button[class*="bg-indigo"]:hover {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #166534 !important;
+  background-color: var(--color-primary-hover) !important;
+}
+
+.theme-pixel button[class*="bg-indigo"]:active {
+  transform: translate(4px, 4px) !important;
+  box-shadow: none !important;
+}
+
+.theme-pixel button[class*="bg-rose"],
+.theme-pixel button[class*="bg-emerald"],
+.theme-pixel button[class*="bg-blue"],
+.theme-pixel button[class*="bg-violet"],
+.theme-pixel button[class*="bg-green"],
+.theme-pixel .bg-rose-600,
+.theme-pixel .bg-emerald-600,
+.theme-pixel .bg-blue-600,
+.theme-pixel .bg-violet-500,
+.theme-pixel .bg-green-500 {
+  border: 4px solid currentColor !important;
+  box-shadow: 4px 4px 0px currentColor !important;
+  image-rendering: pixelated;
+}
+
+.theme-pixel button[class*="bg-slate-700"],
+.theme-pixel button[class*="bg-slate-600"],
+.theme-pixel .bg-slate-700,
+.theme-pixel .bg-slate-600 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 3px solid var(--border-primary) !important;
+  image-rendering: pixelated;
+}
+
+/* Element Plus 按钮 */
+.theme-pixel .el-button--primary {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+  border: 4px solid #166534 !important;
+  box-shadow: 4px 4px 0px #166534 !important;
+  font-family: 'Press Start 2P', monospace !important;
+  image-rendering: pixelated;
+}
+
+.theme-pixel .el-button {
+  font-family: 'Press Start 2P', monospace !important;
+  border-radius: 0 !important;
+  image-rendering: pixelated;
+}
+
+/* ========== 输入框 ========== */
+.theme-pixel input,
+.theme-pixel textarea,
+.theme-pixel select,
+.theme-pixel .el-input__wrapper,
+.theme-pixel [class*="bg-slate-900"],
+.theme-pixel [type="date"],
+.theme-pixel [type="month"],
+.theme-pixel [type="number"],
+.theme-pixel [type="time"],
+.theme-pixel [type="datetime-local"] {
+  background-color: var(--input-bg) !important;
+  border: 3px solid var(--input-border) !important;
+  border-radius: 0 !important;
+  color: var(--input-text) !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.3) !important;
+}
+
+.theme-pixel input:focus,
+.theme-pixel textarea:focus,
+.theme-pixel select:focus,
+.theme-pixel .el-input__wrapper:focus-within {
+  outline: none !important;
+  border-color: #86efac !important;
+  box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(74, 222, 128, 0.3) !important;
+}
+
+.theme-pixel input::placeholder,
+.theme-pixel textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* ========== 表格 ========== */
+.theme-pixel .el-table,
+.theme-pixel table {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 3px solid var(--border-primary) !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 8px !important;
+}
+
+.theme-pixel .el-table th,
+.theme-pixel .el-table td,
+.theme-pixel table th,
+.theme-pixel table td {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 2px solid var(--border-primary) !important;
+}
+
+.theme-pixel .el-table th {
+  background-color: var(--bg-tertiary) !important;
+  color: #4ade80 !important;
+}
+
+/* ========== 模态框 ========== */
+.theme-pixel .fixed[class*="bg-black"],
+.theme-pixel [class*="modal"],
+.theme-pixel .el-dialog,
+.theme-pixel [class*="rounded-2xl"][class*="shadow"],
+.theme-pixel [class*="inset-0"][class*="bg-"] {
+  background-color: var(--card-bg) !important;
+  border: 4px solid var(--border-primary) !important;
+  box-shadow: 8px 8px 0px var(--bg-tertiary) !important;
+}
+
+.theme-pixel .fixed[class*="bg-black"] * {
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel .fixed[class*="bg-black"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-pixel .fixed[class*="bg-black"] .text-slate-300,
+.theme-pixel .fixed[class*="bg-black"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-pixel .el-dialog {
+  background-color: var(--card-bg) !important;
+  border: 4px solid var(--border-primary) !important;
+  box-shadow: 8px 8px 0px var(--bg-tertiary) !important;
+}
+
+/* ========== 分页控件 ========== */
+.theme-pixel .pagination button,
+.theme-pixel [class*="page"] button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 2px solid var(--border-primary) !important;
+  font-family: 'Press Start 2P', monospace !important;
+  border-radius: 0 !important;
+}
+
+.theme-pixel .pagination button:hover,
+.theme-pixel [class*="page"] button:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.theme-pixel .pagination button[class*="bg-indigo"],
+.theme-pixel [class*="page"] button[class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 标签/徽章 ========== */
+.theme-pixel [class*="bg-rose-500/20"],
+.theme-pixel [class*="bg-emerald-500/20"],
+.theme-pixel [class*="bg-blue-500/20"],
+.theme-pixel [class*="bg-violet-500/20"],
+.theme-pixel [class*="bg-pink-500/20"],
+.theme-pixel [class*="bg-amber-500/20"],
+.theme-pixel [class*="bg-green-500/20"],
+.theme-pixel .bg-rose-500\/20 {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+}
+
+.theme-pixel .text-rose-400,
+.theme-pixel .text-emerald-400,
+.theme-pixel .text-blue-400,
+.theme-pixel .text-violet-400,
+.theme-pixel .text-pink-400,
+.theme-pixel .text-amber-400,
+.theme-pixel .text-green-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 进度条 ========== */
+.theme-pixel [class*="bg-slate-700"]:not([class*="text"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-pixel [class*="bg-emerald-500"]:not([class*="text"]),
+.theme-pixel [class*="bg-rose-500"]:not([class*="text"]),
+.theme-pixel [class*="bg-amber-500"]:not([class*="text"]),
+.theme-pixel [class*="bg-green-500"]:not([class*="text"]) {
+  background-color: var(--color-primary) !important;
+}
+
+/* ========== 图表 ========== */
+.theme-pixel [class*="border-slate-700"],
+.theme-pixel [class*="border-slate-600"] {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-pixel [class*="text-slate-500"],
+.theme-pixel [class*="text-slate-600"] {
+  color: var(--text-muted) !important;
+}
+
+/* ========== 滚动条 ========== */
+.theme-pixel ::-webkit-scrollbar {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.theme-pixel ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+  border: 2px solid var(--border-primary) !important;
+}
+
+.theme-pixel ::-webkit-scrollbar-thumb {
+  background: var(--color-primary) !important;
+  border: 2px solid #166534 !important;
+}
+
+/* ========== 快捷操作卡片 ========== */
+.theme-pixel [class*="hover:bg-slate-700/50"],
+.theme-pixel [class*="hover:bg-slate-600/50"],
+.theme-pixel [class*="hover:border-slate-600/50"] {
+  background-color: var(--bg-tertiary) !important;
+  border: 3px solid var(--border-primary) !important;
+}
+
+.theme-pixel [class*="hover:border-slate-600/50"]:hover {
+  border-color: var(--color-primary) !important;
+  transform: translate(2px, 2px) !important;
+}
+
+/* ========== 功能标签页 ========== */
+.theme-pixel [class*="bg-slate-700/50"]:not([class*="hover"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-pixel [class*="bg-pink-500"]:not([class*="text"]) {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 分类/筛选按钮 ========== */
+.theme-pixel [class*="rounded-full"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 3px solid var(--border-primary) !important;
+  border-radius: 0 !important;
+}
+
+.theme-pixel [class*="rounded-full"][class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 复选框 ========== */
+.theme-pixel input[type="checkbox"] {
+  background-color: var(--input-bg) !important;
+  border: 3px solid var(--input-border) !important;
+  border-radius: 0 !important;
+  appearance: none;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.theme-pixel input[type="checkbox"]:checked {
+  background-color: var(--color-primary) !important;
+  border-color: #166534 !important;
+}
+
+/* ========== 下拉选择框 ========== */
+.theme-pixel select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border: 3px solid var(--input-border) !important;
+  border-radius: 0 !important;
+}
+
+/* ========== 删除按钮 ========== */
+.theme-pixel [class*="hover:text-rose"],
+.theme-pixel .text-slate-400:hover {
+  color: var(--color-danger) !important;
+}
+
+/* ========== 统计卡片 ========== */
+.theme-pixel .grid[class*="gap"] [class*="bg-slate-800"] {
+  background-color: var(--card-bg) !important;
+  border: 4px solid var(--border-primary) !important;
+}
+
+/* ========== 分类筛选器 ========== */
+.theme-pixel [class*="bg-slate-800/50"][class*="border"] {
+  background-color: var(--card-bg) !important;
+  border: 3px solid var(--border-primary) !important;
+}
+
+/* ========== 消息提示 ========== */
+.theme-pixel .el-message,
+.theme-pixel .el-notification {
+  background-color: var(--bg-primary) !important;
+  border: 3px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+/* ========== 空状态 ========== */
+.theme-pixel [class*="bg-slate-700/50"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 分隔线 ========== */
+.theme-pixel [class*="border-slate-700/50"],
+.theme-pixel [class*="border-slate-700"] {
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 菜单项 ========== */
+.theme-pixel .menu-item,
+.theme-pixel .el-menu-item {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  border-left: 4px solid transparent !important;
+}
+
+.theme-pixel .menu-item:hover,
+.theme-pixel .el-menu-item:hover {
+  background-color: var(--sidebar-hover) !important;
+  border-left-color: var(--sidebar-active) !important;
+}
+
+.theme-pixel .menu-item.is-active,
+.theme-pixel .el-menu-item.is-active {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  border-left-color: var(--sidebar-active) !important;
+  color: var(--sidebar-active) !important;
+}
+
+/* ========== 链接样式 ========== */
+.theme-pixel a {
+  color: #86efac !important;
+  text-decoration: none !important;
+  border-bottom: 2px solid transparent !important;
+}
+
+.theme-pixel a:hover {
+  color: #4ade80 !important;
+  text-decoration: underline !important;
+  border-bottom-color: #166534 !important;
+}
+
+/* ========== 下拉菜单 ========== */
+.theme-pixel .el-dropdown-menu {
+  background-color: var(--bg-primary) !important;
+  border: 3px solid var(--border-primary) !important;
+}
+
+.theme-pixel .el-dropdown-menu__item {
+  color: var(--text-primary) !important;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+.theme-pixel .el-dropdown-menu__item:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--color-primary) !important;
+}
+
+/* ========== 数字和溢出处理 ========== */
+/* 数字使用较小字体避免溢出 */
+.theme-pixel [class*="text-"],
+.theme-pixel td,
+.theme-pixel th,
+.theme-pixel span,
+.theme-pixel p {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 数字使用等宽字体 */
+.theme-pixel .tabular-nums,
+.theme-pixel [style*="tabular"],
+.theme-pixel [class*="tabular"] {
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* 大数字减小字体 */
+.theme-pixel .text-2xl,
+.theme-pixel .text-3xl,
+.theme-pixel .text-4xl,
+.theme-pixel .text-5xl,
+.theme-pixel .text-6xl,
+.theme-pixel .text-7xl,
+.theme-pixel .text-8xl {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+}
+
+.theme-pixel .text-xl {
+  font-size: 12px !important;
+}
+
+.theme-pixel .text-lg {
+  font-size: 11px !important;
+}
+
+/* 表格单元格数字处理 */
+.theme-pixel td[class*="text-"],
+.theme-pixel td span,
+.theme-pixel td p {
+  font-size: 8px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100px !important;
+}
+
+/* 数字列更紧凑 */
+.theme-pixel td:nth-child(n+2),
+.theme-pixel th:nth-child(n+2) {
+  min-width: 60px !important;
+  text-align: center !important;
+}
+
+/* 金额数字特殊处理 */
+.theme-pixel [class*="money"],
+.theme-pixel [class*="price"],
+.theme-pixel [class*="amount"],
+.theme-pixel [class*="balance"],
+.theme-pixel .amount,
+.theme-pixel .money,
+.theme-pixel .price {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 8px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* 图表数字处理 */
+.theme-pixel [class*="chart"] text,
+.theme-pixel canvas + *,
+.theme-pixel svg text {
+  font-size: 6px !important;
+}
+
+/* 卡片内数字 */
+.theme-pixel .card .text-2xl,
+.theme-pixel .card .text-3xl,
+.theme-pixel .el-card .text-2xl,
+.theme-pixel .el-card .text-3xl {
+  font-size: 12px !important;
+}
+
+.theme-pixel .card .text-xl,
+.theme-pixel .el-card .text-xl {
+  font-size: 10px !important;
+}
+
+/* 溢出容器处理 */
+.theme-pixel .overflow-hidden,
+.theme-pixel [class*="overflow"] {
+  overflow: hidden !important;
+}
+
+/* 强制截断 */
+.theme-pixel .truncate,
+.theme-pixel [class*="truncate"] {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* 百分比/率数字 */
+.theme-pixel .text-emerald-400,
+.theme-pixel .text-rose-400,
+.theme-pixel .text-amber-400 {
+  font-size: 8px !important;
+}
+
+/* 仪表盘数字 */
+.theme-pixel .grid .text-3xl {
+  font-size: 14px !important;
+}
+
+.theme-pixel .grid .text-2xl {
+  font-size: 12px !important;
+}
+
+/* ========== 过渡动画 - 像素风使用即时切换 ========== */
+.theme-pixel *,
+.theme-pixel *::before,
+.theme-pixel *::after {
+  transition: none !important;
+  animation: none !important;
+}

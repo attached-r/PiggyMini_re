@@ -43,6 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
         userId: data.userId || data.id,
         username: data.username,
         nickname: data.nickname || data.username,
+        avatar: data.avatar || '',
         role: data.role || 'user',
       }
 
@@ -52,6 +53,10 @@ export const useAuthStore = defineStore('auth', () => {
       }
       // 保存 userId 供其他 API 使用
       localStorage.setItem('piggy_user_id', userInfo.value.userId)
+      // 保存头像
+      if (data.avatar) {
+        localStorage.setItem('piggy_avatar', data.avatar)
+      }
       localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
 
       console.log('✅ 登录成功！token 已保存:', tokenValue.substring(0, 30) + '...')

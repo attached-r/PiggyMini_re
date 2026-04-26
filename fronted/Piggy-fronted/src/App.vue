@@ -1,7 +1,12 @@
-<script setup></script>
+<script setup>
+import { useTheme } from '@/composables/useTheme'
+const { currentTheme } = useTheme()
+</script>
 
 <template>
-  <router-view />
+  <div :class="'theme-' + currentTheme">
+    <router-view />
+  </div>
 </template>
 
 <style></style>

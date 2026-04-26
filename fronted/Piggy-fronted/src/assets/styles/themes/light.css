@@ -1,0 +1,468 @@
+/* 亮色主题 - Light Theme */
+/* 全面覆盖所有 UI 元素的样式 */
+
+.theme-light {
+  /* CSS 变量定义 */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-secondary: #6366f1;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-hover: #f1f5f9;
+
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --border-primary: #e2e8f0;
+  --border-secondary: #cbd5e1;
+
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #475569;
+  --sidebar-hover: #f1f5f9;
+  --sidebar-active: #4f46e5;
+  --sidebar-border: #e2e8f0;
+
+  --input-bg: #ffffff;
+  --input-border: #e2e8f0;
+  --input-text: #1e293b;
+  --input-placeholder: #94a3b8;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ========== 基础背景和文字 ========== */
+.theme-light body,
+.theme-light #app,
+.theme-light {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 渐变背景覆盖 */
+.theme-light [class*="bg-gradient-to"] {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+}
+
+/* ========== 主内容区域 ========== */
+.theme-light main {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ========== 头部/Header ========== */
+.theme-light header,
+.theme-light .header,
+.theme-light [class*="bg-slate-900/80"],
+.theme-light [class*="bg-slate-900"],
+.theme-light .sticky {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-light header *,
+.theme-light .header * {
+  color: var(--text-primary) !important;
+}
+
+.theme-light header .text-white,
+.theme-light header .text-slate-300,
+.theme-light header .text-slate-400,
+.theme-light [class*="bg-slate-900"] .text-white,
+.theme-light [class*="bg-slate-900"] .text-slate-300,
+.theme-light [class*="bg-slate-900"] .text-slate-400 {
+  color: var(--text-primary) !important;
+}
+
+.theme-light header .text-indigo-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 侧边栏 ========== */
+.theme-light aside,
+.theme-light .sidebar {
+  background: var(--sidebar-bg) !important;
+  border-color: var(--sidebar-border) !important;
+  box-shadow: 1px 0 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.theme-light aside .text-white,
+.theme-light aside .text-slate-300,
+.theme-light aside .text-slate-400 {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-light aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]) {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-light aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.theme-light aside .border-slate-700\/50,
+.theme-light aside .border-slate-700 {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light aside .bg-indigo-500\/20 {
+  background-color: rgba(79, 70, 229, 0.1) !important;
+  color: var(--sidebar-active) !important;
+}
+
+.theme-light aside .bg-indigo-500\/30 {
+  background-color: rgba(79, 70, 229, 0.15) !important;
+}
+
+.theme-light aside .border-indigo-500 {
+  border-color: var(--sidebar-active) !important;
+}
+
+/* 主题选择下拉 */
+.theme-light aside [class*="bg-slate-800"] {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.theme-light aside [class*="bg-slate-800"] .text-white,
+.theme-light aside [class*="bg-slate-800"] .text-slate-300,
+.theme-light aside [class*="bg-slate-800"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* 用户区域 */
+.theme-light aside [class*="bg-slate-700"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 卡片组件 ========== */
+.theme-light [class*="rounded-2xl"][class*="bg-slate-800"],
+.theme-light [class*="rounded-2xl"][class*="bg-slate-700"],
+.theme-light [class*="bg-slate-800\/50"],
+.theme-light [class*="bg-slate-800"],
+.theme-light .card,
+.theme-light .el-card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-light [class*="rounded-2xl"] *,
+.theme-light [class*="bg-slate-800"] *,
+.theme-light .card *,
+.theme-light .el-card * {
+  color: var(--text-primary) !important;
+}
+
+.theme-light [class*="bg-slate-800"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-light [class*="bg-slate-800"] .text-slate-300,
+.theme-light [class*="bg-slate-800"] .text-slate-400,
+.theme-light [class*="bg-slate-800\/50"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-light [class*="bg-slate-800"] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+/* 卡片内的小卡片/项 */
+.theme-light [class*="bg-slate-900\/50"],
+.theme-light [class*="bg-slate-900"],
+.theme-light .bg-slate-900\/70 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 渐变卡片（如余额卡片） ========== */
+.theme-light [class*="from-indigo-600"],
+.theme-light [class*="from-purple-600"],
+.theme-light [class*="bg-gradient-to-br"][class*="from-"],
+.theme-light [class*="bg-gradient-to-br"][class*="to-"] {
+  opacity: 0.9;
+}
+
+/* ========== 按钮样式 ========== */
+.theme-light button[class*="bg-indigo"],
+.theme-light .bg-indigo-600 {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+.theme-light button[class*="bg-indigo"]:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.theme-light button[class*="bg-rose"],
+.theme-light button[class*="bg-emerald"],
+.theme-light button[class*="bg-blue"],
+.theme-light button[class*="bg-violet"],
+.theme-light button[class*="bg-pink"],
+.theme-light button[class*="bg-amber"],
+.theme-light button[class*="bg-amber"],
+.theme-light button[class*="bg-purple"],
+.theme-light .bg-rose-600,
+.theme-light .bg-emerald-600,
+.theme-light .bg-blue-600,
+.theme-light .bg-violet-500,
+.theme-light .bg-pink-500 {
+  filter: brightness(0.95);
+}
+
+.theme-light button[class*="bg-slate-700"],
+.theme-light button[class*="bg-slate-600"],
+.theme-light .bg-slate-700,
+.theme-light .bg-slate-600 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* ========== 输入框 ========== */
+.theme-light input,
+.theme-light textarea,
+.theme-light select,
+.theme-light .el-input__wrapper,
+.theme-light [class*="bg-slate-900"],
+.theme-light [type="date"],
+.theme-light [type="month"],
+.theme-light [type="number"],
+.theme-light [type="time"],
+.theme-light [type="datetime-local"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--input-text) !important;
+}
+
+.theme-light input::placeholder,
+.theme-light textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+.theme-light input:focus,
+.theme-light textarea:focus,
+.theme-light select:focus,
+.theme-light .el-input__wrapper:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+}
+
+/* ========== 表格 ========== */
+.theme-light .el-table,
+.theme-light table {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-light .el-table th,
+.theme-light .el-table td,
+.theme-light table th,
+.theme-light table td {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light .el-table th {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 模态框 ========== */
+.theme-light .fixed[class*="bg-black"],
+.theme-light [class*="modal"],
+.theme-light .el-dialog,
+.theme-light [class*="rounded-2xl"][class*="shadow"],
+.theme-light [class*="inset-0"][class*="bg-"] {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light .fixed[class*="bg-black"] * {
+  color: var(--text-primary) !important;
+}
+
+.theme-light .fixed[class*="bg-black"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-light .fixed[class*="bg-black"] .text-slate-300,
+.theme-light .fixed[class*="bg-black"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* ========== 分页控件 ========== */
+.theme-light .pagination button,
+.theme-light [class*="page"] button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light .pagination button:hover,
+.theme-light [class*="page"] button:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.theme-light .pagination button[class*="bg-indigo"],
+.theme-light [class*="page"] button[class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 标签/徽章 ========== */
+.theme-light [class*="bg-rose-500\/20"],
+.theme-light [class*="bg-emerald-500\/20"],
+.theme-light [class*="bg-blue-500\/20"],
+.theme-light [class*="bg-violet-500\/20"],
+.theme-light [class*="bg-pink-500\/20"],
+.theme-light [class*="bg-amber-500\/20"],
+.theme-light .bg-rose-500\/20 {
+  background-color: rgba(79, 70, 229, 0.1) !important;
+}
+
+.theme-light .text-rose-400,
+.theme-light .text-emerald-400,
+.theme-light .text-blue-400,
+.theme-light .text-violet-400,
+.theme-light .text-pink-400,
+.theme-light .text-amber-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 进度条 ========== */
+.theme-light [class*="bg-slate-700"]:not([class*="text"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-light [class*="bg-emerald-500"]:not([class*="text"]),
+.theme-light [class*="bg-rose-500"]:not([class*="text"]),
+.theme-light [class*="bg-amber-500"]:not([class*="text"]) {
+  filter: brightness(0.9);
+}
+
+/* ========== 图表 ========== */
+.theme-light [class*="border-slate-700"],
+.theme-light [class*="border-slate-600"] {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light [class*="text-slate-500"],
+.theme-light [class*="text-slate-600"] {
+  color: var(--text-muted) !important;
+}
+
+/* ========== 滚动条 ========== */
+.theme-light ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.theme-light ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.theme-light ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 4px;
+}
+
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ========== 快捷操作卡片 ========== */
+.theme-light [class*="hover:bg-slate-700\/50"],
+.theme-light [class*="hover:bg-slate-600\/50"],
+.theme-light [class*="hover:border-slate-600\/50"] {
+  background-color: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-light [class*="hover:border-slate-600\/50"]:hover {
+  border-color: var(--color-primary) !important;
+}
+
+/* ========== 功能标签页 ========== */
+.theme-light [class*="bg-slate-700\/50"]:not([class*="hover"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-light [class*="bg-pink-500"]:not([class*="text"]) {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 分类/筛选按钮 ========== */
+.theme-light [class*="rounded-full"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.theme-light [class*="rounded-full"][class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 复选框 ========== */
+.theme-light input[type="checkbox"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* ========== 下拉选择框 ========== */
+.theme-light select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+}
+
+/* ========== 删除按钮 ========== */
+.theme-light [class*="hover:text-rose"],
+.theme-light .text-slate-400:hover {
+  color: var(--color-danger) !important;
+}
+
+/* ========== 统计卡片 ========== */
+.theme-light .grid[class*="gap"] [class*="bg-slate-800"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* ========== 分类筛选器 ========== */
+.theme-light [class*="bg-slate-800\/50"][class*="border"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* ========== 消息提示 ========== */
+.theme-light .el-message,
+.theme-light .el-notification {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========== 空状态 ========== */
+.theme-light [class*="bg-slate-700\/50"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 分隔线 ========== */
+.theme-light [class*="border-slate-700\/50"],
+.theme-light [class*="border-slate-700"] {
+  border-color: var(--border-primary) !important;
+}

@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
-import { getAccounts } from '@/api/account'
+import { getAccounts, AccountTypeLabels } from '@/api/account'
 import { getSummary, getCategoryReport } from '@/api/report'
 import { ElMessage } from 'element-plus'
 import Sidebar from '@/components/Sidebar.vue'
@@ -347,7 +347,7 @@ onMounted(async () => {
                     </div>
                     <div>
                       <p class="text-white font-medium">{{ account.accountName }}</p>
-                      <p class="text-slate-400 text-xs">{{ account.accountType }}</p>
+                      <p class="text-slate-400 text-xs">{{ AccountTypeLabels[account.accountType]?.label || account.accountType }}</p>
                     </div>
                   </div>
                   <p :class="account.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'" class="font-semibold">

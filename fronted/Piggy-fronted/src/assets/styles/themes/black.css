@@ -1,0 +1,497 @@
+/* 纯黑主题 - Black Theme */
+/* 全面覆盖所有 UI 元素的样式 - OLED友好 */
+
+.theme-black {
+  /* CSS 变量定义 */
+  --color-primary: #a78bfa;
+  --color-primary-hover: #8b5cf6;
+  --color-secondary: #c4b5fd;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-info: #60a5fa;
+
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #000000;
+  --bg-tertiary: #171717;
+  --bg-hover: #262626;
+
+  --text-primary: #e5e5e5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --text-inverse: #000000;
+
+  --border-primary: #262626;
+  --border-secondary: #404040;
+
+  --card-bg: #0a0a0a;
+  --card-border: #262626;
+
+  --sidebar-bg: #000000;
+  --sidebar-text: #a3a3a3;
+  --sidebar-hover: #171717;
+  --sidebar-active: #a78bfa;
+  --sidebar-border: #262626;
+
+  --input-bg: #171717;
+  --input-border: #262626;
+  --input-text: #e5e5e5;
+  --input-placeholder: #525252;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.7);
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ========== 基础背景和文字 ========== */
+.theme-black body,
+.theme-black #app,
+.theme-black {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 渐变背景覆盖 */
+.theme-black [class*="bg-gradient-to"] {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+}
+
+/* ========== 主内容区域 ========== */
+.theme-black main {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ========== 头部/Header ========== */
+.theme-black header,
+.theme-black .header,
+.theme-black [class*="bg-slate-900/80"],
+.theme-black [class*="bg-slate-900"],
+.theme-black .sticky {
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-black header *,
+.theme-black .header * {
+  color: var(--text-primary) !important;
+}
+
+.theme-black header .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-black header .text-slate-300,
+.theme-black header .text-slate-400,
+.theme-black [class*="bg-slate-900"] .text-slate-300,
+.theme-black [class*="bg-slate-900"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-black header .text-indigo-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 侧边栏 ========== */
+.theme-black aside,
+.theme-black .sidebar {
+  background: var(--sidebar-bg) !important;
+  border-color: var(--sidebar-border) !important;
+}
+
+.theme-black aside .text-white,
+.theme-black aside .text-slate-300,
+.theme-black aside .text-slate-400 {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-black aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-violet"]):not([class*="bg-pink"]):not([class*="bg-amber"]) {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-black aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-violet"]):not([class*="bg-pink"]):not([class*="bg-amber"]):hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-black aside .border-slate-700\/50,
+.theme-black aside .border-slate-700 {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black aside .bg-indigo-500\/20 {
+  background-color: rgba(167, 139, 250, 0.2) !important;
+  color: var(--sidebar-active) !important;
+}
+
+.theme-black aside .bg-indigo-500\/30 {
+  background-color: rgba(167, 139, 250, 0.15) !important;
+}
+
+.theme-black aside .border-indigo-500 {
+  border-color: var(--sidebar-active) !important;
+}
+
+/* 主题选择下拉 */
+.theme-black aside [class*="bg-slate-800"] {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.theme-black aside [class*="bg-slate-800"] .text-white,
+.theme-black aside [class*="bg-slate-800"] .text-slate-300,
+.theme-black aside [class*="bg-slate-800"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* 用户区域 */
+.theme-black aside [class*="bg-slate-700"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 卡片组件 ========== */
+.theme-black [class*="rounded-2xl"][class*="bg-slate-800"],
+.theme-black [class*="rounded-2xl"][class*="bg-slate-700"],
+.theme-black [class*="bg-slate-800\/50"],
+.theme-black [class*="bg-slate-800"],
+.theme-black .card,
+.theme-black .el-card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-black [class*="rounded-2xl"] *,
+.theme-black [class*="bg-slate-800"] *,
+.theme-black .card *,
+.theme-black .el-card * {
+  color: var(--text-primary) !important;
+}
+
+.theme-black [class*="bg-slate-800"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-black [class*="bg-slate-800"] .text-slate-300,
+.theme-black [class*="bg-slate-800"] .text-slate-400,
+.theme-black [class*="bg-slate-800\/50"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-black [class*="bg-slate-800"] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+/* 卡片内项 */
+.theme-black [class*="bg-slate-900\/50"],
+.theme-black [class*="bg-slate-900"],
+.theme-black .bg-slate-900\/70 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 按钮样式 ========== */
+.theme-black button[class*="bg-indigo"],
+.theme-black .bg-indigo-600 {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+.theme-black button[class*="bg-indigo"]:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.theme-black button[class*="bg-rose"],
+.theme-black button[class*="bg-emerald"],
+.theme-black button[class*="bg-blue"],
+.theme-black button[class*="bg-violet"],
+.theme-black button[class*="bg-pink"],
+.theme-black button[class*="bg-amber"],
+.theme-black .bg-rose-600,
+.theme-black .bg-emerald-600,
+.theme-black .bg-blue-600,
+.theme-black .bg-violet-500,
+.theme-black .bg-pink-500,
+.theme-black .bg-amber-500 {
+  filter: brightness(1.15);
+}
+
+.theme-black button[class*="bg-slate-700"],
+.theme-black button[class*="bg-slate-600"],
+.theme-black .bg-slate-700,
+.theme-black .bg-slate-600 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Element Plus 按钮 */
+.theme-black .el-button--primary {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+.theme-black .el-button {
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 输入框 ========== */
+.theme-black input,
+.theme-black textarea,
+.theme-black select,
+.theme-black .el-input__wrapper,
+.theme-black [class*="bg-slate-900"],
+.theme-black [type="date"],
+.theme-black [type="month"],
+.theme-black [type="number"],
+.theme-black [type="time"],
+.theme-black [type="datetime-local"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--input-text) !important;
+}
+
+.theme-black input::placeholder,
+.theme-black textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+.theme-black input:focus,
+.theme-black textarea:focus,
+.theme-black select:focus,
+.theme-black .el-input__wrapper:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2) !important;
+}
+
+/* ========== 表格 ========== */
+.theme-black .el-table,
+.theme-black table {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-black .el-table th,
+.theme-black .el-table td,
+.theme-black table th,
+.theme-black table td {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black .el-table th {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 模态框 ========== */
+.theme-black .fixed[class*="bg-black"],
+.theme-black [class*="modal"],
+.theme-black .el-dialog,
+.theme-black [class*="rounded-2xl"][class*="shadow"],
+.theme-black [class*="inset-0"][class*="bg-"] {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.theme-black [class*="rounded-2xl"][class*="shadow"] {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black [class*="rounded-2xl"][class*="shadow"] * {
+  color: var(--text-primary) !important;
+}
+
+.theme-black .fixed[class*="bg-black"] * {
+  color: var(--text-primary) !important;
+}
+
+.theme-black .fixed[class*="bg-black"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-black .fixed[class*="bg-black"] .text-slate-300,
+.theme-black .fixed[class*="bg-black"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* ========== 分页控件 ========== */
+.theme-black .pagination button,
+.theme-black [class*="page"] button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black .pagination button:hover,
+.theme-black [class*="page"] button:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.theme-black .pagination button[class*="bg-indigo"],
+.theme-black [class*="page"] button[class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 标签/徽章 ========== */
+.theme-black [class*="bg-rose-500/20"],
+.theme-black [class*="bg-emerald-500/20"],
+.theme-black [class*="bg-blue-500/20"],
+.theme-black [class*="bg-violet-500/20"],
+.theme-black [class*="bg-pink-500/20"],
+.theme-black [class*="bg-amber-500/20"],
+.theme-black .bg-rose-500\/20 {
+  background-color: rgba(167, 139, 250, 0.15) !important;
+}
+
+.theme-black .text-rose-400,
+.theme-black .text-emerald-400,
+.theme-black .text-blue-400,
+.theme-black .text-violet-400,
+.theme-black .text-pink-400,
+.theme-black .text-amber-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 进度条 ========== */
+.theme-black [class*="bg-slate-700"]:not([class*="text"]):not([class*="border"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-black [class*="bg-emerald-500"]:not([class*="text"]),
+.theme-black [class*="bg-rose-500"]:not([class*="text"]),
+.theme-black [class*="bg-amber-500"]:not([class*="text"]) {
+  filter: brightness(1.15);
+}
+
+/* ========== 图表 ========== */
+.theme-black [class*="border-slate-700\/30"],
+.theme-black [class*="border-slate-700"],
+.theme-black [class*="border-slate-600"] {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black [class*="text-slate-500"],
+.theme-black [class*="text-slate-600"] {
+  color: var(--text-muted) !important;
+}
+
+/* ========== 滚动条 ========== */
+.theme-black ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.theme-black ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.theme-black ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 4px;
+}
+
+.theme-black ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ========== 快捷操作卡片 ========== */
+.theme-black [class*="hover:bg-slate-700\/50"],
+.theme-black [class*="hover:bg-slate-600\/50"],
+.theme-black [class*="hover:border-slate-600\/50"] {
+  background-color: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black [class*="hover:border-slate-600\/50"]:hover {
+  border-color: var(--color-primary) !important;
+}
+
+/* ========== 功能标签页 ========== */
+.theme-black [class*="bg-slate-700\/50"]:not([class*="hover"]) {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.theme-black [class*="bg-pink-500"],
+.theme-black [class*="bg-violet-500"] {
+  filter: brightness(1.15);
+}
+
+/* ========== 分类/筛选按钮 ========== */
+.theme-black [class*="rounded-full"]:not([class*="bg-indigo"]) {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.theme-black [class*="rounded-full"][class*="bg-indigo"] {
+  background-color: var(--color-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 复选框 ========== */
+.theme-black input[type="checkbox"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* ========== 下拉选择框 ========== */
+.theme-black select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+}
+
+/* ========== 删除按钮 ========== */
+.theme-black [class*="hover:text-rose"],
+.theme-black .text-slate-400:hover {
+  color: var(--color-danger) !important;
+}
+
+/* ========== 统计卡片 ========== */
+.theme-black .grid[class*="gap"] [class*="bg-slate-800"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* ========== 分类筛选器 ========== */
+.theme-black [class*="bg-slate-800/50"][class*="border"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* ========== 消息提示 ========== */
+.theme-black .el-message,
+.theme-black .el-notification {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========== 空状态 ========== */
+.theme-black [class*="bg-slate-700\/50"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 分隔线 ========== */
+.theme-black [class*="border-slate-700\/50"],
+.theme-black [class*="border-slate-700"] {
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 下拉菜单 ========== */
+.theme-black .el-dropdown-menu {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-black .el-dropdown-menu__item {
+  color: var(--text-primary) !important;
+}
+
+.theme-black .el-dropdown-menu__item:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--color-primary) !important;
+}

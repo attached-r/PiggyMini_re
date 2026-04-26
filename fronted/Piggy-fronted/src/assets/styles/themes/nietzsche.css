@@ -1,0 +1,630 @@
+/* 尼采风主题 - Nietzsche Theme */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap');
+
+.theme-nietzsche {
+  /* 覆盖 CSS 变量 */
+  --color-primary: #b8860b;
+  --color-primary-hover: #8b6914;
+  --color-secondary: #cd853f;
+  --color-success: #228b22;
+  --color-warning: #d2691e;
+  --color-danger: #8b0000;
+  --color-info: #4a4a4a;
+
+  --bg-primary: #faf5e9;
+  --bg-secondary: #f5f0e1;
+  --bg-tertiary: #e8dcc8;
+  --bg-hover: #d4c4a8;
+
+  --text-primary: #2c1810;
+  --text-secondary: #5c4033;
+  --text-muted: #8b7355;
+  --text-inverse: #faf5e9;
+
+  --border-primary: #c4a77d;
+  --border-secondary: #8b7355;
+
+  --card-bg: #faf5e9;
+  --card-border: #c4a77d;
+
+  --sidebar-bg: #2c1810;
+  --sidebar-text: #d4c4a8;
+  --sidebar-hover: #3d2518;
+  --sidebar-active: #b8860b;
+
+  --input-bg: #fffef8;
+  --input-border: #c4a77d;
+  --input-text: #2c1810;
+  --input-placeholder: #8b7355;
+
+  --shadow-sm: 0 1px 3px rgba(139, 69, 19, 0.15);
+  --shadow-md: 0 4px 8px rgba(139, 69, 19, 0.2);
+  --shadow-lg: 0 8px 16px rgba(139, 69, 19, 0.25);
+
+  /* 古典字体 */
+  font-family: 'Playfair Display', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ========== 页面背景 - 羊皮纸质感 ========== */
+.theme-nietzsche body,
+.theme-nietzsche #app,
+.theme-nietzsche {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  background-image:
+    radial-gradient(ellipse at top left, rgba(184, 134, 11, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(139, 69, 19, 0.05) 0%, transparent 50%) !important;
+}
+
+/* ========== 渐变背景 ========== */
+.theme-nietzsche [class*="bg-gradient-to"] {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+}
+
+/* ========== 主内容区域 ========== */
+.theme-nietzsche main {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ========== 头部/Header ========== */
+.theme-nietzsche header,
+.theme-nietzsche .header,
+.theme-nietzsche [class*="bg-slate-900/80"],
+.theme-nietzsche [class*="bg-slate-900"],
+.theme-nietzsche .sticky {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.theme-nietzsche header *,
+.theme-nietzsche .header * {
+  color: var(--text-primary) !important;
+  font-family: 'Playfair Display', 'Noto Serif SC', serif !important;
+}
+
+.theme-nietzsche header .text-white,
+.theme-nietzsche header .text-slate-300,
+.theme-nietzsche header .text-slate-400,
+.theme-nietzsche [class*="bg-slate-900"] .text-white,
+.theme-nietzsche [class*="bg-slate-900"] .text-slate-300,
+.theme-nietzsche [class*="bg-slate-900"] .text-slate-400 {
+  color: var(--text-primary) !important;
+}
+
+.theme-nietzsche header .text-indigo-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 侧边栏 - 深色古典风格 ========== */
+.theme-nietzsche aside,
+.theme-nietzsche .sidebar {
+  background-color: var(--sidebar-bg) !important;
+  border-right: 3px solid var(--color-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.theme-nietzsche aside .text-white,
+.theme-nietzsche aside .text-slate-300,
+.theme-nietzsche aside .text-slate-400 {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-nietzsche aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]) {
+  color: var(--sidebar-text) !important;
+}
+
+.theme-nietzsche aside button:not([class*="bg-indigo"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.theme-nietzsche aside .border-slate-700\/50,
+.theme-nietzsche aside .border-slate-700 {
+  border-color: var(--border-secondary) !important;
+}
+
+.theme-nietzsche aside .bg-indigo-500\/20 {
+  background-color: rgba(184, 134, 11, 0.3) !important;
+  color: var(--sidebar-active) !important;
+  border-left: 3px solid var(--sidebar-active) !important;
+}
+
+.theme-nietzsche aside .bg-indigo-500\/30 {
+  background-color: rgba(184, 134, 11, 0.2) !important;
+}
+
+.theme-nietzsche aside .border-indigo-500 {
+  border-color: var(--sidebar-active) !important;
+}
+
+/* 主题选择下拉 */
+.theme-nietzsche aside [class*="bg-slate-800"] {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.theme-nietzsche aside [class*="bg-slate-800"] .text-white,
+.theme-nietzsche aside [class*="bg-slate-800"] .text-slate-300,
+.theme-nietzsche aside [class*="bg-slate-800"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* 用户区域 */
+.theme-nietzsche aside [class*="bg-slate-700"] {
+  background-color: var(--sidebar-hover) !important;
+}
+
+/* ========== 标题样式 - 古典衬线风格 ========== */
+.theme-nietzsche h1,
+.theme-nietzsche h2,
+.theme-nietzsche h3,
+.theme-nietzsche h4,
+.theme-nietzsche h5,
+.theme-nietzsche h6 {
+  font-family: 'Playfair Display', 'Noto Serif SC', serif !important;
+  font-weight: 700 !important;
+  color: var(--color-primary) !important;
+  letter-spacing: 0.05em !important;
+}
+
+.theme-nietzsche h1 {
+  font-size: 2.5rem !important;
+  border-bottom: 2px solid var(--border-primary) !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.theme-nietzsche h2 {
+  font-size: 2rem !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  padding-bottom: 0.3rem !important;
+}
+
+.theme-nietzsche h3 {
+  font-size: 1.5rem !important;
+}
+
+/* ========== 卡片样式 - 古典书籍风格 ========== */
+.theme-nietzsche [class*="rounded-2xl"][class*="bg-slate-800"],
+.theme-nietzsche [class*="rounded-2xl"][class*="bg-slate-700"],
+.theme-nietzsche [class*="bg-slate-800/50"],
+.theme-nietzsche [class*="bg-slate-800"],
+.theme-nietzsche .card,
+.theme-nietzsche .el-card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow:
+    0 2px 4px rgba(139, 69, 19, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Noto Serif SC', 'Playfair Display', serif !important;
+  border-radius: 4px !important;
+}
+
+.theme-nietzsche [class*="rounded-2xl"] *,
+.theme-nietzsche [class*="bg-slate-800"] *,
+.theme-nietzsche .card *,
+.theme-nietzsche .el-card * {
+  color: var(--text-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+}
+
+.theme-nietzsche [class*="bg-slate-800"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-nietzsche [class*="bg-slate-800"] .text-slate-300,
+.theme-nietzsche [class*="bg-slate-800"] .text-slate-400,
+.theme-nietzsche [class*="bg-slate-800/50"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-nietzsche [class*="bg-slate-800"] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+/* 卡片内的小卡片 */
+.theme-nietzsche [class*="bg-slate-900/50"],
+.theme-nietzsche [class*="bg-slate-900"],
+.theme-nietzsche .bg-slate-900\/70 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 按钮样式 - 古典按钮 ========== */
+.theme-nietzsche button[class*="bg-indigo"],
+.theme-nietzsche .bg-indigo-600 {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  color: var(--text-inverse) !important;
+  border: 1px solid var(--color-primary-hover) !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  border-radius: 2px !important;
+}
+
+.theme-nietzsche button[class*="bg-indigo"]:hover {
+  background: linear-gradient(180deg, var(--color-secondary) 0%, var(--color-primary) 100%) !important;
+}
+
+.theme-nietzsche button[class*="bg-rose"],
+.theme-nietzsche button[class*="bg-emerald"],
+.theme-nietzsche button[class*="bg-blue"],
+.theme-nietzsche button[class*="bg-violet"],
+.theme-nietzsche button[class*="bg-pink"],
+.theme-nietzsche button[class*="bg-amber"],
+.theme-nietzsche .bg-rose-600,
+.theme-nietzsche .bg-emerald-600,
+.theme-nietzsche .bg-blue-600,
+.theme-nietzsche .bg-violet-500,
+.theme-nietzsche .bg-pink-500,
+.theme-nietzsche .bg-amber-500 {
+  border-radius: 2px !important;
+}
+
+.theme-nietzsche button[class*="bg-slate-700"],
+.theme-nietzsche button[class*="bg-slate-600"],
+.theme-nietzsche .bg-slate-700,
+.theme-nietzsche .bg-slate-600 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* Element Plus 按钮 */
+.theme-nietzsche .el-button--primary {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  color: var(--text-inverse) !important;
+  border: 1px solid var(--color-primary-hover) !important;
+  font-family: 'Playfair Display', serif !important;
+  border-radius: 2px !important;
+}
+
+.theme-nietzsche .el-button {
+  font-family: 'Noto Serif SC', serif !important;
+  border-radius: 2px !important;
+}
+
+/* ========== 输入框 ========== */
+.theme-nietzsche input,
+.theme-nietzsche textarea,
+.theme-nietzsche select,
+.theme-nietzsche .el-input__wrapper,
+.theme-nietzsche [class*="bg-slate-900"],
+.theme-nietzsche [type="date"],
+.theme-nietzsche [type="month"],
+.theme-nietzsche [type="number"],
+.theme-nietzsche [type="time"],
+.theme-nietzsche [type="datetime-local"] {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  border-radius: 2px !important;
+  color: var(--input-text) !important;
+  font-family: 'Noto Serif SC', serif !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.theme-nietzsche input:focus,
+.theme-nietzsche textarea:focus,
+.theme-nietzsche select:focus,
+.theme-nietzsche .el-input__wrapper:focus-within {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.05),
+    0 0 0 3px rgba(184, 134, 11, 0.1) !important;
+}
+
+.theme-nietzsche input::placeholder,
+.theme-nietzsche textarea::placeholder {
+  color: var(--input-placeholder) !important;
+  font-style: italic !important;
+}
+
+/* ========== 表格 ========== */
+.theme-nietzsche .el-table,
+.theme-nietzsche table {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+}
+
+.theme-nietzsche .el-table th,
+.theme-nietzsche .el-table td,
+.theme-nietzsche table th,
+.theme-nietzsche table td {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-nietzsche .el-table th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--color-primary) !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 2px solid var(--color-primary) !important;
+}
+
+.theme-nietzsche .el-table td {
+  border-bottom: 1px solid var(--border-primary) !important;
+}
+
+/* ========== 模态框 ========== */
+.theme-nietzsche .fixed[class*="bg-black"],
+.theme-nietzsche [class*="modal"],
+.theme-nietzsche .el-dialog,
+.theme-nietzsche [class*="rounded-2xl"][class*="shadow"],
+.theme-nietzsche [class*="inset-0"][class*="bg-"] {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: 4px !important;
+}
+
+.theme-nietzsche .fixed[class*="bg-black"] * {
+  color: var(--text-primary) !important;
+}
+
+.theme-nietzsche .fixed[class*="bg-black"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+.theme-nietzsche .fixed[class*="bg-black"] .text-slate-300,
+.theme-nietzsche .fixed[class*="bg-black"] .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-nietzsche .el-dialog {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.theme-nietzsche .el-dialog__header {
+  border-bottom: 2px solid var(--color-primary) !important;
+}
+
+/* ========== 分页控件 ========== */
+.theme-nietzsche .pagination button,
+.theme-nietzsche [class*="page"] button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+  border-radius: 2px !important;
+}
+
+.theme-nietzsche .pagination button:hover,
+.theme-nietzsche [class*="page"] button:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.theme-nietzsche .pagination button[class*="bg-indigo"],
+.theme-nietzsche [class*="page"] button[class*="bg-indigo"] {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 标签/徽章 ========== */
+.theme-nietzsche [class*="bg-rose-500/20"],
+.theme-nietzsche [class*="bg-emerald-500/20"],
+.theme-nietzsche [class*="bg-blue-500/20"],
+.theme-nietzsche [class*="bg-violet-500/20"],
+.theme-nietzsche [class*="bg-pink-500/20"],
+.theme-nietzsche [class*="bg-amber-500/20"],
+.theme-nietzsche .bg-rose-500\/20 {
+  background-color: rgba(184, 134, 11, 0.15) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.theme-nietzsche .text-rose-400,
+.theme-nietzsche .text-emerald-400,
+.theme-nietzsche .text-blue-400,
+.theme-nietzsche .text-violet-400,
+.theme-nietzsche .text-pink-400,
+.theme-nietzsche .text-amber-400 {
+  color: var(--color-primary) !important;
+}
+
+/* ========== 进度条 ========== */
+.theme-nietzsche [class*="bg-slate-700"]:not([class*="text"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-nietzsche [class*="bg-emerald-500"]:not([class*="text"]),
+.theme-nietzsche [class*="bg-rose-500"]:not([class*="text"]),
+.theme-nietzsche [class*="bg-amber-500"]:not([class*="text"]) {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) !important;
+}
+
+/* ========== 图表 ========== */
+.theme-nietzsche [class*="border-slate-700"],
+.theme-nietzsche [class*="border-slate-600"] {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-nietzsche [class*="text-slate-500"],
+.theme-nietzsche [class*="text-slate-600"] {
+  color: var(--text-muted) !important;
+}
+
+/* ========== 滚动条 - 古典木纹 ========== */
+.theme-nietzsche ::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.theme-nietzsche ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.theme-nietzsche ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-secondary) 0%, var(--color-primary) 100%) !important;
+  border: 1px solid var(--border-secondary) !important;
+}
+
+/* ========== 快捷操作卡片 ========== */
+.theme-nietzsche [class*="hover:bg-slate-700/50"],
+.theme-nietzsche [class*="hover:bg-slate-600/50"],
+.theme-nietzsche [class*="hover:border-slate-600/50"] {
+  background-color: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.theme-nietzsche [class*="hover:border-slate-600/50"]:hover {
+  border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* ========== 功能标签页 ========== */
+.theme-nietzsche [class*="bg-slate-700/50"]:not([class*="hover"]) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.theme-nietzsche [class*="bg-pink-500"]:not([class*="text"]) {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 分类/筛选按钮 ========== */
+.theme-nietzsche [class*="rounded-full"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 2px !important;
+}
+
+.theme-nietzsche [class*="rounded-full"][class*="bg-indigo"] {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  color: var(--text-inverse) !important;
+}
+
+/* ========== 复选框 ========== */
+.theme-nietzsche input[type="checkbox"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  border-radius: 2px !important;
+}
+
+/* ========== 下拉选择框 ========== */
+.theme-nietzsche select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--input-border) !important;
+  border-radius: 2px !important;
+}
+
+/* ========== 删除按钮 ========== */
+.theme-nietzsche [class*="hover:text-rose"],
+.theme-nietzsche .text-slate-400:hover {
+  color: var(--color-danger) !important;
+}
+
+/* ========== 统计卡片 ========== */
+.theme-nietzsche .grid[class*="gap"] [class*="bg-slate-800"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 分类筛选器 ========== */
+.theme-nietzsche [class*="bg-slate-800/50"][class*="border"] {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 消息提示 ========== */
+.theme-nietzsche .el-message,
+.theme-nietzsche .el-notification {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+}
+
+/* ========== 空状态 ========== */
+.theme-nietzsche [class*="bg-slate-700/50"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ========== 分隔线 ========== */
+.theme-nietzsche [class*="border-slate-700/50"],
+.theme-nietzsche [class*="border-slate-700"] {
+  border-color: var(--border-primary) !important;
+}
+
+/* ========== 菜单项 ========== */
+.theme-nietzsche .menu-item,
+.theme-nietzsche .el-menu-item {
+  font-family: 'Noto Serif SC', serif !important;
+  letter-spacing: 0.02em !important;
+}
+
+.theme-nietzsche .menu-item:hover,
+.theme-nietzsche .el-menu-item:hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.theme-nietzsche .menu-item.is-active,
+.theme-nietzsche .el-menu-item.is-active {
+  border-bottom: 2px solid var(--sidebar-active) !important;
+  color: var(--sidebar-active) !important;
+}
+
+/* ========== 链接样式 ========== */
+.theme-nietzsche a {
+  color: var(--color-primary) !important;
+  text-decoration: none !important;
+  border-bottom: 1px dotted var(--color-primary) !important;
+}
+
+.theme-nietzsche a:hover {
+  color: var(--color-secondary) !important;
+  border-bottom-style: solid !important;
+}
+
+/* ========== 下拉菜单 ========== */
+.theme-nietzsche .el-dropdown-menu {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.theme-nietzsche .el-dropdown-menu__item {
+  color: var(--text-primary) !important;
+  font-family: 'Noto Serif SC', serif !important;
+}
+
+.theme-nietzsche .el-dropdown-menu__item:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--color-primary) !important;
+}
+
+/* ========== 装饰性元素 ========== */
+.theme-nietzsche .divider,
+.theme-nietzsche hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent) !important;
+  margin: 2rem 0 !important;
+}
+
+/* ========== 引用块样式 ========== */
+.theme-nietzsche blockquote {
+  border-left: 4px solid var(--color-primary) !important;
+  background-color: var(--bg-tertiary) !important;
+  padding: 1rem 1.5rem !important;
+  margin: 1.5rem 0 !important;
+  font-style: italic !important;
+}
+
+/* ========== 过渡动画 ========== */
+.theme-nietzsche *,
+.theme-nietzsche *::before,
+.theme-nietzsche *::after {
+  transition: all 0.3s ease !important;
+}

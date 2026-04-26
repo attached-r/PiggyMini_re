@@ -6,31 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3740e1b1-9000-4b6d-9fd1-2758a02cac22" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Account/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Account/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/AiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/client/TransactionServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/client/TransactionServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/client/TransactionServiceFallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/client/TransactionServiceFallback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AIService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AnalyzeAssistant.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/java/ai/service/AnalyzeAssistant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Ai/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/dto/AuthResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/java/auth/service/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Budget/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Common/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Report/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/java/transaction/dto/AiClassifyRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/java/transaction/dto/AiClassifyRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Transaction/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/api/ai.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/api/ai.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/stores/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/stores/auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fronted/Piggy-fronted/src/utils/request.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fronted/Piggy-fronted/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fronted/Piggy-fronted/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="143" />
+    <option name="cachedIndexableFilesCount" value="145" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -86,46 +61,46 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.Ai [clean].executor": "Run",
-    "Maven.Ai [compile].executor": "Run",
-    "Maven.Ai [install].executor": "Run",
-    "Maven.Piggy [install].executor": "Run",
-    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "发现新的/更新的数据库配置",
-    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Spring Boot.AccountApplication.executor": "Run",
-    "Spring Boot.AiApplication.executor": "Run",
-    "Spring Boot.AuthApplication.executor": "Run",
-    "Spring Boot.BudgetApplication.executor": "Run",
-    "Spring Boot.CommonApplication.executor": "Run",
-    "Spring Boot.GatewayApplication.executor": "Run",
-    "Spring Boot.ReportApplication.executor": "Run",
-    "Spring Boot.TransactionApplication.executor": "Run",
-    "git-widget-placeholder": "lxy/report",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.Ai [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Ai [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Ai [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Piggy [install].executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;发现新的/更新的数据库配置&quot;,
+    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AccountApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.AiApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.AuthApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.BudgetApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.CommonApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ReportApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.TransactionApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;lxy/report&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -253,7 +228,8 @@
       <workItem from="1776837691063" duration="16000" />
       <workItem from="1776864799432" duration="6150000" />
       <workItem from="1777031129102" duration="6464000" />
-      <workItem from="1777090135448" duration="9839000" />
+      <workItem from="1777090135448" duration="10513000" />
+      <workItem from="1777204682783" duration="299000" />
     </task>
     <servers />
   </component>
